@@ -1,0 +1,196 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "intro": {
+      "type": "section",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Heading",
+          "settings": {
+            "text": "<h1>How To Brew Chai Without Setting Off The Smoke Alarm</h1>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h1"
+          },
+          "blocks": {}
+        },
+        "subhead": {
+          "type": "text",
+          "name": "Subhead",
+          "settings": {
+            "text": "<p>Five steps. No special equipment. Mostly just don't walk away from the stove.</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "paragraph",
+            "padding-block-start": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["heading", "subhead"],
+      "name": "Intro",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "gap": 8,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 64,
+        "padding-block-end": 24
+      }
+    },
+    "steps": {
+      "type": "section",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Heading",
+          "settings": {
+            "text": "<h3>The method</h3>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h4",
+            "padding-block-end": 8
+          },
+          "blocks": {}
+        },
+        "accordion": {
+          "type": "accordion",
+          "name": "Steps",
+          "settings": {
+            "icon": "caret",
+            "dividers": true,
+            "type_preset": "h5",
+            "inherit_color_scheme": true,
+            "color_scheme": ""
+          },
+          "blocks": {
+            "step_1": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Step 1 — Boil",
+                "icon": "fire",
+                "open_by_default": true
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft — confirm ratios] Bring water to a boil with the masala chai spices. Let them do their thing for a few minutes before anything else goes in.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            },
+            "step_2": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Step 2 — Add the tea",
+                "icon": "leaf"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft] Add the Assam + Kericho black tea leaves. Simmer — don't scorch.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            },
+            "step_3": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Step 3 — Add milk",
+                "icon": "dairy"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft] Add milk and bring it back to a gentle boil. Watch it — chai has a well-documented habit of boiling over the second you look away.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            },
+            "step_4": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Step 4 — Strain",
+                "icon": "serving_dish"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft] Strain into cups. Compost the spent leaves and spices like someone who has their life together.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            },
+            "step_5": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "Step 5 — Sweeten and serve",
+                "icon": "heart"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft] Sweeten to taste, or don't — we won't tell anyone. Drink it too hot, like it's meant to be.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            }
+          },
+          "block_order": ["step_1", "step_2", "step_3", "step_4", "step_5"]
+        }
+      },
+      "block_order": ["heading", "accordion"],
+      "name": "Steps",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "gap": 16,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 24,
+        "padding-block-end": 64
+      }
+    }
+  },
+  "order": ["intro", "steps"]
+}

@@ -1,0 +1,163 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "location": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Visit</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h1>Come say hi</h1>",
+                "type_preset": "h2"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>[Draft — confirm address/hours] Find us at [address placeholder], open [hours placeholder]. This section is a placeholder until the real details are confirmed.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["caption", "heading", "body"]
+        }
+      },
+      "block_order": ["media", "content"],
+      "name": "Location",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "markets": {
+      "type": "section",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Heading",
+          "settings": {
+            "text": "<h3>Farmers market schedule</h3>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h4",
+            "padding-block-end": 8
+          },
+          "blocks": {}
+        },
+        "accordion": {
+          "type": "accordion",
+          "name": "Markets",
+          "settings": {
+            "icon": "caret",
+            "dividers": true,
+            "type_preset": "h5",
+            "inherit_color_scheme": true,
+            "color_scheme": ""
+          },
+          "blocks": {
+            "market_1": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "[Market name placeholder] — [Day, time placeholder]",
+                "icon": "map_pin",
+                "open_by_default": true
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft — confirm address] Location detail goes here once confirmed.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            },
+            "market_2": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "[Market name placeholder] — [Day, time placeholder]",
+                "icon": "map_pin"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>[Draft — confirm address] Location detail goes here once confirmed.</p>",
+                    "type_preset": "rte",
+                    "width": "100%"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["text"]
+            }
+          },
+          "block_order": ["market_1", "market_2"]
+        }
+      },
+      "block_order": ["heading", "accordion"],
+      "name": "Markets",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "gap": 16,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 64
+      }
+    }
+  },
+  "order": ["location", "markets"]
+}

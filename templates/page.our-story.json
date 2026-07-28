@@ -1,0 +1,156 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "opening": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Our Story</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h1>We started with a folding table</h1>",
+                "type_preset": "h2"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>[Draft — confirm founding year/details] Ka Chai began at Portland farmers markets — a kettle, a folding table, and people who kept coming back for more. No storefront, no funding round to start, just chai that people wanted a second cup of.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["caption", "heading", "body"]
+        }
+      },
+      "block_order": ["media", "content"],
+      "name": "Opening",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "70svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "provenance_story": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Why These Two Regions</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>Assam for depth. Kericho for backbone.</h2>",
+                "type_preset": "h3"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>We chose Assam, India and Kericho, Kenya deliberately — one gives the malty depth chai needs, the other gives it the structure to stand up to milk and spice. The masala blend is whole-spice, hand-mixed here in Portland, batch by batch. No shortcuts, no fillers, no dilution for scale.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            },
+            "button": {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "label": "Shop the blends",
+                "link": "shopify://collections/all",
+                "style_class": "link"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["caption", "heading", "body", "button"]
+        }
+      },
+      "block_order": ["media", "content"],
+      "name": "Provenance story",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "70svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-3",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": ["opening", "provenance_story"]
+}

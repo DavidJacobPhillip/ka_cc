@@ -9,90 +9,63 @@
  */
 {
   "sections": {
-    "hero_D9JRDP": {
+    "hero_main": {
       "type": "hero",
       "blocks": {
-        "spacer_UB6WEL": {
-          "type": "spacer",
+        "text_heading": {
+          "type": "text",
+          "name": "Heading",
           "settings": {
-            "size": "pixel",
-            "percent_size": 100,
-            "pixel_size": 0,
-            "custom_mobile_size": false,
-            "size_mobile": "percent",
-            "percent_size_mobile": 100,
-            "pixel_size_mobile": 120
+            "text": "<h1>Pull Up A Chair</h1>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "center",
+            "type_preset": "h1"
           },
           "blocks": {}
         },
-        "marquee_i4ABFy": {
-          "type": "_marquee",
+        "text_subhead": {
+          "type": "text",
+          "name": "Subheading",
           "settings": {
-            "movement_direction": "normal",
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "transparent_background": true,
-            "padding-block-start": 25,
-            "padding-block-end": 100,
-            "gap_between_elements": 24
+            "text": "<p>Small-batch chai and tea, blended in Portland — the kind of place where the kettle's always about to go on.</p>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "center",
+            "type_preset": "paragraph",
+            "padding-block-start": 8
           },
-          "blocks": {
-            "text_pAXDn6": {
-              "type": "text",
-              "settings": {
-                "text": "<p>Let’s create connections over a cup. Enter the world of Ka Chai & Coffee. Serving you authentic Indian chai + filter coffee, only through Ka Chai & Coffee. </p>",
-                "width": "fit-content",
-                "max_width": "none",
-                "alignment": "left",
-                "type_preset": "custom",
-                "font": "var(--font-subheading--family)",
-                "font_size": "2.5rem",
-                "line_height": "normal",
-                "letter_spacing": "tight",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#cd643e",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 10,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
+          "blocks": {}
+        },
+        "button_shop": {
+          "type": "button",
+          "name": "Shop button",
+          "settings": {
+            "label": "Shop Ka Chai",
+            "link": "shopify://collections/all",
+            "style_class": "button"
           },
-          "block_order": [
-            "text_pAXDn6"
-          ]
+          "blocks": {}
         }
       },
-      "block_order": [
-        "spacer_UB6WEL",
-        "marquee_i4ABFy"
-      ],
-      "name": "t:names.hero_marquee",
+      "block_order": ["text_heading", "text_subhead", "button_shop"],
+      "name": "Hero",
       "settings": {
-        "media_type_1": "image",
+        "media_type_1": "video",
         "media_type_2": "image",
-        "image_2": "shopify://shop_images/IMG_4910.heic",
         "link": "",
         "open_in_new_tab": false,
         "content_direction": "column",
         "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
         "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "space-between",
-        "gap": 34,
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 20,
         "section_width": "page-width",
         "section_height": "full-screen",
         "section_height_custom": 92,
         "color_scheme": "scheme-5",
         "toggle_overlay": true,
-        "overlay_color": "#00000026",
+        "overlay_color": "#00000059",
         "overlay_style": "gradient",
         "gradient_direction": "to top",
         "blurred_reflection": false,
@@ -100,9 +73,409 @@
         "padding-block-start": 0,
         "padding-block-end": 40
       }
+    },
+    "provenance": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Provenance</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>Assam. Kericho. No shortcuts.</h2>",
+                "type_preset": "h3"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>Our black tea comes from two named growing regions — Assam, India, and Kericho, Kenya — and our masala chai is a whole-spice blend, hand-mixed in small batches here in Portland. Nothing here is diluted for scale.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            },
+            "button": {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "label": "See both blends",
+                "link": "shopify://collections/all",
+                "style_class": "link"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["caption", "heading", "body", "button"]
+        }
+      },
+      "block_order": ["media", "content"],
+      "name": "Provenance",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "shop_teaser": {
+      "type": "section",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "Heading",
+          "settings": {
+            "text": "<h2>Everything you need to make chai at home</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h3",
+            "padding-block-end": 32
+          },
+          "blocks": {}
+        },
+        "cards_row": {
+          "type": "group",
+          "name": "Product cards",
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "flex-start",
+            "gap": 32,
+            "width": "fill",
+            "height": "fit"
+          },
+          "blocks": {
+            "card_1": {
+              "type": "group",
+              "name": "Masala chai card",
+              "settings": {
+                "content_direction": "column",
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "gap": 12,
+                "width": "fill",
+                "height": "fit"
+              },
+              "blocks": {
+                "image": {
+                  "type": "image",
+                  "settings": {
+                    "image_ratio": "square",
+                    "width": "fill"
+                  },
+                  "blocks": {}
+                },
+                "title": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Indian Masala Chai Spices</h3>",
+                    "type_preset": "h5"
+                  },
+                  "blocks": {}
+                },
+                "line": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Whole spice, no shortcuts. Just add milk, water, and patience.</p>",
+                    "type_preset": "paragraph"
+                  },
+                  "blocks": {}
+                },
+                "button": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop the spice blend",
+                    "link": "shopify://collections/all",
+                    "style_class": "link"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["image", "title", "line", "button"]
+            },
+            "card_2": {
+              "type": "group",
+              "name": "Black tea card",
+              "settings": {
+                "content_direction": "column",
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "gap": 12,
+                "width": "fill",
+                "height": "fit"
+              },
+              "blocks": {
+                "image": {
+                  "type": "image",
+                  "settings": {
+                    "image_ratio": "square",
+                    "width": "fill"
+                  },
+                  "blocks": {}
+                },
+                "title": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Assam + Kericho Black Tea Leaves</h3>",
+                    "type_preset": "h5"
+                  },
+                  "blocks": {}
+                },
+                "line": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Two regions, one bold cup. Loose leaf, built to hold its own against milk and spice.</p>",
+                    "type_preset": "paragraph"
+                  },
+                  "blocks": {}
+                },
+                "button": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Shop the loose leaf",
+                    "link": "shopify://collections/all",
+                    "style_class": "link"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["image", "title", "line", "button"]
+            }
+          },
+          "block_order": ["card_1", "card_2"]
+        }
+      },
+      "block_order": ["heading", "cards_row"],
+      "name": "Shop teaser",
+      "settings": {
+        "content_direction": "column",
+        "horizontal_alignment_flex_direction_column": "center",
+        "gap": 32,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    },
+    "brew_teaser": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Brew Guide</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>The ritual is the point</h2>",
+                "type_preset": "h3"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>Making chai isn't hard. It is, however, an excellent excuse to stand near a stove and ignore your phone for ten minutes. We'll show you how.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            },
+            "button": {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "label": "Read the brew guide",
+                "link": "/pages/brew-guide",
+                "style_class": "link"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["caption", "heading", "body", "button"]
+        }
+      },
+      "block_order": ["media", "content"],
+      "name": "Brew guide teaser",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-4",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "story_teaser": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Our Story</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>Farmers markets first</h2>",
+                "type_preset": "h3"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>Before there was a website, there was a folding table, a kettle, and people who kept coming back for more. Ka Chai started at Portland farmers markets — this is still small-batch, still hand-blended, still us.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            },
+            "button": {
+              "type": "button",
+              "name": "Button",
+              "settings": {
+                "label": "Our story",
+                "link": "/pages/our-story",
+                "style_class": "link"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["caption", "heading", "body", "button"]
+        }
+      },
+      "block_order": ["media", "content"],
+      "name": "Our story teaser",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-3",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "visit_marquee": {
+      "type": "marquee",
+      "blocks": {
+        "text_visit": {
+          "type": "text",
+          "name": "Marquee text",
+          "settings": {
+            "text": "<p>Find Ka Chai at Portland farmers markets — full schedule on the Visit page ·</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-subheading--family)",
+            "font_size": "1.5rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["text_visit"],
+      "name": "Visit us",
+      "settings": {
+        "movement_direction": "normal",
+        "inherit_color_scheme": false,
+        "color_scheme": "scheme-2",
+        "transparent_background": false,
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "gap_between_elements": 24
+      }
     }
   },
-  "order": [
-    "hero_D9JRDP"
-  ]
+  "order": ["hero_main", "provenance", "shop_teaser", "brew_teaser", "story_teaser", "visit_marquee"]
 }
