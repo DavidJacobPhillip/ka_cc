@@ -101,16 +101,22 @@
              Shopify renders JSON-template sections as
              Hero-template--<numeric-id>__hero_main, not the bare section
              key, so an exact-id selector never matches. */
-          [id^="Hero-"] .hero__content-wrapper {
-            /* The page-width grid's margin column is
-               minmax(var(--page-margin), 1fr) - on wide/landscape screens,
-               once content hits its max width, the leftover space grows
-               the margin well past --page-margin (sometimes by hundreds
-               of px). --util-page-margin-offset is the theme's own utility
-               variable holding that *actual* rendered margin at any width,
-               so subtracting it (not --page-margin) correctly cancels the
-               real inset instead of leaving the 1fr overflow behind. */
-            margin-inline-start: calc(4vw - var(--util-page-margin-offset));
+          /* Override the grid's own margin-track variable at its source
+             (.hero__container is the .section element that defines it)
+             instead of trying to cancel the rendered margin from a nested
+             descendant. The previous approach used
+             --util-page-margin-offset inside a calc() on
+             .hero__content-wrapper - but that variable's formula contains
+             a "100%" that only resolves correctly relative to the element
+             that consumes it, and .hero__content-wrapper is a narrower,
+             already-centered child, not the full section width. On wide
+             screens that mismatch grows large, which is exactly the
+             "massive padding, landscape only" bug. Setting
+             --full-page-grid-margin directly makes the grid's margin
+             column *be* 4vw, correct at any width, no cancellation math
+             needed. */
+          [id^="Hero-"] .hero__container {
+            --full-page-grid-margin: 4vw;
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
