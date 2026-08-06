@@ -19,17 +19,16 @@
             "text": "<h1>Welcome to the world of</h1>",
             "width": "fit-content",
             "max_width": "narrow",
-            "alignment": "center",
+            "alignment": "left",
             "type_preset": "h1"
           },
           "blocks": {}
         },
         "logo_badge": {
-          "type": "logo",
-          "name": "Logo badge",
+          "type": "custom-liquid",
+          "name": "Logo lockup",
           "settings": {
-            "unit": "pixel",
-            "pixel_height": 130
+            "custom_liquid": "<div class=\"hero-logo-lockup\"><img src=\"{{ 'logo-white.png' | asset_url }}\" alt=\"ka Chai & Coffee\" class=\"hero-logo-lockup__image\" loading=\"lazy\"></div><style>.hero-logo-lockup{display:flex;}.hero-logo-lockup__image{height:170px;width:auto;max-width:100%;object-fit:contain;}@media screen and (max-width:749px){.hero-logo-lockup__image{height:100px;}}</style>"
           },
           "blocks": {}
         }
@@ -43,9 +42,9 @@
         "open_in_new_tab": false,
         "content_direction": "column",
         "vertical_on_mobile": true,
-        "horizontal_alignment_flex_direction_column": "center",
+        "horizontal_alignment_flex_direction_column": "flex-start",
         "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 16,
+        "gap": 8,
         "section_width": "page-width",
         "section_height": "large",
         "section_height_custom": 80,
@@ -57,7 +56,7 @@
         "blurred_reflection": false,
         "reflection_opacity": 75,
         "padding-block-start": 0,
-        "padding-block-end": 40
+        "padding-block-end": 48
       }
     },
     "intro": {
