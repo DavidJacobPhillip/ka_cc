@@ -102,12 +102,15 @@
              Hero-template--<numeric-id>__hero_main, not the bare section
              key, so an exact-id selector never matches. */
           [id^="Hero-"] .hero__content-wrapper {
-            /* A fluid inset (4% of viewport width) instead of the grid's
-               fixed --page-margin (which jumps 16px -> 40px at a single
-               breakpoint). Subtracting --page-margin cancels the grid's
-               own inset so the final on-screen position is exactly 4vw
-               from the true edge at any screen size, with no clipping. */
-            margin-inline-start: calc(4vw - var(--page-margin));
+            /* The page-width grid's margin column is
+               minmax(var(--page-margin), 1fr) - on wide/landscape screens,
+               once content hits its max width, the leftover space grows
+               the margin well past --page-margin (sometimes by hundreds
+               of px). --util-page-margin-offset is the theme's own utility
+               variable holding that *actual* rendered margin at any width,
+               so subtracting it (not --page-margin) correctly cancels the
+               real inset instead of leaving the 1fr overflow behind. */
+            margin-inline-start: calc(4vw - var(--util-page-margin-offset));
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
