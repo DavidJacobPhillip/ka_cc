@@ -102,7 +102,11 @@
              Hero-template--<numeric-id>__hero_main, not the bare section
              key, so an exact-id selector never matches. */
           [id^="Hero-"] .hero__content-wrapper {
-            margin-inline-start: -24px;
+            /* Cancel the page-width grid's built-in side margin exactly
+               (16px mobile / 40px desktop) instead of guessing a fixed
+               pixel offset, which only ever cancelled part of it and left
+               a real gap no matter the value. */
+            margin-inline-start: calc(-1 * var(--page-margin));
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
