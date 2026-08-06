@@ -77,6 +77,13 @@
             position: relative;
           }
 
+          /* The theme's built-in hide_logo_on_home_page setting only hides the
+             logo while unscrolled and reveals it once the header goes sticky.
+             We don't want a header logo on the homepage at all. */
+          #header-component .header-logo[data-hidden-on-home-page] {
+            display: none !important;
+          }
+
           #ka-rail {
             position: absolute;
             inset-block: 0;
