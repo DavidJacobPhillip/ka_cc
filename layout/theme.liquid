@@ -101,6 +101,13 @@
             margin-inline-start: -32px;
           }
 
+          /* The h1's own line-height leading dwarfs the flex gap between the
+             logo and heading, so pull the heading up directly to actually
+             tighten the visual spacing. */
+          #Hero-hero_main .text-block--text_heading {
+            margin-block-start: -20px;
+          }
+
           #ka-rail {
             position: absolute;
             inset-block: 0;
