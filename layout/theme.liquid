@@ -51,6 +51,26 @@
   {% include 'pagefly-app-header' %}</head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    <style>
+      /* No header logo anywhere on the site; the header is nav-text only. */
+      #header-component .header-logo {
+        display: none !important;
+      }
+
+      /* Force white nav text while the header is transparent (unscrolled/top
+         of page), matching the same condition the theme itself uses to decide
+         when the header is in its see-through state. Reverts naturally once
+         the header goes solid/sticky, where the default dark text applies. */
+      :is(
+        #header-component[transparent]:not([data-sticky-state='active']),
+        #header-component[transparent='always'][data-sticky-state='active']
+      )
+        .menu-list__link {
+        --color-foreground: rgb(255, 255, 255);
+        --color-foreground-rgb: 255, 255, 255;
+        color: #ffffff;
+      }
+    </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
       {% sections 'header-group' %}
@@ -77,11 +97,8 @@
             position: relative;
           }
 
-          /* The theme's built-in hide_logo_on_home_page setting only hides the
-             logo while unscrolled and reveals it once the header goes sticky.
-             We don't want a header logo on the homepage at all. */
-          #header-component .header-logo[data-hidden-on-home-page] {
-            display: none !important;
+          #Hero-hero_main .hero__content-wrapper {
+            margin-inline-start: -32px;
           }
 
           #ka-rail {
