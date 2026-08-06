@@ -161,6 +161,7 @@
              instead of relying on the flex gap. */
           [id^="Hero-"] .text-block.h1 {
             margin-block-start: 16px;
+            will-change: transform;
           }
 
           /* type_case_h1 is set to uppercase globally (config/settings_data.json),
@@ -211,6 +212,7 @@
         <div id="ka-rail" aria-hidden="true">
           <span>{% for i in (1..300) %}ka {% endfor %}</span>
         </div>
+        <script defer src="{{ 'hero-heading-scroll.js' | asset_url }}"></script>
       {% endif %}
 
       {{ content_for_layout }}
