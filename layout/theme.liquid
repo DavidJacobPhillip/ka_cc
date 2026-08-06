@@ -106,7 +106,7 @@
                (16px mobile / 40px desktop) instead of guessing a fixed
                pixel offset, which only ever cancelled part of it and left
                a real gap no matter the value. */
-            margin-inline-start: calc(-1 * var(--page-margin));
+            margin-inline-start: calc(-1 * var(--page-margin) - 16px);
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
