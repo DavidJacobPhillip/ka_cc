@@ -89,6 +89,13 @@
         --color-foreground-rgb: 255, 255, 255;
         color: #ffffff;
       }
+
+      /* Announcement bar: white background (scheme-1) with brown text.
+         scheme-1's default foreground is near-black, so the text color
+         needs a direct override to the brand terracotta. */
+      .announcement-bar {
+        color: #cd643f;
+      }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
@@ -147,6 +154,11 @@
              instead of relying on the flex gap. */
           [id^="Hero-"] .text-block.h1 {
             margin-block-start: 16px;
+            /* type_case_h1 is set to uppercase globally (config/settings_data.json),
+               which affects every h1 sitewide - overriding it just for this
+               heading rather than changing the global setting, since other
+               h1s (product titles, etc.) may rely on the uppercase treatment. */
+            text-transform: none;
           }
 
           #ka-rail {
