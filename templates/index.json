@@ -24,7 +24,7 @@
           "type": "text",
           "name": "Heading",
           "settings": {
-            "text": "<h1>Welcome to the world of</h1>",
+            "text": "<h1>Welcome to the <strong>world</strong> of</h1>",
             "width": "fit-content",
             "max_width": "narrow",
             "alignment": "left",

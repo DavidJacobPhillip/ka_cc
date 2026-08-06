@@ -96,6 +96,13 @@
       .announcement-bar {
         color: #cd643f;
       }
+
+      /* More breathing room between top nav items - default is
+         --gap-xl (1.25rem/20px), which reads as cramped now that the
+         nav is set at 3.5rem. */
+      #header-component .menu-list {
+        --menu-horizontal-gap: 3rem;
+      }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
@@ -154,10 +161,19 @@
              instead of relying on the flex gap. */
           [id^="Hero-"] .text-block.h1 {
             margin-block-start: 16px;
-            /* type_case_h1 is set to uppercase globally (config/settings_data.json),
-               which affects every h1 sitewide - overriding it just for this
-               heading rather than changing the global setting, since other
-               h1s (product titles, etc.) may rely on the uppercase treatment. */
+          }
+
+          /* type_case_h1 is set to uppercase globally (config/settings_data.json),
+             which affects every h1 sitewide - overriding it just for this
+             heading rather than changing the global setting, since other
+             h1s (product titles, etc.) may rely on the uppercase treatment.
+             base.css applies the uppercase transform directly to the inner
+             element (".text-block.h1 > *", the actual <h1> tag), not the
+             wrapping div - text-transform doesn't override an inherited
+             value once a descendant has its own explicit rule, so the
+             override has to target that same inner element, not the
+             wrapper. */
+          [id^="Hero-"] .text-block.h1 > * {
             text-transform: none;
           }
 
