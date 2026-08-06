@@ -28,7 +28,7 @@
           "type": "custom-liquid",
           "name": "Logo lockup",
           "settings": {
-            "custom_liquid": "<div class=\"hero-logo-lockup\"><img src=\"{{ 'logo-white.png' | asset_url }}\" alt=\"ka Chai & Coffee\" class=\"hero-logo-lockup__image\" loading=\"lazy\"></div><style>.hero-logo-lockup{display:flex;}.hero-logo-lockup__image{height:296px;width:auto;max-width:100%;object-fit:contain;}@media screen and (max-width:749px){.hero-logo-lockup__image{height:174px;}}</style>"
+            "custom_liquid": "<div class=\"hero-logo-lockup\"><img src=\"{{ 'logo-white.png' | asset_url }}\" alt=\"ka Chai & Coffee\" class=\"hero-logo-lockup__image\" loading=\"lazy\"></div><style>.hero-logo-lockup{display:flex;max-width:100%;}.hero-logo-lockup__image{height:clamp(120px, 20vw, 296px);width:auto;max-width:100%;object-fit:contain;}</style>"
           },
           "blocks": {}
         }

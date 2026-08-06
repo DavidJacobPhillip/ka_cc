@@ -102,13 +102,12 @@
              Hero-template--<numeric-id>__hero_main, not the bare section
              key, so an exact-id selector never matches. */
           [id^="Hero-"] .hero__content-wrapper {
-            /* Cancel the page-width grid's built-in side margin exactly
-               (16px mobile / 40px desktop). This is the maximum safe
-               offset: .hero__container has overflow:hidden, so true x=0
-               (the viewport edge) is the hard limit - anything pushed
-               further negative gets clipped, which is what was cutting
-               the logo off on narrow screens. */
-            margin-inline-start: calc(-1 * var(--page-margin));
+            /* A fluid inset (4% of viewport width) instead of the grid's
+               fixed --page-margin (which jumps 16px -> 40px at a single
+               breakpoint). Subtracting --page-margin cancels the grid's
+               own inset so the final on-screen position is exactly 4vw
+               from the true edge at any screen size, with no clipping. */
+            margin-inline-start: calc(4vw - var(--page-margin));
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
