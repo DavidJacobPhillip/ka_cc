@@ -84,6 +84,48 @@
       data-product-transition="{{ settings.transition_to_main_product }}"
       data-template="{{ template }}"
     >
+      {% if template == 'index' %}
+        <style>
+          #MainContent {
+            position: relative;
+          }
+
+          #ka-rail {
+            position: absolute;
+            inset-block: 0;
+            inset-inline-start: 0;
+            width: 40px;
+            z-index: -1;
+            background: #cd643f;
+            overflow: hidden;
+            pointer-events: none;
+          }
+
+          #ka-rail span {
+            display: block;
+            width: 100%;
+            height: 100%;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            color: #ffffff;
+            font-family: var(--font-heading--family, serif);
+            font-size: 1.1rem;
+            letter-spacing: 0.4em;
+            line-height: 1;
+            padding-block-start: 24px;
+          }
+
+          @media screen and (max-width: 749px) {
+            #ka-rail {
+              display: none;
+            }
+          }
+        </style>
+        <div id="ka-rail" aria-hidden="true">
+          <span>{% for i in (1..300) %}ka {% endfor %}</span>
+        </div>
+      {% endif %}
+
       {{ content_for_layout }}
     </main>
 

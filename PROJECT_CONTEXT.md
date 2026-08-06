@@ -2,8 +2,8 @@
 
 **Purpose:** Living reference document for the Ka Chai & Coffee website. Paste this back into any new conversation to restore full context. Update as decisions are made.
 
-**Last updated:** July 28, 2026
-**Status:** First full theme build complete (code side). Scope, product list, palette, and theme locked. All pages exist as templates with draft copy — see §11 and §12 for what's built vs. what Santosh still needs to do in Shopify Admin before it's live.
+**Last updated:** July 29, 2026
+**Status:** Homepage redesigned from a Canva mockup (high-level pass); animated shader background added; scope now 3 products (chai spices, tea, filter coffee — see §2). All pages exist as templates with draft copy — see §11, §12, and §13 for what's built vs. what Santosh still needs to do in Shopify Admin before it's live.
 
 ---
 
@@ -25,8 +25,9 @@
 ### Products for sale on the site (complete list)
 1. **Indian Masala Chai Spices**
 2. **Assam + Kericho Black Tea Leaves**
+3. **Indian Filter Coffee** — added back into scope 2026-07-29, per a new homepage design brief (South Indian style, arabica + robusta beans blended with chicory root). This reverses the earlier 2-SKU-only framing below; the "make chai at home" framing still applies to products 1–2, coffee sits alongside it as a third, separate product line.
 
-Framing: everything needed to **make chai at home**. Spice jars and loose leaf tea.
+Framing: everything needed to **make chai at home** — plus filter coffee for the "& Coffee" half of the brand name. Spice jars, loose leaf tea, and coffee powder.
 
 ### Also on the site
 - **Physical location** — where to find Ka in person
@@ -119,8 +120,8 @@ Cup print ink is **Pantone 5535C**, a deep *muted* green — same family as `#2E
 
 **Draft page structure:**
 - Home
-- Shop (2 products)
-- Product detail × 2
+- Shop (3 products as of 2026-07-29 — see §2)
+- Product detail × 3
 - Brew guide
 - Our story
 - Visit / Find us (location + markets)
@@ -169,7 +170,7 @@ Still relevant:
 - [ ] Current Shopify plan and domain
 - [ ] Shipping — domestic only? flat rate? free over threshold?
 - [ ] Wholesale — include a page for spice/tea, or hold it back with the concentrate?
-- [ ] Farmers market schedule — static, or does it need regular updating?
+- [x] ~~Farmers market schedule~~ — **PARTIALLY RESOLVED:** found real data already live in the theme's announcement bar (not something Claude wrote — pre-existing content): "Brewed & served fresh every Saturday @Cedar Mills Farmers Market 9 AM to 2 PM" (`sections/header-group.json`). Used to replace the bracketed placeholder on the Visit/Find Us page. Still open: is this the *only* market, or one of several? Still needs a static-vs-updating decision.
 - [ ] Web green vs. Pantone 5535C — match exactly, or leave as-is?
 
 ---
@@ -198,6 +199,8 @@ iPad sketch in Sketchbook → transparent PNG export → placed into Affinity De
 | 2026-07-27 | **Palette locked:** `#CD643F` primary / white accent / `#2E6417` tertiary. Prior dark turmeric-marigold prototype retired — new build is Shopify-native from the ground up. Path A (premium theme + custom CSS) recommended. |
 | 2026-07-28 | Installed Anthropic's official `frontend-design` skill globally (`~/.claude/skills/frontend-design/`), ahead of redevelopment work. See §11. |
 | 2026-07-28 | **Full theme build (code side) completed** against the existing Savor theme found in the repo. Color schemes rebuilt to the locked terracotta/white/green palette; typography updated to Noto Sans body + Noto Serif Display Extra Condensed headings; homepage, shop page, both product pages, Brew Guide, Our Story, and Visit/Find Us page all built with draft copy in the established voice; footer nav wired to a `footer-menu` handle. See §12 for the full breakdown and the Admin-side checklist still needed before this goes live. |
+| 2026-07-29 | Added a site-wide animated WebGL "smoke" shader background (chai-gradient palette: dark spice → terracotta → milky tan → cream) on the `redesign` branch. |
+| 2026-07-29 | **Homepage redesigned from a Canva mockup Santosh provided**, high-level first pass. Reintroduced Indian Filter Coffee to scope (3rd product — see §2). New homepage structure: transparent nav over hero, "Welcome to the world of" + logo badge, connections/chai intro blurb, 2 product cards (chai duo + coffee), ingredient spotlight (ginger) with dietary icon row and the FDA/grandma disclaimer, a wave-divider into a dark reviews section (marquee + testimonial quote), and a 6-photo "Yum in Action" gallery. Added a decorative full-height "ka" rail down the left edge of the homepage only. Discovered and used real farmers-market data already sitting in the theme (Cedar Mills, Saturdays 9AM–2PM) to replace placeholder text on the Visit/Find Us page. See §13 for full detail, simplifications made, and open items from this pass. |
 
 ---
 
@@ -228,8 +231,25 @@ Claude's scope was theme **code only** (Liquid, JSON templates, `config/settings
 - **Footer navigation** — wired to reference a `footer-menu` handle (was empty).
 
 **Still needed in Shopify Admin before this is live** (can't be done from theme code):
-- Create the 2 real products (pricing, real titles/handles) and assign each its alternate template above.
+- Create the 3 real products (pricing, real titles/handles — masala chai, black tea, filter coffee) and assign each its alternate template above.
 - Create 3 real pages (Brew Guide, Our Story, Visit/Find Us) and assign each its alternate template — no page-body content needed, it's baked into the templates.
 - Create the `main-menu` and `footer-menu` navigation menus (Home, Shop, Brew Guide, Our Story, Visit/Find Us).
 - Upload the real hero video + product/location photos, then select them in the theme editor — media fields are already primed (hero is set to expect video).
 - Review every `[Draft]` bracket — ingredient lists, brew ratios, shipping policy, market schedule, address/hours — these are placeholders, not verified copy.
+
+---
+
+## 13. Homepage v2 — Canva Mockup Build (2026-07-29)
+
+Santosh provided a Canva mockup and asked for a high-level first pass, explicitly inviting questions before implementation rather than a guess-and-build. Three decisions were confirmed before touching code: (1) Indian Filter Coffee is back in scope as a real 3rd product (reverses the 2-SKU-only framing from 2026-07-27 — see §2), (2) the custom decorative elements (side rail, rotated labels) should be included in this pass rather than deferred, (3) all copy shown in the mockup (grandma/FDA joke, ginger benefits, gallery captions) is real, finalized copy — used verbatim.
+
+**New files:**
+- `templates/product.indian-filter-coffee.json` — third product template, same editorial pattern as the other two.
+- `snippets/wave-divider.liquid` — reusable SVG wave shape, used once so far (top of the reviews section) but written generically.
+
+**Simplifications made for this "high level" pass — worth a visual review before treating as final:**
+- **The "ka" side rail** is built as `position: absolute` inside `#MainContent`, sized to that element's full height via pure CSS (no JS) — so it runs the height of all homepage content below the hero, but it's homepage-only (gated by `template == 'index'` in `layout/theme.liquid`) and hidden below 750px width. Repeats "ka " 300 times vertically with `overflow: hidden` as a safety clamp; not pixel-measured against the actual mockup's spacing.
+- **The dark reviews section** uses the theme's `scheme-5`, which was changed from pure black to a warm dark brown (`#2b1608`) to match both the mockup's tone and the shader background's darkest stop — this is a **global** color scheme change, so it affects anywhere else scheme-5 gets used, not just this one section (currently: nowhere else yet).
+- **The "Reviews Reviews Reviews" arc text** was simplified to the theme's existing horizontal marquee (scrolling, not curved-on-a-path). A true curved SVG text path would need custom illustration work — flagged as a fast-follow if the curve specifically matters.
+- **Two gallery captions were cut off in the mockup screenshot** ("when ou...", "some of our loyal frie..."). Draft completions were written in the same voice and marked `[draft — caption was cut off in the mockup]` — these need the real text from Santosh, not guessed final copy.
+- **Product cards**: the mockup shows one card for "Chai Masala + Tea" combining both chai SKUs and one for coffee — kept as literally 2 cards on the homepage teaser (chai card links to the shop page generically, coffee card links to its product page) even though there are 3 real products underneath.

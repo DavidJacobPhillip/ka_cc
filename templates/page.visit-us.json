@@ -52,7 +52,7 @@
               "type": "text",
               "name": "Body",
               "settings": {
-                "text": "<p>[Draft — confirm address/hours] Find us at [address placeholder], open [hours placeholder]. This section is a placeholder until the real details are confirmed.</p>",
+                "text": "<p>We don't have a storefront (yet) — find us in person at the farmers markets below. [Draft — confirm whether a fixed pickup point/address should also be listed here.]</p>",
                 "type_preset": "rte",
                 "max_width": "narrow"
               },
@@ -105,7 +105,7 @@
             "market_1": {
               "type": "_accordion-row",
               "settings": {
-                "heading": "[Market name placeholder] — [Day, time placeholder]",
+                "heading": "Cedar Mills Farmers Market — Saturdays, 9 AM to 2 PM",
                 "icon": "map_pin",
                 "open_by_default": true
               },
@@ -113,7 +113,7 @@
                 "text": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>[Draft — confirm address] Location detail goes here once confirmed.</p>",
+                    "text": "<p>Brewed & served fresh every Saturday. [Draft — confirm exact address for the map/directions link.]</p>",
                     "type_preset": "rte",
                     "width": "100%"
                   },
@@ -125,14 +125,14 @@
             "market_2": {
               "type": "_accordion-row",
               "settings": {
-                "heading": "[Market name placeholder] — [Day, time placeholder]",
+                "heading": "PSU Farmers Market — [Draft: confirm day/time]",
                 "icon": "map_pin"
               },
               "blocks": {
                 "text": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>[Draft — confirm address] Location detail goes here once confirmed.</p>",
+                    "text": "<p>[Draft — confirm this is a regular vendor spot, not a one-off] Portland State University farmers market.</p>",
                     "type_preset": "rte",
                     "width": "100%"
                   },

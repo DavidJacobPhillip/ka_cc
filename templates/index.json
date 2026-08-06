@@ -16,7 +16,7 @@
           "type": "text",
           "name": "Heading",
           "settings": {
-            "text": "<h1>Pull Up A Chair</h1>",
+            "text": "<h1>Welcome to the world of</h1>",
             "width": "fit-content",
             "max_width": "narrow",
             "alignment": "center",
@@ -24,31 +24,17 @@
           },
           "blocks": {}
         },
-        "text_subhead": {
-          "type": "text",
-          "name": "Subheading",
+        "logo_badge": {
+          "type": "logo",
+          "name": "Logo badge",
           "settings": {
-            "text": "<p>Small-batch chai and tea, blended in Portland — the kind of place where the kettle's always about to go on.</p>",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "center",
-            "type_preset": "paragraph",
-            "padding-block-start": 8
-          },
-          "blocks": {}
-        },
-        "button_shop": {
-          "type": "button",
-          "name": "Shop button",
-          "settings": {
-            "label": "Shop Ka Chai",
-            "link": "shopify://collections/all",
-            "style_class": "button"
+            "unit": "pixel",
+            "pixel_height": 130
           },
           "blocks": {}
         }
       },
-      "block_order": ["text_heading", "text_subhead", "button_shop"],
+      "block_order": ["text_heading", "logo_badge"],
       "name": "Hero",
       "settings": {
         "media_type_1": "video",
@@ -58,11 +44,11 @@
         "content_direction": "column",
         "vertical_on_mobile": true,
         "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 20,
+        "vertical_alignment_flex_direction_column": "flex-end",
+        "gap": 16,
         "section_width": "page-width",
-        "section_height": "full-screen",
-        "section_height_custom": 92,
+        "section_height": "large",
+        "section_height_custom": 80,
         "color_scheme": "scheme-5",
         "toggle_overlay": true,
         "overlay_color": "#00000059",
@@ -74,98 +60,51 @@
         "padding-block-end": 40
       }
     },
-    "provenance": {
-      "type": "media-with-content",
+    "intro": {
+      "type": "section",
       "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
+        "heading_col": {
+          "type": "text",
+          "name": "Headline",
           "settings": {
-            "media_type": "image",
-            "image_position": "cover"
+            "text": "<h2>Let's create <a href=\"/pages/our-story\">connections</a> over <a href=\"/collections/all\">chai</a></h2>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h2"
           },
           "blocks": {}
         },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+        "blurb_col": {
+          "type": "text",
+          "name": "Blurb",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
+            "text": "<p><strong>More than just a cup.</strong><br>It's about finding intentionality and presentness in our life. And what better way to share those moments with loved ones? Unless you don't have loved ones. We'd be your loved ones then.</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte"
           },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Provenance</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>Assam. Kericho. No shortcuts.</h2>",
-                "type_preset": "h3"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>Our black tea comes from two named growing regions — Assam, India, and Kericho, Kenya — and our masala chai is a whole-spice blend, hand-mixed in small batches here in Portland. Nothing here is diluted for scale.</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            },
-            "button": {
-              "type": "button",
-              "name": "Button",
-              "settings": {
-                "label": "See both blends",
-                "link": "shopify://collections/all",
-                "style_class": "link"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": ["caption", "heading", "body", "button"]
+          "blocks": {}
         }
       },
-      "block_order": ["media", "content"],
-      "name": "Provenance",
+      "block_order": ["heading_col", "blurb_col"],
+      "name": "Intro",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "60svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "space-between",
+        "vertical_alignment": "flex-start",
+        "gap": 40,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 64,
+        "padding-block-end": 32
       }
     },
     "shop_teaser": {
       "type": "section",
       "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Heading",
-          "settings": {
-            "text": "<h2>Everything you need to make chai at home</h2>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "h3",
-            "padding-block-end": 32
-          },
-          "blocks": {}
-        },
         "cards_row": {
           "type": "group",
           "name": "Product cards",
@@ -181,35 +120,50 @@
           "blocks": {
             "card_1": {
               "type": "group",
-              "name": "Masala chai card",
+              "name": "Chai Masala + Tea card",
               "settings": {
                 "content_direction": "column",
-                "horizontal_alignment_flex_direction_column": "flex-start",
+                "horizontal_alignment_flex_direction_column": "center",
                 "gap": 12,
                 "width": "fill",
-                "height": "fit"
+                "height": "fit",
+                "inherit_color_scheme": false,
+                "color_scheme": "scheme-1",
+                "border": "solid",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 12,
+                "padding-block-start": 20,
+                "padding-block-end": 20,
+                "padding-inline-start": 20,
+                "padding-inline-end": 20
               },
               "blocks": {
+                "title": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Chai Masala + Tea</h3>",
+                    "width": "100%",
+                    "alignment": "center",
+                    "type_preset": "h4"
+                  },
+                  "blocks": {}
+                },
                 "image": {
                   "type": "image",
                   "settings": {
                     "image_ratio": "square",
-                    "width": "fill"
-                  },
-                  "blocks": {}
-                },
-                "title": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h3>Indian Masala Chai Spices</h3>",
-                    "type_preset": "h5"
+                    "width": "fill",
+                    "border_radius": 8
                   },
                   "blocks": {}
                 },
                 "line": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Whole spice, no shortcuts. Just add milk, water, and patience.</p>",
+                    "text": "<p>Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.</p>",
+                    "width": "100%",
+                    "alignment": "center",
                     "type_preset": "paragraph"
                   },
                   "blocks": {}
@@ -217,46 +171,62 @@
                 "button": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop the spice blend",
+                    "label": "add to cart",
                     "link": "shopify://collections/all",
-                    "style_class": "link"
+                    "style_class": "button",
+                    "width": "fill"
                   },
                   "blocks": {}
                 }
               },
-              "block_order": ["image", "title", "line", "button"]
+              "block_order": ["title", "image", "line", "button"]
             },
             "card_2": {
               "type": "group",
-              "name": "Black tea card",
+              "name": "Filter coffee card",
               "settings": {
                 "content_direction": "column",
-                "horizontal_alignment_flex_direction_column": "flex-start",
+                "horizontal_alignment_flex_direction_column": "center",
                 "gap": 12,
                 "width": "fill",
-                "height": "fit"
+                "height": "fit",
+                "inherit_color_scheme": false,
+                "color_scheme": "scheme-1",
+                "border": "solid",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 12,
+                "padding-block-start": 20,
+                "padding-block-end": 20,
+                "padding-inline-start": 20,
+                "padding-inline-end": 20
               },
               "blocks": {
+                "title": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Indian Filter Coffee</h3>",
+                    "width": "100%",
+                    "alignment": "center",
+                    "type_preset": "h4"
+                  },
+                  "blocks": {}
+                },
                 "image": {
                   "type": "image",
                   "settings": {
                     "image_ratio": "square",
-                    "width": "fill"
-                  },
-                  "blocks": {}
-                },
-                "title": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h3>Assam + Kericho Black Tea Leaves</h3>",
-                    "type_preset": "h5"
+                    "width": "fill",
+                    "border_radius": 8
                   },
                   "blocks": {}
                 },
                 "line": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Two regions, one bold cup. Loose leaf, built to hold its own against milk and spice.</p>",
+                    "text": "<p>Carefully roasted arabica &amp; robusta beans blended with chicory root. Coffee like no other.</p>",
+                    "width": "100%",
+                    "alignment": "center",
                     "type_preset": "paragraph"
                   },
                   "blocks": {}
@@ -264,197 +234,203 @@
                 "button": {
                   "type": "button",
                   "settings": {
-                    "label": "Shop the loose leaf",
-                    "link": "shopify://collections/all",
-                    "style_class": "link"
+                    "label": "add to cart",
+                    "link": "",
+                    "style_class": "button",
+                    "width": "fill"
                   },
                   "blocks": {}
                 }
               },
-              "block_order": ["image", "title", "line", "button"]
+              "block_order": ["title", "image", "line", "button"]
             }
           },
           "block_order": ["card_1", "card_2"]
         }
       },
-      "block_order": ["heading", "cards_row"],
+      "block_order": ["cards_row"],
       "name": "Shop teaser",
       "settings": {
         "content_direction": "column",
         "horizontal_alignment_flex_direction_column": "center",
         "gap": 32,
         "section_width": "page-width",
-        "color_scheme": "scheme-1",
-        "padding-block-start": 64,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 48,
         "padding-block-end": 64
       }
     },
-    "brew_teaser": {
-      "type": "media-with-content",
+    "ingredients": {
+      "type": "section",
       "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
+        "heading": {
+          "type": "text",
+          "name": "Heading",
           "settings": {
-            "media_type": "image",
-            "image_position": "cover"
+            "text": "<h2>Simple, aromatic ingredients</h2>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "h2",
+            "padding-block-end": 16
           },
           "blocks": {}
         },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+        "ginger_row": {
+          "type": "group",
+          "name": "Ginger spotlight",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "space-between",
+            "vertical_alignment": "center",
+            "gap": 32,
+            "width": "fill",
+            "height": "fit"
           },
           "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
+            "ginger_text": {
+              "type": "group",
               "settings": {
-                "text": "<p>Brew Guide</p>",
-                "type_preset": "h6"
+                "content_direction": "column",
+                "gap": 4,
+                "width": "fit-content",
+                "height": "fit"
               },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>The ritual is the point</h2>",
-                "type_preset": "h3"
+              "blocks": {
+                "name": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Ginger</h3>",
+                    "type_preset": "h4"
+                  },
+                  "blocks": {}
+                },
+                "benefit_1": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>aids digestion</p>",
+                    "type_preset": "paragraph"
+                  },
+                  "blocks": {}
+                },
+                "benefit_2": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>reduces inflammation</p>",
+                    "type_preset": "paragraph"
+                  },
+                  "blocks": {}
+                },
+                "benefit_3": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>random fact</p>",
+                    "type_preset": "paragraph"
+                  },
+                  "blocks": {}
+                }
               },
-              "blocks": {}
+              "block_order": ["name", "benefit_1", "benefit_2", "benefit_3"]
             },
-            "body": {
-              "type": "text",
-              "name": "Body",
+            "ginger_image": {
+              "type": "image",
               "settings": {
-                "text": "<p>Making chai isn't hard. It is, however, an excellent excuse to stand near a stove and ignore your phone for ten minutes. We'll show you how.</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            },
-            "button": {
-              "type": "button",
-              "name": "Button",
-              "settings": {
-                "label": "Read the brew guide",
-                "link": "/pages/brew-guide",
-                "style_class": "link"
+                "image_ratio": "square",
+                "width": "custom",
+                "custom_width": 40
               },
               "blocks": {}
             }
           },
-          "block_order": ["caption", "heading", "body", "button"]
-        }
-      },
-      "block_order": ["media", "content"],
-      "name": "Brew guide teaser",
-      "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "60svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-4",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
-    "story_teaser": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image_position": "cover"
-          },
-          "blocks": {}
+          "block_order": ["ginger_text", "ginger_image"]
         },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+        "icon_row": {
+          "type": "group",
+          "name": "Dietary icons",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "gap": 20,
+            "width": "fill",
+            "height": "fit",
+            "padding-block-start": 24,
+            "padding-block-end": 8
           },
           "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Our Story</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>Farmers markets first</h2>",
-                "type_preset": "h3"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>Before there was a website, there was a folding table, a kettle, and people who kept coming back for more. Ka Chai started at Portland farmers markets — this is still small-batch, still hand-blended, still us.</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            },
-            "button": {
-              "type": "button",
-              "name": "Button",
-              "settings": {
-                "label": "Our story",
-                "link": "/pages/our-story",
-                "style_class": "link"
-              },
-              "blocks": {}
-            }
+            "icon_1": { "type": "icon", "settings": { "icon": "leaf", "width": 28 }, "blocks": {} },
+            "icon_2": { "type": "icon", "settings": { "icon": "heart", "width": 28 }, "blocks": {} },
+            "icon_3": { "type": "icon", "settings": { "icon": "dairy_free", "width": 28 }, "blocks": {} },
+            "icon_4": { "type": "icon", "settings": { "icon": "gluten_free", "width": 28 }, "blocks": {} },
+            "icon_5": { "type": "icon", "settings": { "icon": "nut_free", "width": 28 }, "blocks": {} },
+            "icon_6": { "type": "icon", "settings": { "icon": "lightning_bolt", "width": 28 }, "blocks": {} }
           },
-          "block_order": ["caption", "heading", "body", "button"]
+          "block_order": ["icon_1", "icon_2", "icon_3", "icon_4", "icon_5", "icon_6"]
+        },
+        "disclaimer": {
+          "type": "text",
+          "name": "FDA disclaimer",
+          "settings": {
+            "text": "<p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, cure, treat, or prevent any disease.</p><p>However these statements have been evaluated by my grandma. My grandma would be 87 if she was alive today.</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "paragraph",
+            "padding-block-start": 16
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["media", "content"],
-      "name": "Our story teaser",
+      "block_order": ["heading", "ginger_row", "icon_row", "disclaimer"],
+      "name": "Ingredients",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "60svh",
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "gap": 12,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 32
+      }
+    },
+    "wave": {
+      "type": "section",
+      "blocks": {
+        "wave_svg": {
+          "type": "custom-liquid",
+          "name": "Wave divider",
+          "settings": {
+            "custom_liquid": "{% render 'wave-divider', fill: '#2b1608' %}"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["wave_svg"],
+      "name": "Wave divider",
+      "settings": {
         "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 0
       }
     },
-    "visit_marquee": {
+    "reviews_marquee": {
       "type": "marquee",
       "blocks": {
-        "text_visit": {
+        "text_reviews": {
           "type": "text",
           "name": "Marquee text",
           "settings": {
-            "text": "<p>Find Ka Chai at Portland farmers markets — full schedule on the Visit page ·</p>",
+            "text": "<p>Reviews ·</p>",
             "width": "fit-content",
             "max_width": "none",
             "alignment": "left",
             "type_preset": "custom",
-            "font": "var(--font-subheading--family)",
-            "font_size": "1.5rem",
+            "font": "var(--font-heading--family)",
+            "font_size": "2rem",
             "line_height": "normal",
             "letter_spacing": "normal",
             "case": "none",
@@ -464,18 +440,163 @@
           "blocks": {}
         }
       },
-      "block_order": ["text_visit"],
-      "name": "Visit us",
+      "block_order": ["text_reviews"],
+      "name": "Reviews marquee",
       "settings": {
         "movement_direction": "normal",
         "inherit_color_scheme": false,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-5",
         "transparent_background": false,
-        "padding-block-start": 32,
-        "padding-block-end": 32,
+        "padding-block-start": 24,
+        "padding-block-end": 8,
         "gap_between_elements": 24
+      }
+    },
+    "review_quote": {
+      "type": "section",
+      "blocks": {
+        "quote": {
+          "type": "text",
+          "name": "Quote",
+          "settings": {
+            "text": "<p>“Tastes just like chai from chennai”</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "center",
+            "type_preset": "h2"
+          },
+          "blocks": {}
+        },
+        "attribution": {
+          "type": "text",
+          "name": "Attribution",
+          "settings": {
+            "text": "<p>— Random customer<br>@ PSU Farmers Market</p>",
+            "width": "100%",
+            "alignment": "center",
+            "type_preset": "paragraph",
+            "padding-block-start": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["quote", "attribution"],
+      "name": "Review quote",
+      "settings": {
+        "content_direction": "column",
+        "horizontal_alignment_flex_direction_column": "center",
+        "gap": 4,
+        "section_width": "page-width",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 16,
+        "padding-block-end": 64
+      }
+    },
+    "gallery": {
+      "type": "section",
+      "blocks": {
+        "rail_label": {
+          "type": "custom-liquid",
+          "name": "Rotated label",
+          "settings": {
+            "custom_liquid": "<div class=\"yum-label\">Yum in Action</div><style>.yum-label{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--font-heading--family);font-size:1.75rem;color:#cd643f;align-self:center;}</style>"
+          },
+          "blocks": {}
+        },
+        "photo_grid": {
+          "type": "group",
+          "name": "Photo grid",
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "flex-start",
+            "gap": 16,
+            "width": "fill",
+            "height": "fit"
+          },
+          "blocks": {
+            "photo_1": {
+              "type": "group",
+              "settings": { "content_direction": "column", "gap": 8, "width": "fill", "height": "fit" },
+              "blocks": {
+                "img": { "type": "image", "settings": { "image_ratio": "square", "width": "fill" }, "blocks": {} },
+                "cap": { "type": "text", "settings": { "text": "<p>deliciousness getting poured</p>", "type_preset": "paragraph", "alignment": "center" }, "blocks": {} }
+              },
+              "block_order": ["img", "cap"]
+            },
+            "photo_2": {
+              "type": "group",
+              "settings": { "content_direction": "column", "gap": 8, "width": "fill", "height": "fit" },
+              "blocks": {
+                "img": { "type": "image", "settings": { "image_ratio": "square", "width": "fill" }, "blocks": {} },
+                "cap": { "type": "text", "settings": { "text": "<p>hey look! it's our CEO, avoid eye contact</p>", "type_preset": "paragraph", "alignment": "center" }, "blocks": {} }
+              },
+              "block_order": ["img", "cap"]
+            },
+            "photo_3": {
+              "type": "group",
+              "settings": { "content_direction": "column", "gap": 8, "width": "fill", "height": "fit" },
+              "blocks": {
+                "img": { "type": "image", "settings": { "image_ratio": "square", "width": "fill" }, "blocks": {} },
+                "cap": { "type": "text", "settings": { "text": "<p>[draft — caption was cut off in the mockup] when our biggest fan stops by</p>", "type_preset": "paragraph", "alignment": "center" }, "blocks": {} }
+              },
+              "block_order": ["img", "cap"]
+            },
+            "photo_4": {
+              "type": "group",
+              "settings": { "content_direction": "column", "gap": 8, "width": "fill", "height": "fit" },
+              "blocks": {
+                "img": { "type": "image", "settings": { "image_ratio": "square", "width": "fill" }, "blocks": {} },
+                "cap": { "type": "text", "settings": { "text": "<p>aesthetic photo of a sample cup</p>", "type_preset": "paragraph", "alignment": "center" }, "blocks": {} }
+              },
+              "block_order": ["img", "cap"]
+            },
+            "photo_5": {
+              "type": "group",
+              "settings": { "content_direction": "column", "gap": 8, "width": "fill", "height": "fit" },
+              "blocks": {
+                "img": { "type": "image", "settings": { "image_ratio": "square", "width": "fill" }, "blocks": {} },
+                "cap": { "type": "text", "settings": { "text": "<p>woahhh big pour</p>", "type_preset": "paragraph", "alignment": "center" }, "blocks": {} }
+              },
+              "block_order": ["img", "cap"]
+            },
+            "photo_6": {
+              "type": "group",
+              "settings": { "content_direction": "column", "gap": 8, "width": "fill", "height": "fit" },
+              "blocks": {
+                "img": { "type": "image", "settings": { "image_ratio": "square", "width": "fill" }, "blocks": {} },
+                "cap": { "type": "text", "settings": { "text": "<p>[draft — caption was cut off in the mockup] some of our loyal friends</p>", "type_preset": "paragraph", "alignment": "center" }, "blocks": {} }
+              },
+              "block_order": ["img", "cap"]
+            }
+          },
+          "block_order": ["photo_1", "photo_2", "photo_3", "photo_4", "photo_5", "photo_6"]
+        }
+      },
+      "block_order": ["rail_label", "photo_grid"],
+      "name": "Yum in Action gallery",
+      "settings": {
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "flex-start",
+        "gap": 24,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 48,
+        "padding-block-end": 80
       }
     }
   },
-  "order": ["hero_main", "provenance", "shop_teaser", "brew_teaser", "story_teaser", "visit_marquee"]
+  "order": [
+    "hero_main",
+    "intro",
+    "shop_teaser",
+    "ingredients",
+    "wave",
+    "reviews_marquee",
+    "review_quote",
+    "gallery"
+  ]
 }

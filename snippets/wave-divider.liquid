@@ -1,0 +1,28 @@
+{% comment %}
+  Renders a wave-shaped SVG divider, used to curve into a section below it.
+  Accepts: `fill` (CSS color for the wave, defaults to the dark brown scheme-5 tone).
+{% endcomment %}
+<div class="wave-divider" style="--wave-fill: {{ fill | default: '#2b1608' }};">
+  <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,40 C240,100 480,0 720,40 C960,80 1200,20 1440,50 L1440,100 L0,100 Z" fill="var(--wave-fill)"></path>
+  </svg>
+</div>
+{% stylesheet %}
+  .wave-divider {
+    position: relative;
+    line-height: 0;
+    margin-block-end: -1px;
+  }
+
+  .wave-divider svg {
+    display: block;
+    width: 100%;
+    height: 60px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .wave-divider svg {
+      height: 110px;
+    }
+  }
+{% endstylesheet %}
