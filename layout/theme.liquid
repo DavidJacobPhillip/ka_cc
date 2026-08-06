@@ -103,10 +103,12 @@
              key, so an exact-id selector never matches. */
           [id^="Hero-"] .hero__content-wrapper {
             /* Cancel the page-width grid's built-in side margin exactly
-               (16px mobile / 40px desktop) instead of guessing a fixed
-               pixel offset, which only ever cancelled part of it and left
-               a real gap no matter the value. */
-            margin-inline-start: calc(-1 * var(--page-margin) - 16px);
+               (16px mobile / 40px desktop). This is the maximum safe
+               offset: .hero__container has overflow:hidden, so true x=0
+               (the viewport edge) is the hard limit - anything pushed
+               further negative gets clipped, which is what was cutting
+               the logo off on narrow screens. */
+            margin-inline-start: calc(-1 * var(--page-margin));
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
