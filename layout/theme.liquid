@@ -101,22 +101,26 @@
              Shopify renders JSON-template sections as
              Hero-template--<numeric-id>__hero_main, not the bare section
              key, so an exact-id selector never matches. */
-          /* Override the grid's own margin-track variable at its source
-             (.hero__container is the .section element that defines it)
+          /* Override the grid's own track variables at their source
+             (.hero__container is the .section element that defines them)
              instead of trying to cancel the rendered margin from a nested
-             descendant. The previous approach used
-             --util-page-margin-offset inside a calc() on
-             .hero__content-wrapper - but that variable's formula contains
-             a "100%" that only resolves correctly relative to the element
-             that consumes it, and .hero__content-wrapper is a narrower,
-             already-centered child, not the full section width. On wide
-             screens that mismatch grows large, which is exactly the
-             "massive padding, landscape only" bug. Setting
-             --full-page-grid-margin directly makes the grid's margin
-             column *be* 4vw, correct at any width, no cancellation math
-             needed. */
+             descendant - a prior attempt used --util-page-margin-offset
+             inside a calc() on .hero__content-wrapper, but that variable's
+             formula contains a "100%" that only resolves correctly
+             relative to the element that consumes it, and
+             .hero__content-wrapper is a narrower, already-centered child,
+             not the full section width.
+
+             Both --full-page-grid-margin AND
+             --full-page-grid-central-column-width must be overridden
+             together so the three grid tracks (margin, content, margin)
+             still sum to exactly 100%. Setting only the margin variable
+             (dropping its original 1fr) left the tracks summing to less
+             than 100%, and CSS Grid doesn't stretch to fill leftover
+             space by default - it left it empty on the right instead. */
           [id^="Hero-"] .hero__container {
             --full-page-grid-margin: 4vw;
+            --full-page-grid-central-column-width: calc(100% - 8vw);
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
