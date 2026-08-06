@@ -102,14 +102,14 @@
              Hero-template--<numeric-id>__hero_main, not the bare section
              key, so an exact-id selector never matches. */
           [id^="Hero-"] .hero__content-wrapper {
-            margin-inline-start: -32px;
+            margin-inline-start: -48px;
           }
 
           /* The h1's own line-height leading dwarfs the flex gap between the
-             logo and heading, so pull the heading up directly to actually
-             tighten the visual spacing. */
+             logo and heading, so control the visual spacing directly here
+             instead of relying on the flex gap. */
           [id^="Hero-"] .text-block.h1 {
-            margin-block-start: -20px;
+            margin-block-start: 16px;
           }
 
           #ka-rail {
