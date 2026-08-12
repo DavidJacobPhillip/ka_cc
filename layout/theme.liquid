@@ -249,6 +249,15 @@
         #header-component header-actions {
           grid-column: rightA-start / rightB-end;
           justify-content: flex-end;
+          /* The 1rem gap (set above, shared with desktop) reads as too
+             much space next to mobile's smaller clamp()-scaled icons -
+             tightened just for this breakpoint. */
+          gap: 0.375rem;
+          /* Extra room between the cart icon and the screen's right
+             edge - .header__columns' own mobile inline-end padding
+             (--padding-3xs) is quite small, so add more here rather
+             than touching that shared theme variable. */
+          padding-inline-end: 1rem;
         }
       }
 
@@ -279,7 +288,15 @@
           grid-area: center;
           justify-self: center;
           transform: none;
-          height: 32px;
+          height: clamp(2.75rem, 11vw, 3.5rem);
+        }
+
+        /* The row's own height is content-driven (no fixed height set
+           anywhere), so it already grows to fit the taller logo above -
+           this just gives it a bit more breathing room top/bottom to
+           match, rather than the logo nearly touching the row's edges. */
+        #header-component .header__row--top .header__columns {
+          --header-padding: var(--padding-md);
         }
       }
     </style>
