@@ -157,6 +157,19 @@
         height: 2.5rem;
       }
 
+      /* The theme dims every other interactive element in the same
+         header column whenever one is hovered (sections/header.liquid,
+         the ".header__column:has(...:hover) ... :not(:hover) { opacity:
+         var(--opacity-subdued-text) }" rule) - meant for a column with
+         several different controls (menu, search, localization), but
+         with just cart and account sharing a column it means hovering
+         one greys out the other. #header-component's id beats that
+         rule's specificity, so hovering either one now leaves both at
+         full opacity. */
+      #header-component .header-actions__action {
+        opacity: 1;
+      }
+
       /* A bit more breathing room between the cart and account icons -
          header-actions (their shared flex container) has no gap by
          default. */
