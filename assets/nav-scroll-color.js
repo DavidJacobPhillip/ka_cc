@@ -12,11 +12,17 @@
     return;
   }
 
+  // Stay fully transparent for the first half of the hero, then fade in
+  // over the second half - FADE_START is the point (as a fraction of the
+  // hero's own height) where the ramp begins.
+  const FADE_START = 0.5;
+
   let ticking = false;
 
   const update = () => {
     ticking = false;
-    const progress = Math.min(Math.max(window.scrollY / hero.offsetHeight, 0), 1);
+    const rawProgress = Math.min(Math.max(window.scrollY / hero.offsetHeight, 0), 1);
+    const progress = Math.min(Math.max((rawProgress - FADE_START) / (1 - FADE_START), 0), 1);
     row.style.backgroundColor = `rgba(${SOLID_RGB}, ${progress})`;
   };
 
