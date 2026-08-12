@@ -97,6 +97,27 @@
         color: #cd643f;
       }
 
+      /* The theme animates .header__row's background-color when the
+         header flips from transparent to solid (transition: ...
+         background-color var(--animation-values-slow)). Mid-fade the
+         background is a partially-transparent brown, and whatever's
+         behind it briefly shows through - reads as a pale/white strip
+         that only appears while actively scrolling. Making the switch
+         instant removes the blended frame entirely. */
+      #header-component .header__row {
+        transition: none;
+      }
+
+      /* The theme dims every non-current-page nav link (opacity) whenever
+         one link is marked active/current, so only the current page's
+         link stays full color. Not wanted here - all four top-level nav
+         items should stay the same white regardless of which page is
+         current. #header-component gives this enough specificity to beat
+         the theme's own dimming rule, which has no id selector. */
+      #header-component .menu-list__link {
+        color: var(--menu-top-level-font-color);
+      }
+
       /* More breathing room between top nav items - default is
          --gap-xl (1.25rem/20px), which reads as cramped now that the
          nav is set at 3.5rem. */
