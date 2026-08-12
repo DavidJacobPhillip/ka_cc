@@ -140,6 +140,22 @@
       #header-component .menu-list {
         --menu-horizontal-gap: 2.25rem;
       }
+
+      /* Cart/account icons much larger than the theme's default ~20px
+         icon set. Both the shared .svg-wrapper (cart) and its inner svg
+         need overriding since base.css forces both to the same size
+         variable; .account-button__icon has no default size of its own,
+         so only its svg needs setting explicitly. */
+      #header-component .svg-wrapper,
+      #header-component .svg-wrapper > svg {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+
+      #header-component .account-button__icon svg {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
