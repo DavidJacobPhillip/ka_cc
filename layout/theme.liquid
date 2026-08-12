@@ -148,8 +148,8 @@
          so only its svg needs setting explicitly. */
       #header-component .svg-wrapper,
       #header-component .svg-wrapper > svg {
-        width: 2.125rem;
-        height: 2.125rem;
+        width: 2.65625rem;
+        height: 2.65625rem;
       }
 
       /* Height-only, width auto - the account icon's artwork is taller
@@ -158,7 +158,7 @@
          to fit both dimensions, which was squeezing the lettering down
          to just a few px and making it read as missing. */
       #header-component .account-button__icon svg {
-        height: 2.5rem;
+        height: 3.125rem;
         width: auto;
       }
 
@@ -177,9 +177,15 @@
 
       /* A bit more breathing room between the cart and account icons -
          header-actions (their shared flex container) has no gap by
-         default. */
+         default. Bottom-aligned rather than the flex default (stretch/
+         top) because cart and account render at different heights
+         (square vs taller artwork with "profile" underneath) - bottom-
+         aligning makes both icons' actual pictograms sit level, since
+         it's the account icon's extra lettering that adds the height
+         difference below. */
       #header-component header-actions {
         gap: 1rem;
+        align-items: flex-end;
       }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
