@@ -14,31 +14,13 @@
   let ticking = false;
   let dockedTransform = null;
 
-  // TEMP DEBUG - remove once the docking bug is diagnosed. On-screen
-  // readout of the live numbers instead of guessing blind.
-  const debugEl = document.createElement('div');
-  debugEl.style.cssText =
-    'position:fixed;bottom:0;left:0;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;' +
-    'font:11px/1.4 monospace;padding:8px;white-space:pre;pointer-events:none;';
-  document.body.appendChild(debugEl);
-
   const update = () => {
     ticking = false;
     if (!active || !dockedTransform) return;
     const progress = Math.min(Math.max(window.scrollY / hero.offsetHeight, 0), 1);
-    const { dx, dy, scale, startTop, startLeft, headerTop, headerLeft, headerHeight } = dockedTransform;
+    const { dx, dy, scale } = dockedTransform;
     const s = 1 + (scale - 1) * progress;
-    const tx = dx * progress;
-    const ty = dy * progress;
-    img.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
-
-    debugEl.textContent =
-      `scrollY: ${window.scrollY.toFixed(0)}  hero.offsetHeight: ${hero.offsetHeight}  progress: ${progress.toFixed(3)}\n` +
-      `startRect: top=${startTop.toFixed(1)} left=${startLeft.toFixed(1)}\n` +
-      `headerRect: top=${headerTop.toFixed(1)} left=${headerLeft.toFixed(1)} height=${headerHeight.toFixed(1)}\n` +
-      `dockedTransform: dx=${dx.toFixed(1)} dy=${dy.toFixed(1)} scale=${scale.toFixed(3)}\n` +
-      `applied: translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${s.toFixed(3)})\n` +
-      `img computed rect now: ${JSON.stringify(img.getBoundingClientRect())}`;
+    img.style.transform = `translate(${dx * progress}px, ${dy * progress}px) scale(${s})`;
   };
 
   const onScroll = () => {
@@ -69,6 +51,21 @@
     img.style.willChange = 'transform';
     img.style.zIndex = '1000';
 
+    // .hero__content-wrapper (an ancestor of img) sets its own z-index
+    // (position: relative + z-index != auto), which makes it establish a
+    // stacking context. Even at position: fixed with z-index: 1000, img
+    // stays trapped inside that context - its z-index only gets compared
+    // against siblings within .hero__content-wrapper, not against the
+    // header (a completely different part of the page, at a higher
+    // stacking level). The whole trapped box loses that comparison, so
+    // the "docked" logo rendered behind the header and disappeared once
+    // they overlapped. Moving img to be the last child of <body> escapes
+    // that trap entirely - as a top-level sibling of header-group/main/
+    // footer-group, it now stacks on its own merits (both DOM order and
+    // z-index: 1000) instead of inheriting a low-priority ancestor's
+    // context.
+    document.body.appendChild(img);
+
     const headerRect = header.getBoundingClientRect();
     const dockLeft = headerRect.left + dockInset();
     const dockTop = headerRect.top + (headerRect.height - DOCK_HEIGHT) / 2;
@@ -77,11 +74,6 @@
       dx: dockLeft - startRect.left,
       dy: dockTop - startRect.top,
       scale: DOCK_HEIGHT / startRect.height,
-      startTop: startRect.top,
-      startLeft: startRect.left,
-      headerTop: headerRect.top,
-      headerLeft: headerRect.left,
-      headerHeight: headerRect.height,
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -94,6 +86,8 @@
     dockedTransform = null;
     window.removeEventListener('scroll', onScroll);
 
+    const wrapper = img.parentElement;
+
     img.style.position = '';
     img.style.top = '';
     img.style.left = '';
@@ -105,9 +99,13 @@
     img.style.zIndex = '';
     img.style.transform = '';
 
-    const wrapper = img.parentElement;
-    wrapper.style.width = '';
-    wrapper.style.height = '';
+    // Move img back into its original wrapper (it was reparented to
+    // <body> in activate()) so it returns to normal document flow.
+    if (wrapper && wrapper !== document.body) {
+      wrapper.style.width = '';
+      wrapper.style.height = '';
+      wrapper.appendChild(img);
+    }
   };
 
   const handleModeChange = () => {
