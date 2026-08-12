@@ -149,12 +149,14 @@
          Covers .svg-wrapper's own box (cart) and both icons' inner svg
          (base.css otherwise forces .svg-wrapper and its svg to the
          same fixed size variable; .account-button__icon has no default
-         size of its own). */
+         size of its own). clamp() instead of a fixed rem value so it
+         scales with viewport width instead of staying one fixed size
+         at every screen size. */
       #header-component .svg-wrapper,
       #header-component .svg-wrapper > svg,
       #header-component .account-button__icon svg {
         width: auto;
-        height: 2.75rem;
+        height: clamp(1.75rem, 4vw, 2.75rem);
       }
 
       /* Slight grow-on-hover, desktop only (hover:hover media guard,
@@ -230,6 +232,24 @@
       #header-component header-actions {
         gap: 1rem;
         align-items: flex-end;
+      }
+
+      /* On mobile, sections/header.liquid's grid squeezes header-actions
+         (holding BOTH cart and account together) into a single 44px
+         "bookend" column (--header-mobile-bookend) out of a five-column
+         leftA/leftB/center/rightA/rightB layout - two ~40-44px icons plus
+         a gap don't fit in 44px total, which is why they were rendering
+         inconsistently sized/cramped. show_search is false in this
+         theme, so the adjacent rightA column (normally the search
+         icon's) is unclaimed - letting header-actions span rightA
+         through rightB gives it roughly double the room instead of
+         shrinking the icons down to fit one slot. Revisit this if search
+         ever gets enabled, since it would then also want rightA. */
+      @media screen and (max-width: 749px) {
+        #header-component header-actions {
+          grid-column: rightA-start / rightB-end;
+          justify-content: flex-end;
+        }
       }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
