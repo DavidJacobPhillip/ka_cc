@@ -15,7 +15,7 @@
   // Stay fully transparent for the first half of the hero, then fade in
   // over the second half - FADE_START is the point (as a fraction of the
   // hero's own height) where the ramp begins.
-  const FADE_START = 0.75;
+  const FADE_START = 0.6;
 
   let ticking = false;
 
