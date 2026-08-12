@@ -251,6 +251,37 @@
           justify-content: flex-end;
         }
       }
+
+      /* Nav logo badge (injected by nav-scroll-color.js, opacity driven
+         from there). Desktop: absolute on the left edge at var(--page-
+         margin), matching the header's own real content inset. Mobile:
+         dropped into the grid's "center" area instead - the same slot
+         sections/header.liquid gives the theme's own .header-logo, which
+         is hidden sitewide (see the display:none rule near the top of
+         this style block) and so leaves that slot empty. align-items:
+         center on .header__columns at that breakpoint already centers
+         it vertically, so no absolute/transform positioning is needed
+         there. */
+      #header-component .nav-logo-badge {
+        position: absolute;
+        left: var(--page-margin);
+        top: 50%;
+        transform: translateY(-50%);
+        height: clamp(2.5rem, 5vw, 4rem);
+        width: auto;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      @media screen and (max-width: 749px) {
+        #header-component .nav-logo-badge {
+          position: static;
+          grid-area: center;
+          justify-self: center;
+          transform: none;
+          height: 32px;
+        }
+      }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
