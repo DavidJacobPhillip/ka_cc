@@ -164,28 +164,32 @@
          the box directly reflowed the flex row (header-actions), which
          shifted the OTHER icon sideways whenever one was hovered. A
          transform is paint-only and never affects layout, so hovering
-         one icon can no longer move its sibling. transform-origin:
-         center - grows evenly in all directions rather than anchored
-         to one edge (2.75rem to 3rem is a ~1.091x scale). */
-      #header-component .svg-wrapper,
-      #header-component .account-button__icon svg {
+         one icon can no longer move its sibling.
+
+         Applied to .header-actions__action (the shared class on both
+         the cart <a> and the account <button>) rather than each icon's
+         own inner element - debug outlines showed cart's icon (nested
+         two levels deeper, inside a position:relative <cart-icon>)
+         rendered BEHIND header-actions on hover while account's (one
+         level shallower, transform directly on its <svg>) rendered in
+         front. Likely a stacking-context quirk from transform being
+         applied at different DOM depths relative to cart-icon's own
+         positioned context. Transforming the same outer element for
+         both sidesteps the asymmetry entirely instead of chasing the
+         exact stacking mechanics. transform-origin: center grows
+         evenly in all directions (2.75rem to 3rem is a ~1.091x scale
+         on the icon, so scaling the outer element by the same factor
+         matches it). */
+      #header-component .header-actions__action {
         transform-origin: center;
         transition: transform var(--animation-speed) var(--animation-easing);
       }
 
       @media (hover: hover) {
-        #header-component .header-actions__action:hover .svg-wrapper,
-        #header-component .account-button:hover .account-button__icon svg {
+        #header-component .header-actions__action:hover {
           transform: scale(1.091);
         }
       }
-
-      /* TEMP DEBUG - remove once the cart hover-clip cause is confirmed. */
-      #header-component .header__columns { outline: 3px solid yellow; }
-      #header-component header-actions { outline: 3px solid blue; }
-      #header-component .header-actions__action.action__cart { outline: 3px solid red; }
-      #header-component cart-icon { outline: 3px solid lime; }
-      #header-component .svg-wrapper { outline: 3px solid orange; }
 
       /* .account-button (the actual <button>, not just the icon span)
          is hardcoded to a fixed 44x44px box (--button-size, the
