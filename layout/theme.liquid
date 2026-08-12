@@ -157,6 +157,21 @@
         height: 3.125rem;
       }
 
+      /* .account-button (the actual <button>, not just the icon span)
+         is hardcoded to a fixed 44x44px box (--button-size, the
+         accessible min tap target) - base.css's global svg { max-width:
+         100% } reset then caps the icon's width to that 44px box, which
+         drags its height down too (to preserve aspect ratio), so it
+         rendered smaller than the height set above despite that value
+         being correct. Cart's wrapper has no fixed size so it wasn't
+         affected. Auto-sizing the button removes that cap; it still
+         ends up bigger than the 44px minimum since the icon itself is
+         now taller than that, so accessible tap-target size is kept. */
+      #header-component .account-button {
+        width: auto;
+        height: auto;
+      }
+
       /* The theme dims every other interactive element in the same
          header column whenever one is hovered (sections/header.liquid,
          the ".header__column:has(...:hover) ... :not(:hover) { opacity:
