@@ -124,6 +124,14 @@
       #header-component .menu-list {
         --menu-horizontal-gap: 2.25rem;
       }
+
+      /* TEMP DEBUG - remove once the white-strip cause is confirmed.
+         Outlines the suspect boxes so a mid-scroll screenshot shows
+         exactly which one's edge the gap falls inside. */
+      .header-section { outline: 3px solid red; }
+      #header-component { outline: 3px solid blue; }
+      [id^="Hero-"] .hero__container { outline: 3px solid lime; }
+      [id^="Hero-"] .hero__media-wrapper { outline: 3px solid magenta; }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
