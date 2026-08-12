@@ -151,6 +151,24 @@
             position: relative;
           }
 
+          /* The theme adds --section-top-offset (equal to the header's
+             height) as top padding on the first section in <main>, meant
+             to keep a transparent header from covering that section's
+             content (sections/header.liquid). But .hero__media-wrapper is
+             absolutely positioned *inside* .hero__container, so that
+             padding also pushes the background video/image's starting
+             point down, leaving a gap at the top where no media renders -
+             just the plain page background showing through. Other
+             sections in this theme (media-with-content, slideshow) opt
+             out via a disable-section-top-offset class; the hero section
+             doesn't, so override the variable directly instead of editing
+             the core hero.liquid file. !important because the theme's own
+             selector (main > .shopify-section:first-child .section:not(...))
+             is more specific than an attribute-scoped selector alone. */
+          [id^="Hero-"] .hero__container {
+            --section-top-offset: 0px !important;
+          }
+
           /* Using [id^="Hero-"] instead of a literal #Hero-hero_main id -
              Shopify renders JSON-template sections as
              Hero-template--<numeric-id>__hero_main, not the bare section
