@@ -152,9 +152,14 @@
         height: 2.5rem;
       }
 
+      /* Height-only, width auto - the account icon's artwork is taller
+         than wide (237x299, since "profile" sits below the pictogram),
+         so forcing it into the same square box as cart over-shrinks it
+         to fit both dimensions, which was squeezing the lettering down
+         to just a few px and making it read as missing. */
       #header-component .account-button__icon svg {
-        width: 2.5rem;
         height: 2.5rem;
+        width: auto;
       }
 
       /* The theme dims every other interactive element in the same
