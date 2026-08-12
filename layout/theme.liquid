@@ -97,11 +97,16 @@
         color: #cd643f;
       }
 
-      /* Kept instant rather than animated - not the cause of the white
-         strip bug (that turned out to be the empty bottom row below),
-         but an instant state change reads cleaner than a fade here. */
+      /* The theme actually uses two different transition speeds here:
+         --animation-values-fast (0.0625s) for turning solid on scroll
+         down, --animation-values-slow (0.2s) for fading back to
+         transparent on scroll up - so scrolling down reads as an
+         instant snap even by default. Overriding both directions to
+         the same slower duration makes the brown fade in evenly
+         instead of popping in. #header-component's id beats both of
+         the theme's own transition rules regardless of direction. */
       #header-component .header__row {
-        transition: none;
+        transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, background-color 0.4s ease-in-out;
       }
 
       /* The white strip below the nav, confirmed via debug outlines: the
