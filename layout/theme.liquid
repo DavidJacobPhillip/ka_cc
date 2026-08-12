@@ -164,12 +164,16 @@
          the box directly reflowed the flex row (header-actions), which
          shifted the OTHER icon sideways whenever one was hovered. A
          transform is paint-only and never affects layout, so hovering
-         one icon can no longer move its sibling. transform-origin:
-         bottom keeps it growing from the same baseline the icons are
-         already bottom-aligned to (2.75rem to 3rem is a ~1.091x scale). */
+         one icon can no longer move its sibling. transform-origin: top
+         (not bottom) - the header sits flush against the very top of
+         the viewport, so growing upward from the bottom pushed the
+         icon's top edge past the browser window's own top edge with no
+         room to expand into, which read as the top getting cut off.
+         Growing downward from the top instead has the whole page below
+         to expand into (2.75rem to 3rem is a ~1.091x scale). */
       #header-component .svg-wrapper,
       #header-component .account-button__icon svg {
-        transform-origin: center bottom;
+        transform-origin: center top;
         transition: transform var(--animation-speed) var(--animation-easing);
       }
 
