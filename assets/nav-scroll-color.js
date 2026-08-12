@@ -17,7 +17,7 @@
   navLogo.alt = '';
   navLogo.setAttribute('aria-hidden', 'true');
   navLogo.style.cssText =
-    'position:absolute;left:4vw;top:50%;height:28px;width:auto;' +
+    'position:absolute;left:4vw;top:50%;height:56px;width:auto;' +
     'transform:translateY(-50%);opacity:0;pointer-events:none;';
   row.appendChild(navLogo);
 
