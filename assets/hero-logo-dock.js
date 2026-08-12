@@ -1,13 +1,17 @@
 (() => {
   const img = document.querySelector('[id^="Hero-"] .hero-logo-lockup__image');
   const hero = document.querySelector('[id^="Hero-"]');
-  const header = document.querySelector('#header-component');
+  // The visible brown bar itself, not the outer #header-component box -
+  // docking against the row directly keeps the vertical centering math
+  // tied to the actual bar height rather than whatever #header-component's
+  // own box happens to measure.
+  const header = document.querySelector('#header-component .header__row--top');
   if (!img || !hero || !header) return;
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const desktopQuery = window.matchMedia('(min-width: 750px)');
-  const DOCK_HEIGHT = 40;
+  const DOCK_HEIGHT = 52;
   const dockInset = () => window.innerWidth * 0.04; // matches the hero content's own 4vw left inset
 
   let active = false;
