@@ -14,13 +14,31 @@
   let ticking = false;
   let dockedTransform = null;
 
+  // TEMP DEBUG - remove once the docking bug is diagnosed. On-screen
+  // readout of the live numbers instead of guessing blind.
+  const debugEl = document.createElement('div');
+  debugEl.style.cssText =
+    'position:fixed;bottom:0;left:0;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;' +
+    'font:11px/1.4 monospace;padding:8px;white-space:pre;pointer-events:none;';
+  document.body.appendChild(debugEl);
+
   const update = () => {
     ticking = false;
     if (!active || !dockedTransform) return;
     const progress = Math.min(Math.max(window.scrollY / hero.offsetHeight, 0), 1);
-    const { dx, dy, scale } = dockedTransform;
+    const { dx, dy, scale, startTop, startLeft, headerTop, headerLeft, headerHeight } = dockedTransform;
     const s = 1 + (scale - 1) * progress;
-    img.style.transform = `translate(${dx * progress}px, ${dy * progress}px) scale(${s})`;
+    const tx = dx * progress;
+    const ty = dy * progress;
+    img.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+
+    debugEl.textContent =
+      `scrollY: ${window.scrollY.toFixed(0)}  hero.offsetHeight: ${hero.offsetHeight}  progress: ${progress.toFixed(3)}\n` +
+      `startRect: top=${startTop.toFixed(1)} left=${startLeft.toFixed(1)}\n` +
+      `headerRect: top=${headerTop.toFixed(1)} left=${headerLeft.toFixed(1)} height=${headerHeight.toFixed(1)}\n` +
+      `dockedTransform: dx=${dx.toFixed(1)} dy=${dy.toFixed(1)} scale=${scale.toFixed(3)}\n` +
+      `applied: translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${s.toFixed(3)})\n` +
+      `img computed rect now: ${JSON.stringify(img.getBoundingClientRect())}`;
   };
 
   const onScroll = () => {
@@ -59,6 +77,11 @@
       dx: dockLeft - startRect.left,
       dy: dockTop - startRect.top,
       scale: DOCK_HEIGHT / startRect.height,
+      startTop: startRect.top,
+      startLeft: startRect.left,
+      headerTop: headerRect.top,
+      headerLeft: headerRect.left,
+      headerHeight: headerRect.height,
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
