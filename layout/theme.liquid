@@ -97,15 +97,28 @@
         color: #cd643f;
       }
 
-      /* The theme animates .header__row's background-color when the
-         header flips from transparent to solid (transition: ...
-         background-color var(--animation-values-slow)). Mid-fade the
-         background is a partially-transparent brown, and whatever's
-         behind it briefly shows through - reads as a pale/white strip
-         that only appears while actively scrolling. Making the switch
-         instant removes the blended frame entirely. */
+      /* Kept instant rather than animated - not the cause of the white
+         strip bug (that turned out to be the empty bottom row below),
+         but an instant state change reads cleaner than a fade here. */
       #header-component .header__row {
         transition: none;
+      }
+
+      /* The white strip below the nav, confirmed via debug outlines: the
+         header always renders a second "bottom" row alongside the visible
+         top row - snippets/header-row.liquid builds it because search is
+         assigned search_row: "bottom" in the schema default, so a
+         (visually empty, since show_search is false) right-hand column
+         div still gets emitted for it. That's non-blank HTML, so
+         header.liquid's blank-check (line ~231) still renders the row's
+         wrapper. Its color_scheme_bottom setting is unset, so once the
+         header goes solid/sticky it paints with the inherited page
+         background (white) directly under the brown top row, instead of
+         being invisible like the top row is while transparent. We don't
+         use a bottom row at all (no search, no secondary nav), so it's
+         safe to remove entirely rather than trying to color-match it. */
+      #header-component .header__row--bottom {
+        display: none !important;
       }
 
       /* The theme dims every non-current-page nav link (opacity) whenever
@@ -124,16 +137,6 @@
       #header-component .menu-list {
         --menu-horizontal-gap: 2.25rem;
       }
-
-      /* TEMP DEBUG - remove once the white-strip cause is confirmed.
-         Outlines the suspect boxes so a mid-scroll screenshot shows
-         exactly which one's edge the gap falls inside. */
-      .header-section { outline: 3px solid red; }
-      #header-component { outline: 3px solid blue; }
-      #header-component .header__row { outline: 3px solid orange; }
-      #header-component .header__columns { outline: 3px solid yellow; }
-      [id^="Hero-"] .hero__container { outline: 3px solid lime; }
-      [id^="Hero-"] .hero__media-wrapper { outline: 3px solid magenta; }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
