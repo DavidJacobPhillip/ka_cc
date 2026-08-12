@@ -155,17 +155,28 @@
       #header-component .account-button__icon svg {
         width: auto;
         height: 2.75rem;
-        transition: height var(--animation-speed) var(--animation-easing);
       }
 
       /* Slight grow-on-hover, desktop only (hover:hover media guard,
          same pattern the theme itself uses to skip this on touch
-         devices where there's no real hover state to trigger it). */
+         devices where there's no real hover state to trigger it).
+         transform: scale() instead of changing height/width - resizing
+         the box directly reflowed the flex row (header-actions), which
+         shifted the OTHER icon sideways whenever one was hovered. A
+         transform is paint-only and never affects layout, so hovering
+         one icon can no longer move its sibling. transform-origin:
+         bottom keeps it growing from the same baseline the icons are
+         already bottom-aligned to (2.75rem to 3rem is a ~1.091x scale). */
+      #header-component .svg-wrapper,
+      #header-component .account-button__icon svg {
+        transform-origin: center bottom;
+        transition: transform var(--animation-speed) var(--animation-easing);
+      }
+
       @media (hover: hover) {
         #header-component .header-actions__action:hover .svg-wrapper,
-        #header-component .header-actions__action:hover .svg-wrapper > svg,
         #header-component .account-button:hover .account-button__icon svg {
-          height: 3rem;
+          transform: scale(1.091);
         }
       }
 
