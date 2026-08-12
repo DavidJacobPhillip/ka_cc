@@ -156,6 +156,13 @@
         width: 2.5rem;
         height: 2.5rem;
       }
+
+      /* A bit more breathing room between the cart and account icons -
+         header-actions (their shared flex container) has no gap by
+         default. */
+      #header-component header-actions {
+        gap: 1rem;
+      }
     </style>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
