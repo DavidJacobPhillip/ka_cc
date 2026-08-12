@@ -154,7 +154,19 @@
       #header-component .svg-wrapper > svg,
       #header-component .account-button__icon svg {
         width: auto;
-        height: 3.125rem;
+        height: 2.75rem;
+        transition: height var(--animation-speed) var(--animation-easing);
+      }
+
+      /* Slight grow-on-hover, desktop only (hover:hover media guard,
+         same pattern the theme itself uses to skip this on touch
+         devices where there's no real hover state to trigger it). */
+      @media (hover: hover) {
+        #header-component .header-actions__action:hover .svg-wrapper,
+        #header-component .header-actions__action:hover .svg-wrapper > svg,
+        #header-component .account-button:hover .account-button__icon svg {
+          height: 3rem;
+        }
       }
 
       /* .account-button (the actual <button>, not just the icon span)
