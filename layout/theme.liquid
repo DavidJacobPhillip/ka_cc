@@ -97,16 +97,14 @@
         color: #cd643f;
       }
 
-      /* The theme actually uses two different transition speeds here:
-         --animation-values-fast (0.0625s) for turning solid on scroll
-         down, --animation-values-slow (0.2s) for fading back to
-         transparent on scroll up - so scrolling down reads as an
-         instant snap even by default. Overriding both directions to
-         the same slower duration makes the brown fade in evenly
-         instead of popping in. #header-component's id beats both of
-         the theme's own transition rules regardless of direction. */
+      /* background-color is no longer transitioned by CSS - it's set as
+         an inline style directly from scroll position in
+         nav-scroll-color.js (index-only), so it moves in lockstep with
+         the scrollbar instead of animating on a fixed timer once the
+         theme's data-sticky-state flips. #header-component's id still
+         beats the theme's own transition rules for color/border-color. */
       #header-component .header__row {
-        transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out, background-color 0.4s ease-in-out;
+        transition: color 0.4s ease-in-out, border-color 0.4s ease-in-out;
       }
 
       /* The white strip below the nav, confirmed via debug outlines: the
@@ -271,6 +269,7 @@
         </div>
         <script defer src="{{ 'hero-heading-scroll.js' | asset_url }}"></script>
         <script defer src="{{ 'hero-logo-dock.js' | asset_url }}"></script>
+        <script defer src="{{ 'nav-scroll-color.js' | asset_url }}"></script>
       {% endif %}
 
       {{ content_for_layout }}
