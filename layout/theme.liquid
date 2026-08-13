@@ -501,6 +501,26 @@
             max-width: none;
           }
 
+          /* The row layout (heading | caption side-by-side) only really
+             has room for both at genuinely wide desktop widths - between
+             the 750px mobile cutoff (where vertical_on_mobile already
+             stacks them) and ~1100px, splitting the row in two doesn't
+             leave enough room for the heading at this size no matter how
+             the caption's own width is capped. Stacking through that
+             whole range instead (caption below, full-width heading)
+             sidesteps needing to find an exact font-size that always
+             fits a half-width column - overriding --flex-direction
+             directly, the same custom property
+             snippets/layout-panel-style.liquid sets from the
+             content_direction setting, consumed at assets/base.css:2320
+             only above 750px (below that, .mobile-column's own rule
+             already controls it). */
+          @media screen and (min-width: 750px) and (max-width: 1099px) {
+            [id$="__intro"] .layout-panel-flex {
+              --flex-direction: column;
+            }
+          }
+
           [id$="__intro"] .text-block.h2 > * {
             color: #cd643f;
             line-height: 1.35;
@@ -515,6 +535,17 @@
                after removing the max-width cap - confirmed via a
                screenshot showing the wrap. */
             font-size: calc(var(--font-h2--size) * 1.4);
+            /* Hard guarantee against wrapping within either line (the
+               explicit <br> between "connections" and "over ___" still
+               breaks regardless of this - <br> isn't suppressed by
+               white-space). Combined with the stacking fix above so
+               there's realistically enough room that this is a backstop,
+               not the main mechanism - and unlike the hero heading, this
+               section has no overflow:hidden ancestor, so if a
+               particularly long cycling word (e.g. "delicious food")
+               ever did overrun at some extreme width, it would spill
+               visibly rather than clip invisibly. */
+            white-space: nowrap;
           }
 
           [id$="__intro"] .text-block.h2 a {
