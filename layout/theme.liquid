@@ -490,6 +490,17 @@
              to the brand terracotta (same hex used in nav-scroll-
              color.js) rather than trusting --color-foreground to
              already resolve to it. */
+          /* Same "narrow" max-width bug as the hero heading
+             (templates/index.json's heading_col has max_width:"narrow",
+             a 35ch reading-width cap computed against a different
+             font-size context than this block's own) - removing it
+             here too, now that the 1.7x-larger text below makes the
+             mismatch between the cap and the actual rendered width
+             wide enough to force an extra wrapped line. */
+          [id$="__intro"] .text-block.h2 {
+            max-width: none;
+          }
+
           [id$="__intro"] .text-block.h2 > * {
             color: #cd643f;
             line-height: 1.35;
