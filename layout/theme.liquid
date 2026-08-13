@@ -501,39 +501,19 @@
             max-width: none;
           }
 
-          /* The row layout (heading | caption side-by-side) only has room
-             for both below a hard 900px line - per Santosh's direction,
-             the heading should instead shrink its own font-size to fit
-             the row down to that point, and only stack (caption becomes a
-             full-width element below the heading) once it's crossed.
-             Below 750px .mobile-column's own rule already stacks them;
-             this extends the same treatment up through 899px - overriding
-             --flex-direction directly, the same custom property
-             snippets/layout-panel-style.liquid sets from the
-             content_direction setting, consumed at assets/base.css:2320
-             only above 750px.
-
-             !important is required here: the section's content_direction
-             setting ("row") is rendered as an inline --flex-direction: row
-             on this same element (confirmed via a live DevTools screenshot
-             at 913px still showing the row layout despite this rule) -
-             inline style normally beats anything in a <style> block
-             regardless of selector specificity, and author !important is
-             the one thing in the cascade that outranks a plain inline
-             declaration. Without it this whole block was a no-op. */
-          @media screen and (min-width: 750px) and (max-width: 899px) {
-            [id$="__intro"] .layout-panel-flex {
-              --flex-direction: column !important;
-            }
-          }
+          /* Stacking is now handled entirely by the theme's own native
+             750px cutoff (.mobile-column below that, row layout above) -
+             no override needed here anymore. Per Santosh's direction, the
+             row layout stays live all the way down to 750px instead of
+             switching to stacked early; the heading's font-size (below)
+             shrinks further to compensate for how much tighter that is
+             than the previous 900px line. */
 
           [id$="__intro"] .text-block.h2 > * {
             color: #cd643f;
             line-height: 1.35;
-            /* Base size for the stacked layouts (mobile, and 750-899px
-               once stacked above) - full row width is available there,
-               so this stays a flat multiple of the h2 preset's own
-               (theme-controlled) size rather than needing to shrink. */
+            /* Base size below 750px, where .mobile-column stacks the
+               columns and the heading gets the full row width. */
             font-size: calc(var(--font-h2--size) * 1.4);
             /* Hard guarantee against wrapping within either line (the
                explicit <br> between "connections" and "over ___" still
@@ -546,22 +526,25 @@
             white-space: nowrap;
           }
 
-          /* Row layout (>=900px): the heading only gets roughly half the
+          /* Row layout (>=750px): the heading only gets roughly half the
              section width once the caption column (capped below) takes
              its share, so a flat font-size that looks right at wide
-             desktop widths is too big right at 900px. Scales the h2's own
-             multiplier fluidly instead of guessing one fixed value -
-             1.15x right at 900px, ramping up to the full 1.4x by 1300px
-             and flat above that. Built as a ratio ((100vw - 900px) /
-             400px is unitless - dividing a length by a length) rather
-             than vw-ing an absolute rem/px value directly, so it scales
-             relative to --font-h2--size the same way the base rule above
-             does instead of a standalone guess. */
-          @media screen and (min-width: 900px) {
+             desktop widths is too big right at 750px - noticeably
+             tighter than the previous 900px line this was tuned against,
+             so the floor comes down accordingly (0.95x, roughly the h2
+             preset's own untouched size, rather than 1.15x). Scales the
+             h2's own multiplier fluidly instead of guessing one fixed
+             value, ramping up to the full 1.4x by 1300px and flat above
+             that. Built as a ratio ((100vw - 750px) / 550px is unitless -
+             dividing a length by a length) rather than vw-ing an absolute
+             rem/px value directly, so it scales relative to
+             --font-h2--size the same way the base rule above does
+             instead of a standalone guess. */
+          @media screen and (min-width: 750px) {
             [id$="__intro"] .text-block.h2 > * {
               font-size: calc(
                 var(--font-h2--size) *
-                clamp(1.15, calc(1.15 + ((100vw - 900px) / 400px) * 0.25), 1.4)
+                clamp(0.95, calc(0.95 + ((100vw - 750px) / 550px) * 0.45), 1.4)
               );
             }
           }
@@ -642,14 +625,14 @@
           }
 
           /* margin-inline-start and max-width below are specifically for
-             the side-by-side row layout (>=900px, see the stacking
-             override above) - they shift the caption right and cap its
-             width so the heading column has room. Scoped to that range
-             only: unscoped, they were also indenting and narrowing the
-             caption on mobile and in the 750-899px stacked range, where
-             it should sit flush and full-width under the heading instead
+             the side-by-side row layout (>=750px, matching the theme's
+             own native cutoff) - they shift the caption right and cap
+             its width so the heading column has room. Scoped to that
+             range only: unscoped, they'd also indent and narrow the
+             caption below 750px, where .mobile-column stacks it and it
+             should sit flush and full-width under the heading instead
              like a normal single column. */
-          @media screen and (min-width: 900px) {
+          @media screen and (min-width: 750px) {
             [id$="__intro"] .text-block.rte {
               margin-inline-start: 3rem;
               /* The caption column was measured at 425px wide (of a
@@ -659,6 +642,20 @@
                  position within whatever width it was already claiming. */
               max-width: 20rem;
             }
+          }
+
+          /* Gap between the heading and caption columns (row layout) /
+             between the stacked elements (below 750px) - the section's
+             own gap setting (templates/index.json's "gap": 40) renders
+             as an inline --gap: max(24px, calc(var(--gap-scale, 1.0) *
+             40px)) on the same element --flex-direction lives on, so
+             this needs !important for the same reason that one does -
+             a plain <style> rule can't beat an inline declaration.
+             Tightened per Santosh's direction, both to read less spaced
+             out and to free up a bit more room for the heading in the
+             row layout. */
+          [id$="__intro"] .layout-panel-flex {
+            --gap: 1.5rem !important;
           }
         </style>
         <div id="ka-rail" aria-hidden="true">
