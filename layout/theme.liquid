@@ -406,20 +406,6 @@
             will-change: transform;
           }
 
-          /* type_case_h1 is set to uppercase globally (config/settings_data.json),
-             which affects every h1 sitewide - overriding it just for this
-             heading rather than changing the global setting, since other
-             h1s (product titles, etc.) may rely on the uppercase treatment.
-             base.css applies the uppercase transform directly to the inner
-             element (".text-block.h1 > *", the actual <h1> tag), not the
-             wrapping div - text-transform doesn't override an inherited
-             value once a descendant has its own explicit rule, so the
-             override has to target that same inner element, not the
-             wrapper. */
-          [id^="Hero-"] .text-block.h1 > * {
-            text-transform: none;
-          }
-
           /* Keep "Welcome to the world of" on one line on mobile instead
              of wrapping, and fill the available width instead of
              reading small next to the logo above it. Several vw-based
