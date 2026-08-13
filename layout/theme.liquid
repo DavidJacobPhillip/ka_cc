@@ -493,6 +493,11 @@
           [id$="__intro"] .text-block.h2 > * {
             color: #cd643f;
             line-height: 1.35;
+            /* Scaled relative to the h2 preset's own (theme-controlled)
+               size via calc(), rather than an absolute rem/px guess -
+               guaranteed to end up significantly larger than whatever
+               that size actually is, without needing to know it. */
+            font-size: calc(var(--font-h2--size) * 1.7);
           }
 
           [id$="__intro"] .text-block.h2 a {
@@ -546,6 +551,28 @@
              paragraph spacing. */
           [id$="__intro"] .text-block.rte > p + p {
             margin-block-start: 1em;
+          }
+
+          /* Slightly larger than the paragraph default, scaled relative
+             to --font-paragraph--size via calc() for the same reason as
+             the heading above. Color: the "warm dark brown" from
+             PROJECT_CONTEXT.md's reviews-section note (#2b1608) rather
+             than the near-black this was rendering as - the text
+             setting's own "color" value is deliberately skipped for rte
+             presets (snippets/typography-style.liquid), so it was
+             always just falling through to --color-foreground, never
+             actually customized. Set on the wrapper and explicitly on
+             p/strong too, since this session has repeatedly hit cases
+             where a more specific rule elsewhere set color directly on
+             the inner element and silently beat inheritance. */
+          [id$="__intro"] .text-block.rte,
+          [id$="__intro"] .text-block.rte p,
+          [id$="__intro"] .text-block.rte strong {
+            color: #2b1608;
+          }
+
+          [id$="__intro"] .text-block.rte {
+            font-size: calc(var(--font-paragraph--size) * 1.15);
           }
         </style>
         <div id="ka-rail" aria-hidden="true">

@@ -11,18 +11,18 @@
   const links = document.querySelectorAll('[id$="__intro"] .text-block.h2 a');
   if (!links.length) return;
 
-  // Placeholder word lists (index-matched to link order: connections,
-  // then chai) - edit here to change them.
+  // Word lists (index-matched to link order: connections, then chai) -
+  // edit here to change them.
   const WORD_LISTS = [
     ['connections', 'memories', 'moments'],
-    ['chai', 'tea', 'masala chai'],
+    ['chai', 'coffee', 'delicious food', 'lassi', 'something yummy'],
   ];
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const TYPE_SPEED = 70;
+  const TYPE_SPEED = 85;
   const DELETE_SPEED = 40;
-  const HOLD_DURATION = 1600;
+  const HOLD_DURATION = 2200;
 
   links.forEach((link, i) => {
     const words = WORD_LISTS[i];
