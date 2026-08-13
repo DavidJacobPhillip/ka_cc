@@ -141,21 +141,25 @@
         --menu-horizontal-gap: 2.25rem;
       }
 
-      /* Between the mobile hamburger cutoff (750px) and full desktop
-         width, the four nav items at full desktop size don't have room
-         to sit inline, so the theme's own <overflow-list> (assets/
-         critical.js) moves the ones that don't fit into a "More"
-         dropdown - it measures actual rendered widths, it isn't tied to
-         a breakpoint. Shrinking the type and gap in this range instead
-         means every item actually fits, so overflow-list never has
-         anything left to move. */
-      @media screen and (min-width: 750px) and (max-width: 1024px) {
+      /* Above the mobile hamburger cutoff (750px), the four nav items at
+         full desktop size don't have room to sit inline until the
+         viewport is wide enough, so the theme's own <overflow-list>
+         (assets/critical.js) moves the ones that don't fit into a
+         "More" dropdown - it measures actual rendered widths, it isn't
+         tied to a breakpoint. A flat smaller size fixed that but read
+         as too small close to 750px - clamp()'s ceiling is the same
+         var the theme's own un-mediaqueried desktop rule uses, so this
+         scales fluidly up from a readable floor and lands on exactly
+         that value (no visible jump) right around the width where it
+         actually has room, instead of guessing a fixed cutoff. Same
+         idea for the gap, capped at the 2.25rem set above. */
+      @media screen and (min-width: 750px) {
         #header-component .menu-list__link {
-          font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+          font-size: clamp(0.95rem, 1.6vw, var(--menu-top-level-font-size-desktop));
         }
 
         #header-component .menu-list {
-          --menu-horizontal-gap: 1.25rem;
+          --menu-horizontal-gap: clamp(0.9rem, 3.2vw, 2.25rem);
         }
       }
 
@@ -174,7 +178,7 @@
       #header-component .svg-wrapper > svg,
       #header-component .account-button__icon svg {
         width: auto;
-        height: clamp(1.75rem, 4vw, 2.75rem);
+        height: clamp(1.6rem, 3.6vw, 2.5rem);
       }
 
       /* Slight grow-on-hover, desktop only (hover:hover media guard,
@@ -411,15 +415,18 @@
           }
 
           /* Keep "Welcome to the world of" on one line on mobile instead
-             of wrapping. min() against the preset's own size means this
-             can only ever shrink it, never enlarge it - 7vw is sized for
-             Noto Serif Display Extra Condensed's narrow glyph widths (the
-             heading font, config/settings_data.json), leaving comfortable
-             margin against .hero__container's overflow:hidden clipping
-             the text if the estimate ever runs long on a given device. */
+             of wrapping, and stretch it to span the full available
+             width instead of reading small next to the logo above it.
+             min() against the preset's own size means this can only
+             ever shrink it, never enlarge it - 8.5vw is sized for Noto
+             Serif Display Extra Condensed's narrow glyph widths (the
+             heading font, config/settings_data.json) to land close to
+             edge-to-edge, leaving a small margin against
+             .hero__container's overflow:hidden clipping the text if the
+             estimate ever runs long on a given device. */
           @media screen and (max-width: 749px) {
             [id^="Hero-"] .text-block.h1 > * {
-              font-size: min(var(--font-h1--size), 7vw);
+              font-size: min(var(--font-h1--size), 8.5vw);
               white-space: nowrap;
             }
 
