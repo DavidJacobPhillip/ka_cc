@@ -486,6 +486,45 @@
               display: none;
             }
           }
+
+          /* "Connections" section (templates/index.json's "intro" key,
+             right under the hero) - [id$="__intro"] matches Shopify's
+             own auto-generated shopify-section-{{ section.id }} wrapper
+             id, which ends in the section's JSON key since this section
+             (sections/section.liquid) doesn't set a custom id prefix
+             the way hero.liquid does with "Hero-". */
+
+          /* Heading links ("connections", "chai"): the theme's global
+             a{} rule (assets/base.css) sets text-decoration-color:
+             transparent by default, and the rule that restores a
+             visible underline only targets links inside p/.rte
+             contexts (assets/base.css ~line 909) - these links sit
+             directly inside a bare <h2>, so neither that underline nor
+             any bold weight was ever applying. Color is set explicitly
+             to the brand terracotta (same hex used in nav-scroll-
+             color.js) rather than trusting --color-foreground to
+             already resolve to it. */
+          [id$="__intro"] .text-block.h2 > * {
+            color: #cd643f;
+            line-height: 1.35;
+          }
+
+          [id$="__intro"] .text-block.h2 a {
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-color: currentcolor;
+            text-decoration-thickness: 0.08em;
+            text-underline-offset: 0.15em;
+          }
+
+          /* Blurb column: was one <p> with <br> tags, which don't get
+             paragraph margin - split into separate <p> elements above
+             (templates/index.json) and given an explicit gap here
+             instead of relying on the theme's own (unverified) default
+             paragraph spacing. */
+          [id$="__intro"] .text-block.rte > p + p {
+            margin-block-start: 1em;
+          }
         </style>
         <div id="ka-rail" aria-hidden="true">
           <span>{% for i in (1..300) %}ka {% endfor %}</span>

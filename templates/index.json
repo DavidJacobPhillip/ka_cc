@@ -113,7 +113,7 @@
           "type": "text",
           "name": "Blurb",
           "settings": {
-            "text": "<p><strong>More than just a cup.</strong><br>It's about finding intentionality and presentness in our life. And what better way to share those moments with loved ones? Unless you don't have loved ones. We'd be your loved ones then.</p>",
+            "text": "<p><strong>More than just a cup.</strong></p><p>It's about finding intentionality and presentness in our life. And what better way to share those moments with loved ones?</p><p>Unless you don't have loved ones. We'd be your loved ones then.</p>",
             "width": "100%",
             "max_width": "narrow",
             "alignment": "left",
@@ -165,8 +165,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 64,
-        "padding-block-end": 32
+        "padding-block-start": 96,
+        "padding-block-end": 64
       }
     },
     "shop_teaser": {
