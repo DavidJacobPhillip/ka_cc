@@ -87,7 +87,7 @@
           "type": "text",
           "name": "Headline",
           "settings": {
-            "text": "<h2>Let's create <a href=\"/pages/our-story\">connections</a> over <a href=\"/collections/all\">chai</a></h2>",
+            "text": "<h2>Let's create <a href=\"/pages/our-story\">connections</a><br>over <a href=\"/collections/all\">chai</a></h2>",
             "width": "100%",
             "max_width": "narrow",
             "alignment": "left",

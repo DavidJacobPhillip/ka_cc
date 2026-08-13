@@ -496,6 +496,14 @@
           }
 
           [id$="__intro"] .text-block.h2 a {
+            /* base.css's global a{} rule sets its own explicit color
+               (var(--button-color)), which overrides inheritance from
+               the h2 above regardless of that rule's higher
+               specificity - a direct rule on the element itself always
+               beats an inherited value. That's why these were still
+               rendering in whatever --button-color resolves to (black)
+               instead of the terracotta set above. */
+            color: inherit;
             font-weight: 700;
             text-decoration: underline;
             text-decoration-color: currentcolor;
