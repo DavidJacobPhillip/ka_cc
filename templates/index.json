@@ -87,7 +87,7 @@
           "type": "text",
           "name": "Headline",
           "settings": {
-            "text": "<h2>Let's create <a href=\"/pages/our-story\">connections</a><br>over <a href=\"/collections/all\">chai</a></h2>",
+            "text": "<h2>Let's create <a href=\"/pages/our-story\" class=\"cycle-word\" data-words=\"connections,memories,moments\" aria-label=\"connections\"><span class=\"cycle-word__text\" aria-hidden=\"true\">connections</span><span class=\"cycle-word__cursor\" aria-hidden=\"true\">|</span></a><br>over <a href=\"/collections/all\" class=\"cycle-word\" data-words=\"chai,tea,masala chai\" aria-label=\"chai\"><span class=\"cycle-word__text\" aria-hidden=\"true\">chai</span><span class=\"cycle-word__cursor\" aria-hidden=\"true\">|</span></a></h2>",
             "width": "100%",
             "max_width": "narrow",
             "alignment": "left",

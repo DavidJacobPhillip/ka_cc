@@ -511,6 +511,34 @@
             text-underline-offset: 0.15em;
           }
 
+          /* Typewriter cursor for the cycling words (assets/intro-word-
+             cycle.js types/deletes into .cycle-word__text; this is the
+             blinking bar next to it). text-decoration:none keeps the
+             link's underline (set above) from running under it. */
+          [id$="__intro"] .cycle-word__cursor {
+            display: inline-block;
+            margin-inline-start: 0.03em;
+            text-decoration: none;
+            animation: cycle-word-blink 1s step-end infinite;
+          }
+
+          @keyframes cycle-word-blink {
+            0%,
+            100% {
+              opacity: 1;
+            }
+
+            50% {
+              opacity: 0;
+            }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            [id$="__intro"] .cycle-word__cursor {
+              animation: none;
+            }
+          }
+
           /* Blurb column: was one <p> with <br> tags, which don't get
              paragraph margin - split into separate <p> elements above
              (templates/index.json) and given an explicit gap here
@@ -528,6 +556,7 @@
         <script defer src="{{ 'hero-logo-scroll.js' | asset_url }}"></script>
         <script>window.KCC_NAV_LOGO_SRC = {{ 'logo-white.png' | asset_url | json }};</script>
         <script defer src="{{ 'nav-scroll-color.js' | asset_url }}"></script>
+        <script defer src="{{ 'intro-word-cycle.js' | asset_url }}"></script>
       {% endif %}
 
       {{ content_for_layout }}
