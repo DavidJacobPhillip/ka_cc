@@ -421,17 +421,14 @@
           }
 
           /* Keep "Welcome to the world of" on one line on mobile instead
-             of wrapping, and stretch it to span most of the available
-             width instead of reading small next to the logo above it.
-             Sized off the viewport directly rather than capped against
-             the preset's own --font-h1--size - that preset is itself
-             already fluid/conservative at narrow widths, so min()-ing
-             against it was the reason this stayed small no matter how
-             large the vw value went. 8.5vw is sized for Noto Serif
-             Display Extra Condensed's narrow glyph widths (the heading
-             font, config/settings_data.json) to land close to edge-to-
-             edge; the 3rem ceiling stops it from getting oversized near
-             749px, where 8.5vw alone would reach ~4rem. */
+             of wrapping, and fill the available width instead of
+             reading small next to the logo above it. Several vw-based
+             guesses at the right font-size all landed wrong - assuming
+             particular glyph-width metrics for this font isn't
+             reliable. assets/hero-heading-fit.js measures the real
+             rendered text width against the real available width on
+             load and sets an exact font-size from that ratio instead of
+             guessing; the clamp() below is only its pre-JS fallback. */
           @media screen and (max-width: 749px) {
             /* The block's own "narrow" max-width setting caps it at
                35ch (snippets/theme-styles-variables.liquid), computed
@@ -494,6 +491,7 @@
           <span>{% for i in (1..300) %}ka {% endfor %}</span>
         </div>
         <script defer src="{{ 'hero-heading-scroll.js' | asset_url }}"></script>
+        <script defer src="{{ 'hero-heading-fit.js' | asset_url }}"></script>
         <script defer src="{{ 'hero-logo-scroll.js' | asset_url }}"></script>
         <script>window.KCC_NAV_LOGO_SRC = {{ 'logo-white.png' | asset_url | json }};</script>
         <script defer src="{{ 'nav-scroll-color.js' | asset_url }}"></script>
