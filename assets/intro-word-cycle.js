@@ -47,6 +47,33 @@
     cursorEl.textContent = '|';
     link.appendChild(cursorEl);
 
+    // Without a fixed width, the link's box (and everything laid out
+    // around it - the rest of the heading line, the row/column split
+    // with the caption) grows and shrinks on every keystroke as the
+    // animation types through differently-sized words. Lock it to
+    // whatever the longest word in this link's list actually measures
+    // at the current font/size, rather than guessing a ch-based value -
+    // same measure-don't-guess approach as hero-heading-fit.js.
+    link.style.display = 'inline-block';
+
+    const lockWidth = () => {
+      const currentText = textEl.textContent;
+      link.style.width = 'auto';
+      let max = 0;
+      words.forEach((word) => {
+        textEl.textContent = word;
+        max = Math.max(max, link.getBoundingClientRect().width);
+      });
+      textEl.textContent = currentText;
+      link.style.width = `${max}px`;
+    };
+
+    lockWidth();
+    window.addEventListener('resize', lockWidth);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(lockWidth);
+    }
+
     let index = 0;
     // words[0] is expected to match originalWord exactly (it does, by
     // construction, above) so the first phase can start deleting the
