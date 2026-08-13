@@ -148,22 +148,23 @@
          "More" dropdown - it measures actual rendered widths, it isn't
          tied to a breakpoint.
 
-         Two earlier attempts both broke on the same issue: mixing a
-         fluid formula in one width range with the theme's own
-         (unknown, possibly differently-scaled) --menu-top-level-font-
-         size-desktop value outside it created a visible seam right at
-         the boundary - shrinking smoothly down to it, then jumping back
-         up past it, instead of one continuous curve. Using a single
-         linear formula (literal rem endpoints, not the theme's var) for
-         every width from 750px up removes the seam entirely - it rises
-         smoothly from a readable floor and goes flat once it hits its
-         own ceiling, with no breakpoint boundary anywhere to jump
-         across. 1.125rem/18px is a reasonable desktop nav size; adjust
-         the ceiling here if it doesn't match what this nav looked like
-         before. Same approach for the gap. */
+         Guessing a literal replacement for --menu-top-level-font-size-
+         desktop (previously 1.125rem) went wrong the other direction -
+         it was smaller than the theme's real value, so normal desktop
+         widths rendered smaller than they actually should. Using the
+         real var as the ceiling instead removes the guesswork entirely:
+         whatever that value actually is, this is mathematically
+         guaranteed to match it exactly once the viewport is wide enough
+         (clamp() can't exceed its own max argument), with no seam
+         either since it's one continuous formula for every width from
+         750px up. 2.4vw converges on realistic desktop nav sizes well
+         before typical browser widths, at the cost of less shrink in
+         the narrowest part of the range (~750-800px) - if "More" still
+         shows up there, this needs a different fix (e.g. trimming
+         padding elsewhere) rather than pushing the font smaller still. */
       @media screen and (min-width: 750px) {
         #header-component .menu-list__link {
-          font-size: clamp(0.95rem, 0.5rem + 1.2vw, 1.125rem);
+          font-size: clamp(0.95rem, 2.4vw, var(--menu-top-level-font-size-desktop));
         }
 
         #header-component .menu-list {
