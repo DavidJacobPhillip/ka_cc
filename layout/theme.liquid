@@ -506,9 +506,15 @@
             line-height: 1.35;
             /* Scaled relative to the h2 preset's own (theme-controlled)
                size via calc(), rather than an absolute rem/px guess -
-               guaranteed to end up significantly larger than whatever
-               that size actually is, without needing to know it. */
-            font-size: calc(var(--font-h2--size) * 1.7);
+               guaranteed to end up larger than whatever that size
+               actually is, without needing to know it. Dialed back from
+               an earlier 1.7x - at tablet-ish widths (e.g. ~958px) this
+               row layout only gives the heading column ~400px once the
+               caption column (see below) takes its share, and 1.7x
+               didn't fit "Let's create connections" in that space even
+               after removing the max-width cap - confirmed via a
+               screenshot showing the wrap. */
+            font-size: calc(var(--font-h2--size) * 1.4);
           }
 
           [id$="__intro"] .text-block.h2 a {
@@ -584,10 +590,13 @@
 
           [id$="__intro"] .text-block.rte {
             font-size: calc(var(--font-paragraph--size) * 1.15);
-            /* Nudges the caption column further right within the row's
-               space-between layout, giving the heading column more
-               room on the left. */
             margin-inline-start: 3rem;
+            /* The caption column was measured at 425px wide (of a
+               958px viewport) via DevTools, squeezing the heading
+               column down to ~400px - explicit cap frees up real room
+               for the heading instead of just nudging this column's
+               position within whatever width it was already claiming. */
+            max-width: 20rem;
           }
         </style>
         <div id="ka-rail" aria-hidden="true">
