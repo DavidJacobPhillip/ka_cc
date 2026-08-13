@@ -141,6 +141,24 @@
         --menu-horizontal-gap: 2.25rem;
       }
 
+      /* Between the mobile hamburger cutoff (750px) and full desktop
+         width, the four nav items at full desktop size don't have room
+         to sit inline, so the theme's own <overflow-list> (assets/
+         critical.js) moves the ones that don't fit into a "More"
+         dropdown - it measures actual rendered widths, it isn't tied to
+         a breakpoint. Shrinking the type and gap in this range instead
+         means every item actually fits, so overflow-list never has
+         anything left to move. */
+      @media screen and (min-width: 750px) and (max-width: 1024px) {
+        #header-component .menu-list__link {
+          font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+        }
+
+        #header-component .menu-list {
+          --menu-horizontal-gap: 1.25rem;
+        }
+      }
+
       /* Cart/account icons much larger than the theme's default ~20px
          icon set, and matched to the same height so they read as the
          same size - height-only, width auto for both, since forcing
@@ -390,6 +408,26 @@
              wrapper. */
           [id^="Hero-"] .text-block.h1 > * {
             text-transform: none;
+          }
+
+          /* Keep "Welcome to the world of" on one line on mobile instead
+             of wrapping. min() against the preset's own size means this
+             can only ever shrink it, never enlarge it - 7vw is sized for
+             Noto Serif Display Extra Condensed's narrow glyph widths (the
+             heading font, config/settings_data.json), leaving comfortable
+             margin against .hero__container's overflow:hidden clipping
+             the text if the estimate ever runs long on a given device. */
+          @media screen and (max-width: 749px) {
+            [id^="Hero-"] .text-block.h1 > * {
+              font-size: min(var(--font-h1--size), 7vw);
+              white-space: nowrap;
+            }
+
+            /* Slightly larger than the desktop-oriented 20vw/296px clamp
+               below would otherwise render at mobile widths. */
+            [id^="Hero-"] .hero-logo-lockup__image {
+              height: clamp(140px, 24vw, 296px);
+            }
           }
 
           #ka-rail {
