@@ -12,9 +12,9 @@
     const scrollRange = hero.offsetHeight || window.innerHeight;
     const progress = Math.min(Math.max(window.scrollY / scrollRange, 0), 1);
     const distance = window.innerWidth * 1.2;
-    // Same speed/formula as hero-heading-scroll.js, same sign - the logo
-    // now moves in conjunction with the heading instead of opposite it.
-    logo.style.transform = `translateX(${progress * distance}px)`;
+    // Same speed/formula as hero-heading-scroll.js, negated - the logo
+    // slides left off-screen while the heading slides right.
+    logo.style.transform = `translateX(${-progress * distance}px)`;
   };
 
   const onScroll = () => {
