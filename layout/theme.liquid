@@ -141,26 +141,33 @@
         --menu-horizontal-gap: 2.25rem;
       }
 
-      /* Between the mobile hamburger cutoff (750px) and roughly
-         portrait-tablet width, the four nav items at full desktop size
-         don't have room to sit inline, so the theme's own
-         <overflow-list> (assets/critical.js) moves the ones that don't
-         fit into a "More" dropdown - it measures actual rendered
-         widths, it isn't tied to a breakpoint. An earlier attempt left
-         this unbounded above 750px, which also shrank normal
-         laptop-width browsing (~1000px+) where the full desktop size
-         already fit fine - bounding it at 899px keeps that fix scoped
-         to the actual narrow range and guarantees everything wider
-         falls through to the theme's own unmediaqueried desktop rule,
-         unchanged. Same idea for the gap, capped at the 2.25rem set
-         above. */
-      @media screen and (min-width: 750px) and (max-width: 899px) {
+      /* Above the mobile hamburger cutoff (750px), the four nav items at
+         full desktop size don't have room to sit inline until the
+         viewport is wide enough, so the theme's own <overflow-list>
+         (assets/critical.js) moves the ones that don't fit into a
+         "More" dropdown - it measures actual rendered widths, it isn't
+         tied to a breakpoint.
+
+         Two earlier attempts both broke on the same issue: mixing a
+         fluid formula in one width range with the theme's own
+         (unknown, possibly differently-scaled) --menu-top-level-font-
+         size-desktop value outside it created a visible seam right at
+         the boundary - shrinking smoothly down to it, then jumping back
+         up past it, instead of one continuous curve. Using a single
+         linear formula (literal rem endpoints, not the theme's var) for
+         every width from 750px up removes the seam entirely - it rises
+         smoothly from a readable floor and goes flat once it hits its
+         own ceiling, with no breakpoint boundary anywhere to jump
+         across. 1.125rem/18px is a reasonable desktop nav size; adjust
+         the ceiling here if it doesn't match what this nav looked like
+         before. Same approach for the gap. */
+      @media screen and (min-width: 750px) {
         #header-component .menu-list__link {
-          font-size: clamp(0.95rem, 2vw, var(--menu-top-level-font-size-desktop));
+          font-size: clamp(0.95rem, 0.5rem + 1.2vw, 1.125rem);
         }
 
         #header-component .menu-list {
-          --menu-horizontal-gap: clamp(0.9rem, 3.2vw, 2.25rem);
+          --menu-horizontal-gap: clamp(0.9rem, 0.4rem + 3.1vw, 2.25rem);
         }
       }
 
@@ -428,6 +435,19 @@
              edge; the 3rem ceiling stops it from getting oversized near
              749px, where 8.5vw alone would reach ~4rem. */
           @media screen and (max-width: 749px) {
+            /* The block's own "narrow" max-width setting caps it at
+               35ch (snippets/theme-styles-variables.liquid), computed
+               against whatever font-size is active where --max-width is
+               consumed - not necessarily this element's own overridden
+               size - so it was silently capping the box well short of
+               the font-size above, leaving empty space on the right
+               even though the text itself was sized to fill it. This
+               heading is a viewport-spanning display line, not body
+               copy, so the reading-width cap doesn't apply here anyway. */
+            [id^="Hero-"] .text-block.h1 {
+              max-width: none;
+            }
+
             [id^="Hero-"] .text-block.h1 > * {
               font-size: clamp(1.75rem, 8.5vw, 3rem);
               white-space: nowrap;
