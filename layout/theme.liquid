@@ -444,23 +444,33 @@
 
           #ka-rail {
             position: absolute;
-            /* Was flush against both the hero's bottom edge and the true
-               left edge of the viewport (inset-block: 0; inset-inline-
-               start: 0) - a gap on each side now so the strip reads as a
-               detached decorative element instead of a rail bolted
-               straight onto the page edges. Top: a fixed gap below
-               #MainContent's own top (= the hero's top), so however tall
-               the hero renders, there's still breathing room before the
-               strip starts rather than it beginning exactly where the
-               hero ends. Left: var(--page-margin) (assets/base.css,
-               40px at this width) rather than a fresh guess - matches
-               the real margin the rest of the page's content already
-               sits at, so the rail lines up with that same edge instead
-               of an arbitrary offset. inset-block-end stays 0 so it
-               still reaches all the way down to the bottom of the page. */
-            inset-block-start: 2rem;
+            /* Left: var(--page-margin) (40px) read as too much gap from
+               the true edge - a smaller fixed value instead, still
+               detached from the edge but noticeably tighter.
+
+               Top: previously a fixed 2rem from #MainContent's own top
+               (= the hero's top) - but the hero itself is much taller
+               than that (viewport-height-based), so that gap was
+               entirely swallowed inside the hero's own height and never
+               produced any actual separation from the hero's real
+               (rendered) bottom edge - the rail's colored area was
+               already "running" underneath the hero the whole time, so
+               it picked up again immediately once the hero ended, with
+               no visible gap at all. Now anchored to --hero-height
+               (assets/ka-rail-position.js measures the real rendered
+               hero height, same measure-don't-guess approach as
+               hero-heading-fit.js) plus a real gap on top of that,
+               so it's guaranteed to start after the hero however tall
+               it actually renders. 100vh fallback covers the brief
+               window before that script runs.
+
+               inset-block-end stays 0 so it still reaches the bottom of
+               the page. No longer hidden below 750px - see the intro
+               section's padding-inline-start below for how mobile
+               content stays clear of it now that it's visible there. */
+            inset-block-start: calc(var(--hero-height, 100vh) + 1.5rem);
             inset-block-end: 0;
-            inset-inline-start: var(--page-margin);
+            inset-inline-start: 0.75rem;
             width: 40px;
             z-index: -1;
             background: #cd643f;
@@ -480,12 +490,6 @@
             letter-spacing: 0.4em;
             line-height: 1;
             padding-block-start: 24px;
-          }
-
-          @media screen and (max-width: 749px) {
-            #ka-rail {
-              display: none;
-            }
           }
 
           /* "Connections" section (templates/index.json's "intro" key,
@@ -523,6 +527,20 @@
              switching to stacked early; the heading's font-size (below)
              shrinks further to compensate for how much tighter that is
              than the previous 900px line. */
+
+          /* #ka-rail is now visible on mobile too (was display:none below
+             750px), sitting at inset-inline-start: 0.75rem, width: 40px -
+             a ~52px footprint from the true edge. Normal page content
+             starts at var(--page-margin), which is only 16px on mobile
+             (40px at desktop) - comfortably clear of the rail at desktop,
+             but well inside it on mobile, which is exactly why the
+             heading was rendering with the rail's color/lettering behind
+             it. Padding here pushes this section's content past that
+             footprint at every width the rail is visible, rather than
+             relying on page-margin to happen to be wide enough. */
+          [id$="__intro"] .layout-panel-flex {
+            padding-inline-start: 3.5rem;
+          }
 
           [id$="__intro"] .text-block.h2 > * {
             color: #cd643f;
@@ -691,6 +709,7 @@
         <script defer src="{{ 'hero-heading-scroll.js' | asset_url }}"></script>
         <script defer src="{{ 'hero-heading-fit.js' | asset_url }}"></script>
         <script defer src="{{ 'hero-logo-scroll.js' | asset_url }}"></script>
+        <script defer src="{{ 'ka-rail-position.js' | asset_url }}"></script>
         <script>window.KCC_NAV_LOGO_SRC = {{ 'logo-white.png' | asset_url | json }};</script>
         <script defer src="{{ 'nav-scroll-color.js' | asset_url }}"></script>
         <script defer src="{{ 'intro-word-cycle.js' | asset_url }}"></script>
