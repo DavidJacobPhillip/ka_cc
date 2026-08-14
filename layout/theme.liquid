@@ -444,8 +444,23 @@
 
           #ka-rail {
             position: absolute;
-            inset-block: 0;
-            inset-inline-start: 0;
+            /* Was flush against both the hero's bottom edge and the true
+               left edge of the viewport (inset-block: 0; inset-inline-
+               start: 0) - a gap on each side now so the strip reads as a
+               detached decorative element instead of a rail bolted
+               straight onto the page edges. Top: a fixed gap below
+               #MainContent's own top (= the hero's top), so however tall
+               the hero renders, there's still breathing room before the
+               strip starts rather than it beginning exactly where the
+               hero ends. Left: var(--page-margin) (assets/base.css,
+               40px at this width) rather than a fresh guess - matches
+               the real margin the rest of the page's content already
+               sits at, so the rail lines up with that same edge instead
+               of an arbitrary offset. inset-block-end stays 0 so it
+               still reaches all the way down to the bottom of the page. */
+            inset-block-start: 2rem;
+            inset-block-end: 0;
+            inset-inline-start: var(--page-margin);
             width: 40px;
             z-index: -1;
             background: #cd643f;
