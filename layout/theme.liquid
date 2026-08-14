@@ -504,6 +504,31 @@
             align-items: center;
             gap: 20px;
             padding-block-start: 24px;
+            /* Perpetual downward scroll. Loop distance is exactly one
+               icon+gap unit (14px icon + 20px gap = 34px) rather than
+               the whole (very tall) column - since every icon is
+               identical and evenly spaced, shifting by one unit and
+               resetting lands on a frame pixel-identical to the start,
+               so the loop reads as continuous instead of visibly
+               jumping. Doesn't need the strip duplicated the way a
+               marquee normally would for a seamless loop. */
+            animation: ka-rail-scroll 3s linear infinite;
+          }
+
+          @keyframes ka-rail-scroll {
+            from {
+              transform: translateY(-34px);
+            }
+
+            to {
+              transform: translateY(0);
+            }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            #ka-rail .ka-rail__icons {
+              animation: none;
+            }
           }
 
           #ka-rail .ka-rail__icon {
