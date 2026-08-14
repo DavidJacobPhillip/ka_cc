@@ -491,18 +491,26 @@
             }
           }
 
-          #ka-rail span {
-            display: block;
-            width: 100%;
-            height: 100%;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            color: #ffffff;
-            font-family: var(--font-heading--family, serif);
-            font-size: 1.1rem;
-            letter-spacing: 0.4em;
-            line-height: 1;
+          /* Replaces the previous repeated "ka" text - a column of small
+             icons running down the center of the rail instead. Centered
+             horizontally (align-items: center) within the rail's 40px
+             width; the parent's overflow:hidden (see #ka-rail above)
+             clips whatever the repeat count below doesn't fill or
+             overruns, same safety-clamp role the old span's sheer
+             repeat-300-times count played for text. */
+          #ka-rail .ka-rail__icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
             padding-block-start: 24px;
+          }
+
+          #ka-rail .ka-rail__icon {
+            width: 14px;
+            height: 14px;
+            color: #ffffff;
+            flex-shrink: 0;
           }
 
           /* Push every homepage section below the hero right, clear of
@@ -759,7 +767,11 @@
           }
         </style>
         <div id="ka-rail" aria-hidden="true">
-          <span>{% for i in (1..300) %}ka {% endfor %}</span>
+          <div class="ka-rail__icons">
+            {%- for i in (1..250) -%}
+              {%- render 'ka-rail-icon' -%}
+            {%- endfor -%}
+          </div>
         </div>
         <script defer src="{{ 'hero-heading-scroll.js' | asset_url }}"></script>
         <script defer src="{{ 'hero-heading-fit.js' | asset_url }}"></script>
