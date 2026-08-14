@@ -465,9 +465,10 @@
                window before that script runs.
 
                inset-block-end stays 0 so it still reaches the bottom of
-               the page. No longer hidden below 750px - see the intro
-               section's padding-inline-start below for how mobile
-               content stays clear of it now that it's visible there. */
+               the page. No longer hidden below 750px - see the
+               #MainContent > div.shopify-section padding-inline-start
+               rule below for how content stays clear of it now that
+               it's visible there. */
             inset-block-start: calc(var(--hero-height, 100vh) + 1.5rem);
             inset-block-end: 0;
             inset-inline-start: 0.75rem;
@@ -476,6 +477,18 @@
             background: #cd643f;
             overflow: hidden;
             pointer-events: none;
+          }
+
+          /* Desktop-only: ever so slightly further right than the base
+             0.75rem mobile value above - kept as a separate, smaller bump
+             rather than raising the base value, since mobile needs to
+             stay close to that tighter number for the "push everything
+             else right" effect below to read as intentional rather than
+             excessive. */
+          @media screen and (min-width: 750px) {
+            #ka-rail {
+              inset-inline-start: 1.25rem;
+            }
           }
 
           #ka-rail span {
@@ -490,6 +503,27 @@
             letter-spacing: 0.4em;
             line-height: 1;
             padding-block-start: 24px;
+          }
+
+          /* Push every homepage section below the hero right, clear of
+             the rail, rather than patching one section at a time -
+             #MainContent > div.shopify-section matches every section
+             except the hero (sections/hero.liquid is the only one on
+             this page with a custom "tag": "section" in its schema;
+             every other section here renders as the default div, so this
+             selector naturally excludes it without needing to name it).
+             2.5rem stacks on top of each section's own existing
+             var(--page-margin) rather than replacing it, so combined
+             clearance from the true edge is ~2.5rem + page-margin: ~56px
+             on mobile (comfortably past the rail's ~52px footprint
+             there: inset-inline-start 0.75rem + 40px width) and ~80px at
+             desktop (well past its ~60px footprint there). Generous
+             rather than tightly tuned to each breakpoint's exact number,
+             since it's cheap insurance against the same overlap the
+             intro heading hit turning up in a section further down the
+             page that hasn't been individually checked. */
+          #MainContent > div.shopify-section {
+            padding-inline-start: 2.5rem;
           }
 
           /* "Connections" section (templates/index.json's "intro" key,
@@ -528,26 +562,30 @@
              shrinks further to compensate for how much tighter that is
              than the previous 900px line. */
 
-          /* #ka-rail is now visible on mobile too (was display:none below
-             750px), sitting at inset-inline-start: 0.75rem, width: 40px -
-             a ~52px footprint from the true edge. Normal page content
-             starts at var(--page-margin), which is only 16px on mobile
-             (40px at desktop) - comfortably clear of the rail at desktop,
-             but well inside it on mobile, which is exactly why the
-             heading was rendering with the rail's color/lettering behind
-             it. Padding here pushes this section's content past that
-             footprint at every width the rail is visible, rather than
-             relying on page-margin to happen to be wide enough. */
-          [id$="__intro"] .layout-panel-flex {
-            padding-inline-start: 3.5rem;
-          }
 
           [id$="__intro"] .text-block.h2 > * {
             color: #cd643f;
             line-height: 1.35;
-            /* Base size below 750px, where .mobile-column stacks the
-               columns and the heading gets the full row width. */
-            font-size: calc(var(--font-h2--size) * 1.4);
+            /* Below 750px, where .mobile-column stacks the columns and
+               the heading gets the full row width - but "full row width"
+               on a narrow phone, minus the ~2.5rem section clearance
+               added above to stay clear of the rail, is a lot less room
+               than it sounds. This used to be a flat 1.4x here, which
+               was fine when the rail was desktop-only and mobile kept
+               its whole width - once the rail (and this section's
+               clearance padding for it) started applying on mobile too,
+               that flat size no longer reliably fit at real phone
+               widths, and with white-space: nowrap below and no
+               overflow:hidden ancestor, the overflow was spilling
+               straight past the viewport's right edge (visible as
+               unexplained blank space when scrolled). Fluid instead,
+               same ratio approach as the row-layout rule below - 0.85x
+               at 320px ramping up to 0.95x at 750px, matching that
+               rule's own starting value so there's no jump at the seam. */
+            font-size: calc(
+              var(--font-h2--size) *
+              clamp(0.85, calc(0.85 + ((100vw - 320px) / 430px) * 0.1), 0.95)
+            );
             /* Hard guarantee against wrapping within either line (the
                explicit <br> between "connections" and "over ___" still
                breaks regardless of this - <br> isn't suppressed by
