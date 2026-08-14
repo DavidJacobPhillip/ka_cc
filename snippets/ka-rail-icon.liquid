@@ -1,11 +1,25 @@
 {%- comment -%}
-  Placeholder icon for #ka-rail (layout/theme.liquid), repeated vertically
-  down the rail in place of the previous "ka" text. Swap this markup for
-  the real icon when it's ready - the repeat loop and positioning CSS in
-  layout/theme.liquid don't need to change, they just render/space
-  whatever this snippet outputs. fill="currentColor" so it follows
-  #ka-rail's own color setting rather than a hardcoded one here.
+  Icon for #ka-rail (layout/theme.liquid), repeated vertically down the
+  rail. assets/ka-rail-icon.svg is a wide horizontal wordmark (viewBox
+  4264x191, ~22:1) - rendered via <img> rather than inlined, since
+  inlining it (it embeds two base64 PNGs) 15x over would bloat the page;
+  as an <img> the browser fetches/decodes it once and reuses it.
+
+  The wrapper reserves the POST-rotation footprint (narrow/tall) in the
+  flex column; the <img> inside keeps its PRE-rotation natural
+  proportions (wide/short) and is rotated 90deg around its own center,
+  landing exactly inside the wrapper's box. Rotating the img directly
+  without this wrapper would rotate its visual appearance but not its
+  layout box, so neighboring icons in the column would be spaced as if
+  it were still wide/short instead of narrow/tall.
 {%- endcomment -%}
-<svg class="ka-rail__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-  <circle cx="12" cy="12" r="5" fill="currentColor" />
-</svg>
+<span class="ka-rail__icon-wrap">
+  <img
+    class="ka-rail__icon"
+    src="{{ 'ka-rail-icon.svg' | asset_url }}"
+    alt=""
+    loading="lazy"
+    width="4264"
+    height="191"
+  >
+</span>
