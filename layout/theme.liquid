@@ -521,9 +521,13 @@
              rather than tightly tuned to each breakpoint's exact number,
              since it's cheap insurance against the same overlap the
              intro heading hit turning up in a section further down the
-             page that hasn't been individually checked. */
+             page that hasn't been individually checked.
+
+             2.5rem left only ~4px of actual visible gap between the
+             rail's right edge and the heading on mobile (confirmed via
+             screenshot) - bumped to 3rem for a bit more breathing room. */
           #MainContent > div.shopify-section {
-            padding-inline-start: 2.5rem;
+            padding-inline-start: 3rem;
           }
 
           /* "Connections" section (templates/index.json's "intro" key,
@@ -579,12 +583,14 @@
                overflow:hidden ancestor, the overflow was spilling
                straight past the viewport's right edge (visible as
                unexplained blank space when scrolled). Fluid instead,
-               same ratio approach as the row-layout rule below - 0.85x
-               at 320px ramping up to 0.95x at 750px, matching that
-               rule's own starting value so there's no jump at the seam. */
+               same ratio approach as the row-layout rule below - 0.935x
+               at 320px ramping up to 1.045x at 750px, matching that
+               rule's own starting value so there's no jump at the seam
+               (both bumped 10% per Santosh's direction - was
+               0.85x-0.95x). */
             font-size: calc(
               var(--font-h2--size) *
-              clamp(0.85, calc(0.85 + ((100vw - 320px) / 430px) * 0.1), 0.95)
+              clamp(0.935, calc(0.935 + ((100vw - 320px) / 430px) * 0.11), 1.045)
             );
             /* Hard guarantee against wrapping within either line (the
                explicit <br> between "connections" and "over ___" still
@@ -602,20 +608,21 @@
              its share, so a flat font-size that looks right at wide
              desktop widths is too big right at 750px - noticeably
              tighter than the previous 900px line this was tuned against,
-             so the floor comes down accordingly (0.95x, roughly the h2
-             preset's own untouched size, rather than 1.15x). Scales the
-             h2's own multiplier fluidly instead of guessing one fixed
-             value, ramping up to the full 1.4x by 1300px and flat above
-             that. Built as a ratio ((100vw - 750px) / 550px is unitless -
-             dividing a length by a length) rather than vw-ing an absolute
-             rem/px value directly, so it scales relative to
-             --font-h2--size the same way the base rule above does
-             instead of a standalone guess. */
+             so the floor comes down accordingly (1.045x here, matching
+             the base rule's own new ceiling above) rather than the full
+             1.54x. Scales the h2's own multiplier fluidly instead of
+             guessing one fixed value, ramping up to the full 1.54x by
+             1300px and flat above that. Built as a ratio ((100vw -
+             750px) / 550px is unitless - dividing a length by a length)
+             rather than vw-ing an absolute rem/px value directly, so it
+             scales relative to --font-h2--size the same way the base
+             rule above does instead of a standalone guess. (Both ends
+             bumped 10% per Santosh's direction - was 0.95x-1.4x.) */
           @media screen and (min-width: 750px) {
             [id$="__intro"] .text-block.h2 > * {
               font-size: calc(
                 var(--font-h2--size) *
-                clamp(0.95, calc(0.95 + ((100vw - 750px) / 550px) * 0.45), 1.4)
+                clamp(1.045, calc(1.045 + ((100vw - 750px) / 550px) * 0.495), 1.54)
               );
             }
           }
