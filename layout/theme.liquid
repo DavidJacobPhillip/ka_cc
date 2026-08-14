@@ -583,14 +583,24 @@
                overflow:hidden ancestor, the overflow was spilling
                straight past the viewport's right edge (visible as
                unexplained blank space when scrolled). Fluid instead,
-               same ratio approach as the row-layout rule below - 0.935x
-               at 320px ramping up to 1.045x at 750px, matching that
-               rule's own starting value so there's no jump at the seam
-               (both bumped 10% per Santosh's direction - was
-               0.85x-0.95x). */
+               ramping 0.935x at 320px up to 1.045x - matching the
+               row-layout rule's own starting value so there's no jump at
+               the 750px seam - but reaching that ceiling by 480px rather
+               than stretching the ramp out across the full 320-750
+               range. Nearly every real phone falls within 320-430px, so
+               a ramp sized to the full range barely moved within that
+               span (roughly 0.935x to 0.96x - visually indistinguishable
+               "tiny" at every real phone width, confirmed by Santosh not
+               reading as responsive at all) - the actual visual growth
+               was almost entirely happening in the 430-750px zone real
+               phones never occupy. Steeper range means real phones cover
+               the whole 0.935x-1.045x span; 480-750px (phablet-ish
+               widths) just holds flat at the ceiling instead of
+               continuing to grow, which was never the part that needed
+               fixing. */
             font-size: calc(
               var(--font-h2--size) *
-              clamp(0.935, calc(0.935 + ((100vw - 320px) / 430px) * 0.11), 1.045)
+              clamp(0.935, calc(0.935 + ((100vw - 320px) / 160px) * 0.11), 1.045)
             );
             /* Hard guarantee against wrapping within either line (the
                explicit <br> between "connections" and "over ___" still
