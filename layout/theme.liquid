@@ -492,33 +492,42 @@
           }
 
           /* Replaces the previous repeated "ka" text - a column of small
-             wordmark icons running down the center of the rail instead.
-             Centered horizontally (align-items: center) within the
-             rail's 40px width; the parent's overflow:hidden (see
-             #ka-rail above) clips whatever the repeat count below
-             doesn't fill or overruns, same safety-clamp role the old
-             span's sheer repeat-300-times count played for text. */
+             letterform icons running down the center of the rail
+             instead (see snippets/ka-rail-icon.liquid: 12 individual
+             glyphs isolated from Santosh's multi-script "ka" wordmark,
+             cycled by index). Centered horizontally (align-items:
+             center) within the rail's 40px width; the parent's
+             overflow:hidden (see #ka-rail above) clips whatever the
+             repeat count below doesn't fill or overruns, same
+             safety-clamp role the old span's sheer repeat-300-times
+             count played for text. Each glyph keeps its own natural
+             aspect ratio within a fixed 28x28 box (viewBox differs per
+             glyph, default preserveAspectRatio scales-to-fit and
+             centers it) rather than being stretched to a uniform shape. */
           #ka-rail .ka-rail__icons {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
             padding-block-start: 24px;
-            /* Perpetual downward scroll, faster than the previous dot
-               version. Loop distance is exactly one icon+gap unit (536px
-               icon + 24px gap = 560px) rather than the whole (very tall)
-               column - since every icon is identical and evenly spaced,
-               shifting by one unit and resetting lands on a frame
-               pixel-identical to the start, so the loop reads as
-               continuous instead of visibly jumping. Doesn't need the
-               strip duplicated the way a marquee normally would for a
-               seamless loop. */
-            animation: ka-rail-scroll 8s linear infinite;
+            /* Perpetual downward scroll. Loop distance is exactly one
+               icon+gap unit (28px icon + 20px gap = 48px) rather than
+               the whole (very tall) column - since every icon+gap slot
+               is the same size, shifting by one unit and resetting
+               lands on a frame with the same slot geometry as the
+               start, so the loop reads as continuous instead of
+               visibly jumping (this only holds the spacing steady, not
+               the specific glyph in each slot, but adjacent glyphs are
+               different anyway so that's not visible as a seam).
+               0.7s keeps roughly the same px/s rate as the last speed
+               request (8s per 560px unit, ~70px/s) rather than
+               resetting to a slower pace now that the unit is smaller. */
+            animation: ka-rail-scroll 0.7s linear infinite;
           }
 
           @keyframes ka-rail-scroll {
             from {
-              transform: translateY(-560px);
+              transform: translateY(-48px);
             }
 
             to {
@@ -532,30 +541,11 @@
             }
           }
 
-          /* assets/ka-rail-icon.svg is a wide horizontal wordmark
-             (4264x191, ~22.3:1) - this wrapper reserves its POST-
-             rotation footprint (24px wide, 536px tall: 24 * 4264/191) in
-             the flex column. The <img> inside keeps the same ~22.3:1
-             ratio in its PRE-rotation natural orientation (536 wide, 24
-             tall) and gets rotated + centered into this box below,
-             rather than rotating the img directly - a direct rotation
-             changes its visual appearance but not its layout box, which
-             would leave the column spacing itself as if every icon were
-             still wide/short instead of narrow/tall. */
-          #ka-rail .ka-rail__icon-wrap {
-            position: relative;
-            width: 24px;
-            height: 536px;
-            flex-shrink: 0;
-          }
-
           #ka-rail .ka-rail__icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 536px;
-            height: 24px;
-            transform: translate(-50%, -50%) rotate(90deg);
+            width: 28px;
+            height: 28px;
+            color: #ffffff;
+            flex-shrink: 0;
           }
 
           /* Push every homepage section below the hero right, clear of
@@ -814,13 +804,15 @@
         <div id="ka-rail" aria-hidden="true">
           <div class="ka-rail__icons">
             {%- comment -%}
-              15 rather than the previous 250 - each unit is now 560px
-              (536px icon + 24px gap) instead of 34px, so 15 already
-              covers ~8400px of page height; overflow:hidden on #ka-rail
-              still clips whatever runs past the actual page length.
+              175 covers ~8400px of page height at the 48px unit size
+              (28px icon + 20px gap) set in the CSS above; overflow:hidden
+              on #ka-rail still clips whatever runs past the actual page
+              length. index cycles the 12 glyphs defined in
+              snippets/ka-rail-icon.liquid (the snippet itself takes it
+              modulo 12, so this can just count up).
             {%- endcomment -%}
-            {%- for i in (1..15) -%}
-              {%- render 'ka-rail-icon' -%}
+            {%- for i in (1..175) -%}
+              {%- render 'ka-rail-icon', index: forloop.index0 -%}
             {%- endfor -%}
           </div>
         </div>
