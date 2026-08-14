@@ -2,7 +2,7 @@
 
 **Purpose:** Living reference document for the Ka Chai & Coffee website. Paste this back into any new conversation to restore full context. Update as decisions are made.
 
-**Last updated:** July 29, 2026
+**Last updated:** August 14, 2026
 **Status:** Homepage redesigned from a Canva mockup (high-level pass); animated shader background added; scope now 3 products (chai spices, tea, filter coffee — see §2). All pages exist as templates with draft copy — see §11, §12, and §13 for what's built vs. what Santosh still needs to do in Shopify Admin before it's live.
 
 ---
@@ -90,6 +90,7 @@ Prior wholesale messaging was built entirely around the concentrate — 2:1 yiel
 | **Primary** | `#CD643F` | Burnt terracotta / clay orange |
 | **Accent** | `#FFFFFF` | White |
 | **Tertiary** | `#2E6417` | Deep forest green |
+| **Warm Brown** | `#754B2A` | Espresso brown — body text on light backgrounds (e.g. homepage intro caption) where near-black read as too flat and needed real warmth |
 
 **Design read:** Terracotta, white, and deep green is a genuinely coherent chai palette — fired clay, milk, and leaf. It reads warm and grounded without tipping into either the beige-minimalist or the saturated-Bollywood cliché that most chai brands land in. Green is the small-dose color: type accents, rules, hover states, illustration linework. Terracotta carries the weight; white does the breathing.
 
@@ -201,6 +202,7 @@ iPad sketch in Sketchbook → transparent PNG export → placed into Affinity De
 | 2026-07-28 | **Full theme build (code side) completed** against the existing Savor theme found in the repo. Color schemes rebuilt to the locked terracotta/white/green palette; typography updated to Noto Sans body + Noto Serif Display Extra Condensed headings; homepage, shop page, both product pages, Brew Guide, Our Story, and Visit/Find Us page all built with draft copy in the established voice; footer nav wired to a `footer-menu` handle. See §12 for the full breakdown and the Admin-side checklist still needed before this goes live. |
 | 2026-07-29 | Added a site-wide animated WebGL "smoke" shader background (chai-gradient palette: dark spice → terracotta → milky tan → cream) on the `redesign` branch. |
 | 2026-07-29 | **Homepage redesigned from a Canva mockup Santosh provided**, high-level first pass. Reintroduced Indian Filter Coffee to scope (3rd product — see §2). New homepage structure: transparent nav over hero, "Welcome to the world of" + logo badge, connections/chai intro blurb, 2 product cards (chai duo + coffee), ingredient spotlight (ginger) with dietary icon row and the FDA/grandma disclaimer, a wave-divider into a dark reviews section (marquee + testimonial quote), and a 6-photo "Yum in Action" gallery. Added a decorative full-height "ka" rail down the left edge of the homepage only. Discovered and used real farmers-market data already sitting in the theme (Cedar Mills, Saturdays 9AM–2PM) to replace placeholder text on the Visit/Find Us page. See §13 for full detail, simplifications made, and open items from this pass. |
+| 2026-08-14 | **Added a fourth palette color**, Warm Brown `#754B2A`, for body text on light backgrounds — used on the homepage intro section's caption. An earlier attempt reused the reviews-section background brown (`#2b1608`) for this text, but it was visually indistinguishable from plain black (near-identical luminance to the default foreground, differing only in hue) so it read as unchanged; `#754B2A` has enough lightness to actually register as brown. |
 
 ---
 
