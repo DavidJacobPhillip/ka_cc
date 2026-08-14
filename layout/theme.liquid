@@ -613,11 +613,22 @@
              actually customized. Set on the wrapper and explicitly on
              p/strong too, since this session has repeatedly hit cases
              where a more specific rule elsewhere set color directly on
-             the inner element and silently beat inheritance. */
+             the inner element and silently beat inheritance.
+
+             #2b1608 (confirmed deployed and applying) still looked
+             indistinguishable from plain black on screen - scheme-1's
+             default foreground is #1a1a1a, and the two colors have
+             nearly identical luminance (~10% vs ~10.5%), differing only
+             in hue. #2b1608 was borrowed from a note about the dark
+             *reviews section background*, a value picked to work as a
+             near-black bg, not to read as visibly brown as body text on
+             white. Swapped for #5c3620, same warm-brown family but
+             enough lighter/more saturated (~25% luminance) to actually
+             register as brown rather than black at body-copy size. */
           [id$="__intro"] .text-block.rte,
           [id$="__intro"] .text-block.rte p,
           [id$="__intro"] .text-block.rte strong {
-            color: #2b1608;
+            color: #5c3620;
           }
 
           [id$="__intro"] .text-block.rte {
