@@ -504,27 +504,31 @@
              count played for text. Each glyph's own width/height (set
              inline on its <svg> in the snippet, not here) is sized so
              its viewBox's aspect ratio - not just its longest side -
-             fills that box, at a shared target area of 784px^2 (the old
-             fixed 28x28 box, which the roundest glyph there, Odia,
-             already filled ~98% of - nothing shrinks below what already
-             existed, the smaller-looking ones just grow to match it).
-             Santosh flagged that fitting every glyph's longest side into
-             an identical square (the old approach) was making some
-             scripts look visibly smaller than others - Malayalam's wide
-             1070x576 viewBox, for example, only reached 54% of the old
-             box's area once letterboxed down to fit, versus Odia's
-             near-square 642x654 reaching 98%. Equal-area sizing (box_w =
-             sqrt(area x aspect), box_h = sqrt(area / aspect)) closes
-             that gap - it's not a perfect proxy for perceived size
-             (doesn't account for how much of each glyph's own bounding
-             box is ink vs counter/whitespace, which genuinely differs by
-             script) but it's a real, measurable improvement over sizing
-             by longest-side alone. */
+             fills that box, at a shared target area of 566px^2. That's
+             784px^2 (the original fixed 28x28 box) scaled by 0.85^2 -
+             Santosh asked for the glyphs 15% smaller once the equal-area
+             sizing itself was in place and read correctly; scaling both
+             box dimensions by 0.85 (rather than dropping the area
+             straight to 0.85x) is what "15% smaller" means for a 2D
+             shape, and keeps every glyph's aspect ratio - and so the
+             fair-relative-to-each-other sizing between them - untouched.
+             (Original reasoning for equal-area over fit-longest-side:
+             Malayalam's wide 1070x576 viewBox only reached 54% of the
+             old fixed box's area once letterboxed down to fit it, versus
+             Odia's near-square 642x654 reaching 98% - same nominal box,
+             very different visual weight. box_w = sqrt(area x aspect),
+             box_h = sqrt(area / aspect) equalizes that. Not a perfect
+             proxy for perceived size - doesn't account for how much of
+             each glyph's own bounding box is ink vs counter/whitespace,
+             which genuinely differs by script - but a real, measurable
+             improvement over sizing by longest-side alone.) */
           #ka-rail .ka-rail__icons {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            /* 30px, up from 20px - more breathing room between the
+               now-smaller glyphs, per Santosh's direction. */
+            gap: 30px;
             padding-block-start: 24px;
             /* Perpetual downward scroll. Loop distance is one full pass
                through the 13-glyph rotation, so the reset frame shows
@@ -532,33 +536,34 @@
                the "FIXED" note this replaced, in git history, for why
                that has to be an exact full cycle rather than one slot).
                Since the equal-area sizing above makes every glyph a
-               different height, that distance is no longer a clean
-               13 x 48px. Hand-summing the 13 declared icon heights + 13
-               gaps landed on 599.56px, but that was ~0.1px off the
-               browser's *actual* rendered spacing (sub-pixel layout
-               rounding on fractional SVG sizes doesn't sum linearly) -
-               enough to reintroduce a faint version of the same seam
-               this animation exists to avoid. Used the real measured
-               distance instead (headless-browser getBoundingClientRect()
-               between icon[i] and icon[i+13], confirmed identical across
-               three separate cycle boundaries), same measure-don't-guess
-               approach as hero-heading-fit.js. Recompute this (and the
-               duration below) the same way if the per-glyph width/height
-               values in ka-rail-icon.liquid ever change - don't hand-sum
-               them again. Duration holds the same ~68.6px/s rate as the
-               very first version of this animation (599.453 / (48/0.7)).
+               different height, that distance isn't a clean per-icon
+               multiple - it's the real measured distance (headless-
+               browser getBoundingClientRect() between icon[i] and
+               icon[i+13], confirmed identical across three separate
+               cycle boundaries), same measure-don't-guess approach as
+               hero-heading-fit.js. Do not hand-sum the declared per-icon
+               heights + gaps instead - that was tried once already and
+               landed ~0.1px off the browser's actual rendered spacing
+               (sub-pixel layout rounding on fractional SVG sizes doesn't
+               sum linearly), enough to reintroduce a faint version of
+               the seam this animation exists to avoid. Recompute both
+               this and the duration below the same way if the per-glyph
+               width/height values in ka-rail-icon.liquid or the gap
+               above ever change. Duration holds the same ~68.6px/s rate
+               as the very first version of this animation
+               (678.516 / (48/0.7)).
 
                will-change: transform promotes this to its own compositor
                layer so it runs on the GPU/compositor thread rather than
                being repainted on the main thread every frame - real
                perf hygiene for a continuously-animating element. */
-            animation: ka-rail-scroll 8.742s linear infinite;
+            animation: ka-rail-scroll 9.895s linear infinite;
             will-change: transform;
           }
 
           @keyframes ka-rail-scroll {
             from {
-              transform: translateY(-599.453px);
+              transform: translateY(-678.516px);
             }
 
             to {
@@ -841,10 +846,11 @@
         <div id="ka-rail" aria-hidden="true">
           <div class="ka-rail__icons">
             {%- comment -%}
-              175 covers ~8100px of page height (13-glyph cycle averages
-              ~46px per icon+gap unit now that each glyph has its own
-              equal-area, non-uniform size - see .ka-rail__icons in the
-              CSS above); overflow:hidden on #ka-rail still clips
+              175 covers ~9100px of page height (13-glyph cycle averages
+              ~52px per icon+gap unit now that each glyph has its own
+              equal-area, non-uniform size and the gap's been widened -
+              see .ka-rail__icons in the CSS above); overflow:hidden on
+              #ka-rail still clips
               whatever runs past the actual page length. index cycles the
               13 glyphs defined in snippets/ka-rail-icon.liquid (the
               snippet itself takes it modulo 13, so this can just count
