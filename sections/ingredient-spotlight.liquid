@@ -1,0 +1,379 @@
+{% comment %}
+  Ingredient spotlight: a heading, one spice's illustration/benefits at a time,
+  and a row of circular icon buttons that swap which spice is shown. Only the
+  panel matching the clicked button is visible; no page reload/network request,
+  it's a pure client-side show/hide keyed by block index.
+
+  Button icons: pass an uploaded image via the block's "Button icon" setting
+  once real artwork exists. Until then it falls back to a picked icon from the
+  shared icon set (snippets/icon.liquid) via icon-or-image, same pattern the
+  theme already uses for the dietary-icon blocks elsewhere.
+
+  Illustrations: pass an uploaded image via the block's "Illustration" setting.
+  Falls back to a placeholder line-art SVG when empty.
+{% endcomment %}
+
+{% liquid
+  assign first_block = section.blocks | first
+%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  id="ingredient-spotlight-{{ section.id }}"
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} ingredient-spotlight spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  <div class="ingredient-spotlight__inner">
+    {% if section.settings.heading != blank %}
+      <h2 class="ingredient-spotlight__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="ingredient-spotlight__panels">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'spice' -%}
+          <div
+            class="ingredient-spotlight__panel{% if block == first_block %} is-active{% endif %}"
+            data-spice-panel="{{ forloop.index0 }}"
+            {% unless block == first_block %}hidden{% endunless %}
+            {{ block.shopify_attributes }}
+          >
+            <div class="ingredient-spotlight__text">
+              <h3 class="ingredient-spotlight__name">{{ block.settings.name }}</h3>
+              {% if block.settings.benefit_1 != blank
+                or block.settings.benefit_2 != blank
+                or block.settings.benefit_3 != blank
+              %}
+                <ul class="ingredient-spotlight__benefits">
+                  {% if block.settings.benefit_1 != blank %}
+                    <li>{{ block.settings.benefit_1 }}</li>
+                  {% endif %}
+                  {% if block.settings.benefit_2 != blank %}
+                    <li>{{ block.settings.benefit_2 }}</li>
+                  {% endif %}
+                  {% if block.settings.benefit_3 != blank %}
+                    <li>{{ block.settings.benefit_3 }}</li>
+                  {% endif %}
+                </ul>
+              {% endif %}
+            </div>
+            <div class="ingredient-spotlight__image">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 800
+                  | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 40vw, 60vw', widths: '300, 450, 600, 800'
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'ingredient-spotlight__placeholder' }}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="ingredient-spotlight__buttons" role="tablist">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'spice' -%}
+          <button
+            type="button"
+            class="ingredient-spotlight__button{% if block == first_block %} is-active{% endif %}"
+            data-spice-button="{{ forloop.index0 }}"
+            role="tab"
+            aria-selected="{% if block == first_block %}true{% else %}false{% endif %}"
+            aria-label="{{ block.settings.name }}"
+            {{ block.shopify_attributes }}
+          >
+            {%- render 'icon-or-image',
+              icon: block.settings.icon_fallback,
+              image_upload: block.settings.icon_image,
+              width: 28,
+              class_name: 'ingredient-spotlight__icon'
+            -%}
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {% if section.settings.disclaimer != blank %}
+      <div class="ingredient-spotlight__disclaimer">{{ section.settings.disclaimer }}</div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  (() => {
+    const root = document.getElementById('ingredient-spotlight-{{ section.id }}');
+    if (!root) return;
+
+    const buttons = root.querySelectorAll('[data-spice-button]');
+    const panels = root.querySelectorAll('[data-spice-panel]');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const index = button.getAttribute('data-spice-button');
+
+        buttons.forEach((otherButton) => {
+          const isActive = otherButton === button;
+          otherButton.classList.toggle('is-active', isActive);
+          otherButton.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        panels.forEach((panel) => {
+          const isActive = panel.getAttribute('data-spice-panel') === index;
+          panel.classList.toggle('is-active', isActive);
+          panel.hidden = !isActive;
+        });
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .ingredient-spotlight__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  .ingredient-spotlight__heading {
+    margin: 0;
+  }
+
+  .ingredient-spotlight__panel {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .ingredient-spotlight__panel[hidden] {
+    display: none;
+  }
+
+  .ingredient-spotlight__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .ingredient-spotlight__name {
+    margin: 0;
+  }
+
+  .ingredient-spotlight__benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ingredient-spotlight__image {
+    flex: 0 0 auto;
+    width: 40%;
+    max-width: 320px;
+  }
+
+  .ingredient-spotlight__image img,
+  .ingredient-spotlight__image svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ingredient-spotlight__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .ingredient-spotlight__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    padding: 0;
+    border: 1px solid var(--color-primary, currentColor);
+    border-radius: 50%;
+    background: none;
+    color: var(--color-primary, currentColor);
+    cursor: pointer;
+    transition: border-width 0.15s ease;
+  }
+
+  .ingredient-spotlight__button:hover {
+    border-width: 1.5px;
+  }
+
+  .ingredient-spotlight__button.is-active {
+    border-width: 2px;
+  }
+
+  .ingredient-spotlight__icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    color: currentColor;
+  }
+
+  .ingredient-spotlight__disclaimer {
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ingredient-spotlight__panel {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .ingredient-spotlight__image {
+      width: 100%;
+      max-width: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Ingredient spotlight",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Simple, aromatic ingredients"
+    },
+    {
+      "type": "richtext",
+      "id": "disclaimer",
+      "label": "Disclaimer",
+      "default": "<p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, cure, treat, or prevent any disease.</p>"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full width" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "spice",
+      "name": "Spice",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Spice"
+        },
+        {
+          "type": "text",
+          "id": "benefit_1",
+          "label": "Benefit 1"
+        },
+        {
+          "type": "text",
+          "id": "benefit_2",
+          "label": "Benefit 2"
+        },
+        {
+          "type": "text",
+          "id": "benefit_3",
+          "label": "Benefit 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Illustration"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Button icon (custom image)"
+        },
+        {
+          "type": "select",
+          "id": "icon_fallback",
+          "label": "Fallback icon",
+          "info": "Used until a custom button icon is uploaded above.",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "plant", "label": "Plant" },
+            { "value": "pepper", "label": "Pepper" },
+            { "value": "carrot", "label": "Carrot" },
+            { "value": "fire", "label": "Fire" },
+            { "value": "dairy", "label": "Dairy" },
+            { "value": "star", "label": "Star" },
+            { "value": "snowflake", "label": "Snowflake" },
+            { "value": "recycle", "label": "Recycle" }
+          ],
+          "default": "leaf"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient spotlight",
+      "blocks": [
+        { "type": "spice", "settings": { "name": "Cardamom", "benefit_1": "adds warmth", "benefit_2": "aids digestion", "benefit_3": "rich in antioxidants", "icon_fallback": "leaf" } },
+        { "type": "spice", "settings": { "name": "Cinnamon", "benefit_1": "balances blood sugar", "benefit_2": "anti-inflammatory", "benefit_3": "adds natural sweetness", "icon_fallback": "fire" } },
+        { "type": "spice", "settings": { "name": "Cloves", "benefit_1": "natural antiseptic", "benefit_2": "eases nausea", "benefit_3": "boosts immunity", "icon_fallback": "star" } },
+        { "type": "spice", "settings": { "name": "Black pepper", "benefit_1": "boosts nutrient absorption", "benefit_2": "aids digestion", "benefit_3": "adds gentle heat", "icon_fallback": "pepper" } },
+        { "type": "spice", "settings": { "name": "Fennel", "benefit_1": "soothes the stomach", "benefit_2": "freshens breath", "benefit_3": "rich in fiber", "icon_fallback": "plant" } },
+        { "type": "spice", "settings": { "name": "Star anise", "benefit_1": "supports digestion", "benefit_2": "natural expectorant", "benefit_3": "adds licorice warmth", "icon_fallback": "snowflake" } },
+        { "type": "spice", "settings": { "name": "Ginger", "benefit_1": "aids digestion", "benefit_2": "reduces inflammation", "benefit_3": "random fact", "icon_fallback": "carrot" } },
+        { "type": "spice", "settings": { "name": "Coffee bean", "benefit_1": "natural energy boost", "benefit_2": "rich in antioxidants", "benefit_3": "sourced from small farms", "icon_fallback": "recycle" } },
+        { "type": "spice", "settings": { "name": "Tea leaf", "benefit_1": "full of antioxidants", "benefit_2": "supports focus", "benefit_3": "hand-picked & sun-dried", "icon_fallback": "dairy" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

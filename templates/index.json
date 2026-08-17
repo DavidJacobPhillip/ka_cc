@@ -518,416 +518,125 @@
       }
     },
     "ingredients": {
-      "type": "section",
+      "type": "ingredient-spotlight",
       "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Heading",
+        "spice_ginger": {
+          "type": "spice",
+          "name": "Ginger",
           "settings": {
-            "text": "<h2>Simple, aromatic ingredients</h2>",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 16,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "name": "Ginger",
+            "benefit_1": "aids digestion",
+            "benefit_2": "reduces inflammation",
+            "benefit_3": "random fact",
+            "icon_fallback": "carrot"
+          }
         },
-        "ginger_row": {
-          "type": "group",
-          "name": "Ginger spotlight",
+        "spice_cardamom": {
+          "type": "spice",
+          "name": "Cardamom",
           "settings": {
-            "link": "",
-            "open_in_new_tab": false,
-            "content_direction": "row",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 32,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "placeholder": "",
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "ginger_text": {
-              "type": "group",
-              "settings": {
-                "link": "",
-                "open_in_new_tab": false,
-                "content_direction": "column",
-                "vertical_on_mobile": true,
-                "horizontal_alignment": "flex-start",
-                "vertical_alignment": "center",
-                "align_baseline": false,
-                "horizontal_alignment_flex_direction_column": "flex-start",
-                "vertical_alignment_flex_direction_column": "center",
-                "gap": 4,
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "custom_height": 100,
-                "inherit_color_scheme": true,
-                "color_scheme": "",
-                "background_media": "none",
-                "video_position": "cover",
-                "background_image_position": "cover",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "placeholder": "",
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "name": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h3>Ginger</h3>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "h4",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "benefit_1": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>aids digestion</p>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "paragraph",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "benefit_2": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>reduces inflammation</p>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "paragraph",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "benefit_3": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>random fact</p>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "paragraph",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "name",
-                "benefit_1",
-                "benefit_2",
-                "benefit_3"
-              ]
-            },
-            "ginger_image": {
-              "type": "image",
-              "settings": {
-                "link": "",
-                "image_ratio": "square",
-                "width": "custom",
-                "custom_width": 40,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "ginger_text",
-            "ginger_image"
-          ]
+            "name": "Cardamom",
+            "benefit_1": "adds warmth",
+            "benefit_2": "aids digestion",
+            "benefit_3": "rich in antioxidants",
+            "icon_fallback": "leaf"
+          }
         },
-        "icon_row": {
-          "type": "group",
-          "name": "Dietary icons",
+        "spice_cinnamon": {
+          "type": "spice",
+          "name": "Cinnamon",
           "settings": {
-            "link": "",
-            "open_in_new_tab": false,
-            "content_direction": "row",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "center",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "placeholder": "",
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "padding-block-start": 24,
-            "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "icon_1": {
-              "type": "icon",
-              "settings": {
-                "icon": "leaf",
-                "width": 28,
-                "link": "",
-                "open_in_new_tab": false
-              },
-              "blocks": {}
-            },
-            "icon_2": {
-              "type": "icon",
-              "settings": {
-                "icon": "heart",
-                "width": 28,
-                "link": "",
-                "open_in_new_tab": false
-              },
-              "blocks": {}
-            },
-            "icon_3": {
-              "type": "icon",
-              "settings": {
-                "icon": "dairy_free",
-                "width": 28,
-                "link": "",
-                "open_in_new_tab": false
-              },
-              "blocks": {}
-            },
-            "icon_4": {
-              "type": "icon",
-              "settings": {
-                "icon": "gluten_free",
-                "width": 28,
-                "link": "",
-                "open_in_new_tab": false
-              },
-              "blocks": {}
-            },
-            "icon_5": {
-              "type": "icon",
-              "settings": {
-                "icon": "nut_free",
-                "width": 28,
-                "link": "",
-                "open_in_new_tab": false
-              },
-              "blocks": {}
-            },
-            "icon_6": {
-              "type": "icon",
-              "settings": {
-                "icon": "lightning_bolt",
-                "width": 28,
-                "link": "",
-                "open_in_new_tab": false
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "icon_1",
-            "icon_2",
-            "icon_3",
-            "icon_4",
-            "icon_5",
-            "icon_6"
-          ]
+            "name": "Cinnamon",
+            "benefit_1": "balances blood sugar",
+            "benefit_2": "anti-inflammatory",
+            "benefit_3": "adds natural sweetness",
+            "icon_fallback": "fire"
+          }
         },
-        "disclaimer": {
-          "type": "text",
-          "name": "FDA disclaimer",
+        "spice_cloves": {
+          "type": "spice",
+          "name": "Cloves",
           "settings": {
-            "text": "<p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, cure, treat, or prevent any disease.</p><p>However these statements have been evaluated by my grandma. My grandma would be 87 if she was alive today.</p>",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "paragraph",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 16,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "name": "Cloves",
+            "benefit_1": "natural antiseptic",
+            "benefit_2": "eases nausea",
+            "benefit_3": "boosts immunity",
+            "icon_fallback": "star"
+          }
+        },
+        "spice_pepper": {
+          "type": "spice",
+          "name": "Black pepper",
+          "settings": {
+            "name": "Black pepper",
+            "benefit_1": "boosts nutrient absorption",
+            "benefit_2": "aids digestion",
+            "benefit_3": "adds gentle heat",
+            "icon_fallback": "pepper"
+          }
+        },
+        "spice_fennel": {
+          "type": "spice",
+          "name": "Fennel",
+          "settings": {
+            "name": "Fennel",
+            "benefit_1": "soothes the stomach",
+            "benefit_2": "freshens breath",
+            "benefit_3": "rich in fiber",
+            "icon_fallback": "plant"
+          }
+        },
+        "spice_star_anise": {
+          "type": "spice",
+          "name": "Star anise",
+          "settings": {
+            "name": "Star anise",
+            "benefit_1": "supports digestion",
+            "benefit_2": "natural expectorant",
+            "benefit_3": "adds licorice warmth",
+            "icon_fallback": "snowflake"
+          }
+        },
+        "spice_coffee": {
+          "type": "spice",
+          "name": "Coffee bean",
+          "settings": {
+            "name": "Coffee bean",
+            "benefit_1": "natural energy boost",
+            "benefit_2": "rich in antioxidants",
+            "benefit_3": "sourced from small farms",
+            "icon_fallback": "recycle"
+          }
+        },
+        "spice_tea": {
+          "type": "spice",
+          "name": "Tea leaf",
+          "settings": {
+            "name": "Tea leaf",
+            "benefit_1": "full of antioxidants",
+            "benefit_2": "supports focus",
+            "benefit_3": "hand-picked & sun-dried",
+            "icon_fallback": "dairy"
+          }
         }
       },
       "block_order": [
-        "heading",
-        "ginger_row",
-        "icon_row",
-        "disclaimer"
+        "spice_ginger",
+        "spice_cardamom",
+        "spice_cinnamon",
+        "spice_cloves",
+        "spice_pepper",
+        "spice_fennel",
+        "spice_star_anise",
+        "spice_coffee",
+        "spice_tea"
       ],
       "name": "Ingredients",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
+        "heading": "Simple, aromatic ingredients",
+        "disclaimer": "<p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, cure, treat, or prevent any disease.</p><p>However these statements have been evaluated by my grandma. My grandma would be 87 if she was alive today.</p>",
         "color_scheme": "scheme-1",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
+        "section_width": "page-width",
         "padding-block-start": 48,
         "padding-block-end": 32
       }
