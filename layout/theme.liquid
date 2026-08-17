@@ -472,7 +472,8 @@
             inset-block-start: calc(var(--hero-height, 100vh) + 1.5rem);
             inset-block-end: 0;
             inset-inline-start: 0.75rem;
-            width: 40px;
+            /* 46px = 40px + 15%, per Santosh's direction. */
+            width: 46px;
             z-index: -1;
             background: #cd643f;
             overflow: hidden;
@@ -496,57 +497,68 @@
              instead (see snippets/ka-rail-icon.liquid: 13 individual
              glyphs isolated from Santosh's multi-script "ka" wordmark,
              cycled by index). Centered horizontally (align-items:
-             center) within the rail's 40px width; the parent's
+             center) within the rail's 46px width; the parent's
              overflow:hidden (see #ka-rail above) clips whatever the
              repeat count below doesn't fill or overruns, same
              safety-clamp role the old span's sheer repeat-300-times
-             count played for text. Each glyph keeps its own natural
-             aspect ratio within a fixed 28x28 box (viewBox differs per
-             glyph, default preserveAspectRatio scales-to-fit and
-             centers it) rather than being stretched to a uniform shape. */
+             count played for text. Each glyph's own width/height (set
+             inline on its <svg> in the snippet, not here) is sized so
+             its viewBox's aspect ratio - not just its longest side -
+             fills that box, at a shared target area of 784px^2 (the old
+             fixed 28x28 box, which the roundest glyph there, Odia,
+             already filled ~98% of - nothing shrinks below what already
+             existed, the smaller-looking ones just grow to match it).
+             Santosh flagged that fitting every glyph's longest side into
+             an identical square (the old approach) was making some
+             scripts look visibly smaller than others - Malayalam's wide
+             1070x576 viewBox, for example, only reached 54% of the old
+             box's area once letterboxed down to fit, versus Odia's
+             near-square 642x654 reaching 98%. Equal-area sizing (box_w =
+             sqrt(area x aspect), box_h = sqrt(area / aspect)) closes
+             that gap - it's not a perfect proxy for perceived size
+             (doesn't account for how much of each glyph's own bounding
+             box is ink vs counter/whitespace, which genuinely differs by
+             script) but it's a real, measurable improvement over sizing
+             by longest-side alone. */
           #ka-rail .ka-rail__icons {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
             padding-block-start: 24px;
-            /* Perpetual downward scroll. FIXED (was a real bug, not GPU/
-               main-thread jank as first suspected - Santosh reported it
-               as "moves down a few pixels then snaps back," which is
-               exactly what this math was doing): the loop distance was
-               one icon+gap unit (48px), on the theory that uniform slot
-               spacing alone makes any one-unit reset invisible. It
-               doesn't - the 13 rendered glyphs (snippets/ka-rail-icon.
-               liquid) all differ, so shifting by only one slot and
-               resetting swaps in a *different* letterform on every loop,
-               which reads as a bounce rather than a scroll. A transform-
-               only animation like this only ever shows content within
-               one loop-distance's window - it doesn't advance any
-               further no matter how tall the underlying column is, so
-               that swap was visible on literally every cycle, not
-               occasionally.
-
-               Fixed distance: one full pass through the rotation - 13
-               glyphs x 48px = 624px - so the frame at reset shows the
-               exact same glyph in each slot as the frame it's resetting
-               from (index and index+13 are the same script, by the
-               modulo 13 in ka-rail-icon.liquid), making the jump
-               genuinely invisible. Duration scaled by the same 13x
-               (0.7s -> 9.1s) to hold the original ~70px/s rate rather
-               than slowing down now that the loop is longer.
+            /* Perpetual downward scroll. Loop distance is one full pass
+               through the 13-glyph rotation, so the reset frame shows
+               the same glyph in each slot as the frame before it (see
+               the "FIXED" note this replaced, in git history, for why
+               that has to be an exact full cycle rather than one slot).
+               Since the equal-area sizing above makes every glyph a
+               different height, that distance is no longer a clean
+               13 x 48px. Hand-summing the 13 declared icon heights + 13
+               gaps landed on 599.56px, but that was ~0.1px off the
+               browser's *actual* rendered spacing (sub-pixel layout
+               rounding on fractional SVG sizes doesn't sum linearly) -
+               enough to reintroduce a faint version of the same seam
+               this animation exists to avoid. Used the real measured
+               distance instead (headless-browser getBoundingClientRect()
+               between icon[i] and icon[i+13], confirmed identical across
+               three separate cycle boundaries), same measure-don't-guess
+               approach as hero-heading-fit.js. Recompute this (and the
+               duration below) the same way if the per-glyph width/height
+               values in ka-rail-icon.liquid ever change - don't hand-sum
+               them again. Duration holds the same ~68.6px/s rate as the
+               very first version of this animation (599.453 / (48/0.7)).
 
                will-change: transform promotes this to its own compositor
                layer so it runs on the GPU/compositor thread rather than
                being repainted on the main thread every frame - real
-               perf hygiene for a continuously-animating element, kept
-               from the previous (wrong) fix attempt. */
-            animation: ka-rail-scroll 9.1s linear infinite;
+               perf hygiene for a continuously-animating element. */
+            animation: ka-rail-scroll 8.742s linear infinite;
             will-change: transform;
           }
 
           @keyframes ka-rail-scroll {
             from {
-              transform: translateY(-624px);
+              transform: translateY(-599.453px);
             }
 
             to {
@@ -560,9 +572,11 @@
             }
           }
 
+          /* width/height no longer set here - each glyph carries its own
+             (area-matched, see .ka-rail__icons above) size directly on
+             its <svg> in snippets/ka-rail-icon.liquid instead of sharing
+             one fixed box. */
           #ka-rail .ka-rail__icon {
-            width: 28px;
-            height: 28px;
             color: #ffffff;
             flex-shrink: 0;
           }
@@ -575,21 +589,25 @@
              every other section here renders as the default div, so this
              selector naturally excludes it without needing to name it).
              2.5rem stacks on top of each section's own existing
-             var(--page-margin) rather than replacing it, so combined
-             clearance from the true edge is ~2.5rem + page-margin: ~56px
-             on mobile (comfortably past the rail's ~52px footprint
-             there: inset-inline-start 0.75rem + 40px width) and ~80px at
-             desktop (well past its ~60px footprint there). Generous
-             rather than tightly tuned to each breakpoint's exact number,
-             since it's cheap insurance against the same overlap the
-             intro heading hit turning up in a section further down the
-             page that hasn't been individually checked.
+             var(--page-margin) rather than replacing it. Originally
+             tuned so combined clearance comfortably cleared the rail's
+             ~52px mobile / ~60px desktop footprint (inset-inline-start
+             + width) - 2.5rem alone left only ~4px of actual visible gap
+             on mobile (confirmed via screenshot), so it was bumped to
+             3rem for breathing room. Generous rather than tightly tuned
+             to each breakpoint's exact number, since it's cheap
+             insurance against the same overlap the intro heading hit
+             turning up in a section further down the page that hasn't
+             been individually checked.
 
-             2.5rem left only ~4px of actual visible gap between the
-             rail's right edge and the heading on mobile (confirmed via
-             screenshot) - bumped to 3rem for a bit more breathing room. */
+             3.5rem: the rail grew 6px wider (40px -> 46px, +15%, per
+             Santosh's direction) after this was tuned, which eats
+             straight into that already-thin ~4px margin. Bumped by more
+             than the 6px needed (0.5rem = 8px) rather than the exact
+             difference, same "insurance" reasoning as above - can't
+             re-screenshot this build to confirm the new gap directly. */
           #MainContent > div.shopify-section {
-            padding-inline-start: 3rem;
+            padding-inline-start: 3.5rem;
           }
 
           /* "Connections" section (templates/index.json's "intro" key,
@@ -823,12 +841,14 @@
         <div id="ka-rail" aria-hidden="true">
           <div class="ka-rail__icons">
             {%- comment -%}
-              175 covers ~8400px of page height at the 48px unit size
-              (28px icon + 20px gap) set in the CSS above; overflow:hidden
-              on #ka-rail still clips whatever runs past the actual page
-              length. index cycles the 13 glyphs defined in
-              snippets/ka-rail-icon.liquid (the snippet itself takes it
-              modulo 13, so this can just count up).
+              175 covers ~8100px of page height (13-glyph cycle averages
+              ~46px per icon+gap unit now that each glyph has its own
+              equal-area, non-uniform size - see .ka-rail__icons in the
+              CSS above); overflow:hidden on #ka-rail still clips
+              whatever runs past the actual page length. index cycles the
+              13 glyphs defined in snippets/ka-rail-icon.liquid (the
+              snippet itself takes it modulo 13, so this can just count
+              up).
             {%- endcomment -%}
             {%- for i in (1..175) -%}
               {%- render 'ka-rail-icon', index: forloop.index0 -%}
