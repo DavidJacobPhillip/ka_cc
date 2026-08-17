@@ -1,36 +1,43 @@
 {%- comment -%}
   Icon for #ka-rail (layout/theme.liquid), repeated vertically down the
-  rail. Each of the 11 cases below is one letterform from Santosh's
+  rail. Each of the 13 cases below is one letterform from Santosh's
   per-script "KCC Letters - <script>.svg" exports (Bengali, English "Ka",
-  Gujarati, Hindi, Kannada, Malayalam, Odia, Punjabi, Tamil, Telugu, Urdu)
-  - viewBox/path data taken verbatim from those files, with the viewBox
-  tightened to each glyph's real rendered bounding box via a
-  headless-browser getBBox() pass (not hand-measured), so every glyph
-  scales to the same 28x28 box at consistent visual weight regardless of
-  each script's native proportions. English is the one two-letter case -
-  its file draws "K" and "a" as two separate paths, kept together in a
-  single icon (one shared viewBox spanning both, via getBBox() on their
-  union) so the rail reads "Ka" as one word rather than splitting across
-  two rotation slots.
+  Gujarati, Hindi, Kannada, Malayalam, Meitei, Odia, Ol Chiki, Punjabi,
+  Tamil, Telugu, Urdu) - viewBox/path data taken verbatim from those
+  files, with the viewBox tightened to each glyph's real rendered
+  bounding box via a headless-browser getBBox() pass (not hand-measured),
+  so every glyph scales to the same 28x28 box at consistent visual weight
+  regardless of each script's native proportions.
 
-  Two glyphs (Meitei, Ol Chiki) aren't included - both files carry the
-  letterform as an embedded base64 PNG rather than a vector path, and in
-  both cases the PNG's IDAT chunk is truncated (decodes fewer bytes than
-  its own declared chunk length; confirmed via PIL/struct - same failure
-  as the corruption noted previously). Ping Santosh for a clean re-export
-  of those two if they need to be added back in.
+  English and Ol Chiki are the two two-part cases - both files draw their
+  "Ka" as two separate paths (two letters for English; two Ol Chiki
+  characters for the syllable), kept together in a single icon each (one
+  shared viewBox spanning both parts, via getBBox() on their union) so
+  the rail reads a whole word rather than splitting across two rotation
+  slots. Meitei's syllable is a single character, so it's one path.
+
+  Meitei and Ol Chiki were previously excluded: Santosh's first export of
+  those two carried the letterform as an embedded base64 PNG rather than
+  a vector path, and both PNGs had a truncated IDAT chunk. His re-export
+  is proper vector paths (fill + construction-reference stroke outlines,
+  serif:id="_Image..." raster gone entirely) - only the filled paths are
+  used here, the redundant stroke-only outline paths are dropped. Their
+  fill-rule (evenodd, per the source files' root <svg style>) was checked
+  against nonzero via a rendered comparison - both produce an identical
+  result for these particular shapes, so nonzero was kept for consistency
+  with every other case here.
 
   Urdu's file also carries a second, decorative raster element (a wide
-  flourish) alongside its vector letterform - that raster is corrupted the
-  same way, so only the vector path is used here; the flourish is dropped.
+  flourish) alongside its vector letterform - that raster is corrupted,
+  so only the vector path is used here; the flourish is dropped.
 
   fill="currentColor" on each path so #ka-rail's own color setting
   controls it, same as before.
 
-  @param {number} index - which glyph to render, 0-10
+  @param {number} index - which glyph to render, 0-12
 {%- endcomment -%}
 {% liquid
-  assign n = index | modulo: 11
+  assign n = index | modulo: 13
 %}
 {%- case n -%}
     {%- when 0 -%}
@@ -77,5 +84,14 @@
     {%- when 10 -%}
       <svg class="ka-rail__icon" viewBox="9442.745 72.279 866.569 720.400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
         <path d="M9827.033,792.675c-94.567,0 -169.913,-9.792 -226.058,-28.629c-56.508,-18.837 -97.204,-45.208 -122.067,-78.367c-24.112,-33.158 -36.163,-71.217 -36.163,-114.533c0,-30.138 3.383,-61.042 10.554,-93.438c7.917,-32.033 15.817,-60.658 24.117,-85.904l122.067,28.629c-5.279,18.092 -9.792,37.675 -13.558,58.767c-4.15,20.346 -6.025,37.675 -6.025,52.742c0,25.242 8.279,47.467 25.625,66.3c16.962,18.092 45.592,32.396 85.904,42.204c39.929,10.175 93.438,15.071 159.742,15.071c62.171,0 110.4,-1.513 144.671,-4.513c33.904,-3.767 58.021,-9.792 72.346,-18.092c13.942,-9.046 21.092,-21.858 21.092,-39.183c0,-7.917 -4.512,-20.346 -13.558,-37.675c-8.279,-18.092 -25.242,-39.183 -51.233,-63.3c-14.325,-12.812 -29.758,-26.371 -46.721,-40.696c-17.325,-15.071 -33.158,-29.008 -48.229,-42.204c-14.325,-13.942 -26.371,-25.992 -36.163,-36.163c-10.175,-10.921 -15.071,-18.454 -15.071,-22.604c0,-15.071 1.512,-31.65 4.512,-49.742c3.021,-18.092 8.279,-30.521 16.579,-37.675c13.942,-12.812 38.054,-29.392 72.346,-49.742c33.904,-21.092 74.6,-43.7 122.067,-67.812c48.229,-24.112 101.354,-48.592 159.742,-73.837l55.763,119.063c-55.383,24.112 -106.25,47.467 -152.204,69.321c-45.208,22.221 -85.154,43.333 -119.062,63.3c45.208,37.292 81.387,70.833 108.508,100.971c27.117,29.392 47.1,55.762 60.279,79.879c12.812,24.113 21.475,45.971 25.625,64.808c4.896,18.092 7.533,34.671 7.533,49.742c0,42.204 -16.579,76.475 -49.742,102.483c-33.158,25.242 -81.008,43.333 -143.175,54.254c-61.408,10.921 -134.879,16.579 -220.033,16.579l0,-0.017l-0.008,0.013Z" fill="currentColor" fill-rule="nonzero" />
+      </svg>
+    {%- when 11 -%}
+      <svg class="ka-rail__icon" viewBox="70.833 66.667 3575.000 3029.167" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path d="M70.833,66.667l3575,4.167l0,433.333l-150,-0l4.167,2591.667l-3283.333,0l0,-2591.667l-145.833,0l0,-437.5Zm2991.389,2667.02l-3.612,-1779.168l-504.297,416.509l-0.425,1362.5l508.333,0.159Zm-1458.056,-2229.52l4.167,1077.083l508.333,-435.417l-4.167,-641.667l-508.333,-0Zm-945.833,0l4.167,1779.167l504.167,-416.667l0,-1362.5l-508.333,-0Zm1458.056,2229.225l-3.831,-1077.085l-508.469,435.258l3.967,641.668l508.333,0.159Zm-949.723,0l0,-358.628l-441.944,358.628l441.944,0Zm1383.373,-2229.225l-0.039,358.628l441.983,-358.58l-441.944,-0.048Z" fill="currentColor" fill-rule="nonzero" />
+      </svg>
+    {%- when 12 -%}
+      <svg class="ka-rail__icon" viewBox="0.000 70.832 4591.665 3050.001" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path d="M0,70.833l512.5,4.167l-4.167,866.667l366.667,-358.333l145.833,0l145.833,70.833l141.667,70.833l95.833,70.833l125,79.167l216.667,216.667l75,70.833l141.667,291.667l37.5,216.667l0,362.5l-33.333,216.667l-75,145.833l-70.833,145.833l-75,70.833l-70.833,75l-75,70.833l-70.833,75l-75,70.833l-133.333,95.833l-83.333,50l-141.667,58.333l-75,12.5l-145.833,0l-266.667,-191.667l-533.333,-533.333l-75,-66.667l0,-2258.333Zm508.333,1383.333l0,791.667l437.5,370.833l145.833,0l437.5,-437.5l0,-581.25l-50,-85.417l-91.667,-137.5l-220.833,-216.667l-150,-70.833l-141.667,0l-366.667,366.667Z" fill="currentColor" fill-rule="nonzero" />
+        <path d="M2258.333,1379.167l0,-437.5l279.167,0l-129.167,-175l-79.827,-129.167l-41.007,-108.333l0,-112.5l41.667,-83.333l66.667,-95.833l175,-104.167l129.167,-62.5l975,0l133.333,54.167l358.333,283.333l195.833,250l145.833,195.833l83.333,383.333l0,758.333l-25,258.333l-54.167,212.5l-87.5,150l-83.333,87.5l-83.333,108.333l-83.333,100l-116.667,79.167l-237.5,129.167l-725,0l-179.167,-62.5l-154.167,-95.833l-125,-104.167l-133.333,-125l-95.833,-116.667l-54.167,-112.5l-25,-125l4.167,-175c0,0 7.159,-17.919 12.822,-24.795l1149.678,-1396.038l79.167,-108.333l16.667,-58.333l-8.333,-58.333l-8.333,-41.667l-45.833,-29.167l-41.667,-25l-625,4.167l-37.5,8.333l-12.5,29.167l-8.333,45.833l8.333,37.5l54.167,70.833l54.167,100l75,79.167l66.667,116.667l8.333,133.333l4.167,104.167l-41.667,104.167l-50,58.333l-70.833,25l-654.167,0Zm1679.167,-433.333l-1100,1400l37.5,87.5l79.167,79.167l91.667,104.167l108.333,62.5l116.667,12.5l195.833,12.5l154.167,-8.333l270.833,-150l129.167,-258.333l104.167,-312.5l25,-141.667l0,-383.333l-16.667,-95.833l-33.333,-87.5l-58.333,-158.333l-104.167,-162.5Z" fill="currentColor" fill-rule="nonzero" />
       </svg>
 {%- endcase -%}

@@ -493,7 +493,7 @@
 
           /* Replaces the previous repeated "ka" text - a column of small
              letterform icons running down the center of the rail
-             instead (see snippets/ka-rail-icon.liquid: 11 individual
+             instead (see snippets/ka-rail-icon.liquid: 13 individual
              glyphs isolated from Santosh's multi-script "ka" wordmark,
              cycled by index). Centered horizontally (align-items:
              center) within the rail's 40px width; the parent's
@@ -821,9 +821,9 @@
               175 covers ~8400px of page height at the 48px unit size
               (28px icon + 20px gap) set in the CSS above; overflow:hidden
               on #ka-rail still clips whatever runs past the actual page
-              length. index cycles the 11 glyphs defined in
+              length. index cycles the 13 glyphs defined in
               snippets/ka-rail-icon.liquid (the snippet itself takes it
-              modulo 11, so this can just count up).
+              modulo 13, so this can just count up).
             {%- endcomment -%}
             {%- for i in (1..175) -%}
               {%- render 'ka-rail-icon', index: forloop.index0 -%}
