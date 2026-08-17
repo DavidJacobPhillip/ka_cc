@@ -493,7 +493,7 @@
 
           /* Replaces the previous repeated "ka" text - a column of small
              letterform icons running down the center of the rail
-             instead (see snippets/ka-rail-icon.liquid: 12 individual
+             instead (see snippets/ka-rail-icon.liquid: 11 individual
              glyphs isolated from Santosh's multi-script "ka" wordmark,
              cycled by index). Centered horizontally (align-items:
              center) within the rail's 40px width; the parent's
@@ -521,8 +521,22 @@
                different anyway so that's not visible as a seam).
                0.7s keeps roughly the same px/s rate as the last speed
                request (8s per 560px unit, ~70px/s) rather than
-               resetting to a slower pace now that the unit is smaller. */
+               resetting to a slower pace now that the unit is smaller.
+
+               will-change: transform promotes this to its own compositor
+               layer, so the animation runs on the GPU/compositor thread
+               instead of being repainted on the main thread every frame -
+               added after Santosh reported the rail "bouncing" every few
+               seconds. The math above is already a seamless loop, so the
+               skip is main-thread contention elsewhere stealing frames
+               from it (the homepage hero now autoplays/loops a real video
+               - templates/index.json's video_1 - and a video's loop
+               restart is a common source of exactly this kind of periodic
+               stutter). This doesn't fix whatever's causing that
+               contention, but it stops this animation from being able to
+               visibly skip because of it. */
             animation: ka-rail-scroll 0.7s linear infinite;
+            will-change: transform;
           }
 
           @keyframes ka-rail-scroll {
@@ -807,9 +821,9 @@
               175 covers ~8400px of page height at the 48px unit size
               (28px icon + 20px gap) set in the CSS above; overflow:hidden
               on #ka-rail still clips whatever runs past the actual page
-              length. index cycles the 12 glyphs defined in
+              length. index cycles the 11 glyphs defined in
               snippets/ka-rail-icon.liquid (the snippet itself takes it
-              modulo 12, so this can just count up).
+              modulo 11, so this can just count up).
             {%- endcomment -%}
             {%- for i in (1..175) -%}
               {%- render 'ka-rail-icon', index: forloop.index0 -%}
