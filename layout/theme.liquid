@@ -510,38 +510,43 @@
             align-items: center;
             gap: 20px;
             padding-block-start: 24px;
-            /* Perpetual downward scroll. Loop distance is exactly one
-               icon+gap unit (28px icon + 20px gap = 48px) rather than
-               the whole (very tall) column - since every icon+gap slot
-               is the same size, shifting by one unit and resetting
-               lands on a frame with the same slot geometry as the
-               start, so the loop reads as continuous instead of
-               visibly jumping (this only holds the spacing steady, not
-               the specific glyph in each slot, but adjacent glyphs are
-               different anyway so that's not visible as a seam).
-               0.7s keeps roughly the same px/s rate as the last speed
-               request (8s per 560px unit, ~70px/s) rather than
-               resetting to a slower pace now that the unit is smaller.
+            /* Perpetual downward scroll. FIXED (was a real bug, not GPU/
+               main-thread jank as first suspected - Santosh reported it
+               as "moves down a few pixels then snaps back," which is
+               exactly what this math was doing): the loop distance was
+               one icon+gap unit (48px), on the theory that uniform slot
+               spacing alone makes any one-unit reset invisible. It
+               doesn't - the 13 rendered glyphs (snippets/ka-rail-icon.
+               liquid) all differ, so shifting by only one slot and
+               resetting swaps in a *different* letterform on every loop,
+               which reads as a bounce rather than a scroll. A transform-
+               only animation like this only ever shows content within
+               one loop-distance's window - it doesn't advance any
+               further no matter how tall the underlying column is, so
+               that swap was visible on literally every cycle, not
+               occasionally.
+
+               Fixed distance: one full pass through the rotation - 13
+               glyphs x 48px = 624px - so the frame at reset shows the
+               exact same glyph in each slot as the frame it's resetting
+               from (index and index+13 are the same script, by the
+               modulo 13 in ka-rail-icon.liquid), making the jump
+               genuinely invisible. Duration scaled by the same 13x
+               (0.7s -> 9.1s) to hold the original ~70px/s rate rather
+               than slowing down now that the loop is longer.
 
                will-change: transform promotes this to its own compositor
-               layer, so the animation runs on the GPU/compositor thread
-               instead of being repainted on the main thread every frame -
-               added after Santosh reported the rail "bouncing" every few
-               seconds. The math above is already a seamless loop, so the
-               skip is main-thread contention elsewhere stealing frames
-               from it (the homepage hero now autoplays/loops a real video
-               - templates/index.json's video_1 - and a video's loop
-               restart is a common source of exactly this kind of periodic
-               stutter). This doesn't fix whatever's causing that
-               contention, but it stops this animation from being able to
-               visibly skip because of it. */
-            animation: ka-rail-scroll 0.7s linear infinite;
+               layer so it runs on the GPU/compositor thread rather than
+               being repainted on the main thread every frame - real
+               perf hygiene for a continuously-animating element, kept
+               from the previous (wrong) fix attempt. */
+            animation: ka-rail-scroll 9.1s linear infinite;
             will-change: transform;
           }
 
           @keyframes ka-rail-scroll {
             from {
-              transform: translateY(-48px);
+              transform: translateY(-624px);
             }
 
             to {
