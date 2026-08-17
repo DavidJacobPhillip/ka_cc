@@ -4,10 +4,12 @@
   panel matching the clicked button is visible; no page reload/network request,
   it's a pure client-side show/hide keyed by block index.
 
-  Button icons: pass an uploaded image via the block's "Button icon" setting
-  once real artwork exists. Until then it falls back to a picked icon from the
-  shared icon set (snippets/icon.liquid) via icon-or-image, same pattern the
-  theme already uses for the dietary-icon blocks elsewhere.
+  Button icons: snippets/ingredient-icon.liquid has Santosh's real artwork for
+  6 of the 9 button slots (see that file's header comment for how it was
+  extracted and which slots are covered). For any block whose position has no
+  case there, or once a merchant uploads a custom "Button icon" image, this
+  falls back to icon-or-image (the shared icon set / uploaded image), same
+  pattern the theme already uses for the dietary-icon blocks elsewhere.
 
   Illustrations: pass an uploaded image via the block's "Illustration" setting.
   Falls back to a placeholder line-art SVG when empty.
@@ -25,7 +27,7 @@
 >
   <div class="ingredient-spotlight__inner">
     {% if section.settings.heading != blank %}
-      <h2 class="ingredient-spotlight__heading">{{ section.settings.heading }}</h2>
+      <h2 class="ingredient-spotlight__heading h2">{{ section.settings.heading }}</h2>
     {% endif %}
 
     <div class="ingredient-spotlight__panels">
@@ -84,12 +86,21 @@
             aria-label="{{ block.settings.name }}"
             {{ block.shopify_attributes }}
           >
-            {%- render 'icon-or-image',
-              icon: block.settings.icon_fallback,
-              image_upload: block.settings.icon_image,
-              width: 28,
-              class_name: 'ingredient-spotlight__icon'
-            -%}
+            {%- capture custom_icon -%}
+              {%- if block.settings.icon_image == blank -%}
+                {%- render 'ingredient-icon', index: forloop.index0, class_name: 'ingredient-spotlight__icon' -%}
+              {%- endif -%}
+            {%- endcapture -%}
+            {%- if custom_icon != blank -%}
+              {{- custom_icon -}}
+            {%- else -%}
+              {%- render 'icon-or-image',
+                icon: block.settings.icon_fallback,
+                image_upload: block.settings.icon_image,
+                width: 28,
+                class_name: 'ingredient-spotlight__icon'
+              -%}
+            {%- endif -%}
           </button>
         {%- endif -%}
       {%- endfor -%}
@@ -133,20 +144,36 @@
   .ingredient-spotlight__inner {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1.5rem;
     width: 100%;
   }
 
   .ingredient-spotlight__heading {
     margin: 0;
+    text-align: center;
+    /* Matches the intro section's ("Let's create connections...") heading
+       font-size exactly, formula copied from layout/theme.liquid's
+       [id$="__intro"] .text-block.h2 > * rules per Santosh's request that
+       this heading render at the same size. Both ends of the clamp() are
+       identical to that rule; kept as two separate declarations (mobile
+       base + >=750px override) rather than one combined expression so a
+       future change to the intro's numbers can be diffed against this one
+       line-for-line. */
+    font-size: calc(var(--font-h2--size) * clamp(0.935, calc(0.935 + ((100vw - 320px) / 160px) * 0.11), 1.045));
+  }
+
+  @media screen and (min-width: 750px) {
+    .ingredient-spotlight__heading {
+      font-size: calc(var(--font-h2--size) * clamp(1.045, calc(1.045 + ((100vw - 750px) / 550px) * 0.495), 1.54));
+    }
   }
 
   .ingredient-spotlight__panel {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .ingredient-spotlight__panel[hidden] {
@@ -156,27 +183,32 @@
   .ingredient-spotlight__text {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
     min-width: 0;
   }
 
   .ingredient-spotlight__name {
     margin: 0;
+    text-align: center;
   }
 
   .ingredient-spotlight__benefits {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.25rem;
     margin: 0;
     padding: 0;
     list-style: none;
+    text-align: center;
   }
 
   .ingredient-spotlight__image {
     flex: 0 0 auto;
-    width: 40%;
-    max-width: 320px;
+    width: 60%;
+    max-width: 420px;
+    margin-inline: auto;
   }
 
   .ingredient-spotlight__image img,
@@ -206,10 +238,15 @@
     background: none;
     color: var(--color-primary, currentColor);
     cursor: pointer;
-    transition: border-width 0.15s ease;
+    /* width/height (not transform: scale) so growing on hover actually
+       reflows the flex row and pushes neighboring buttons apart, per
+       Santosh's request, rather than just visually overlapping them. */
+    transition: width 0.15s ease, height 0.15s ease, border-width 0.15s ease;
   }
 
   .ingredient-spotlight__button:hover {
+    width: 4.5rem;
+    height: 4.5rem;
     border-width: 1.5px;
   }
 
@@ -218,9 +255,23 @@
   }
 
   .ingredient-spotlight__icon {
-    width: 1.75rem;
-    height: 1.75rem;
+    /* Larger than the 1.75rem this started at: several of the real button
+       icons (snippets/ingredient-icon.liquid) are thin line-art with fine
+       detail (e.g. the ginger root's wrinkle lines) that reads as an
+       illegible squiggle at 28px. 2.25rem gives the line work enough room
+       to actually be visible while still leaving a visible border ring
+       around it inside the 4rem circle. */
+    width: 2.25rem;
+    height: 2.25rem;
     color: currentColor;
+    /* Icons scale up slightly along with the button circle on hover so they
+       don't look stranded in the middle of a bigger circle. */
+    transition: width 0.15s ease, height 0.15s ease;
+  }
+
+  .ingredient-spotlight__button:hover .ingredient-spotlight__icon {
+    width: 2.55rem;
+    height: 2.55rem;
   }
 
   .ingredient-spotlight__disclaimer {
@@ -229,14 +280,9 @@
   }
 
   @media screen and (max-width: 749px) {
-    .ingredient-spotlight__panel {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
     .ingredient-spotlight__image {
       width: 100%;
-      max-width: none;
+      max-width: 320px;
     }
   }
 {% endstylesheet %}
