@@ -602,6 +602,24 @@
     /* preserves the inherited grid layout when this submenu wrapper is used */
     display: contents;
   }
+
+  /* Reskin the desktop dropdown (not the "More" overflow variant) into a
+     small centered rounded card instead of the default edge-to-edge bar,
+     per Santosh's reference screenshot. Only shape/position/color changes
+     here - background, box-shadow, visibility and the clip-path reveal are
+     already set above and driven by --submenu-height, which header-menu.js
+     measures from the *actual rendered* submenu each time it opens, so
+     resizing the box doesn't break that animation. The mega-menu's own
+     internal column grid (--menu-columns-desktop etc.) is left untouched:
+     its column spans are computed server-side in mega-menu-list.liquid, so
+     overriding it here would desync the grid math and misalign items. */
+  .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
+    width: max-content;
+    max-width: min(90vw, 40rem);
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 1.5rem;
+  }
 {% endstylesheet %}
 
 {% schema %}
