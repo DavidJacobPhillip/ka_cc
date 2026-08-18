@@ -1,0 +1,39 @@
+{%- doc -%}
+  Renders a grid of placeholder image + title + filler-description cards,
+  one per child link, for the header menu's "Card grid" style. Used instead
+  of snippets/mega-menu.liquid when a nav item's children aren't backed by
+  real Shopify collections/products (e.g. informational pages like "Farmers
+  markets" or "Our story"), so there's no product/collection image to pull
+  from natively. Swap the placeholder_svg_tag calls and filler_descriptions
+  below for real images/copy once Santosh has them.
+
+  @param {object} parent_link - The linklist to render cards for.
+
+  @example
+  {% render 'mega-menu-cards', parent_link: link %}
+{%- enddoc -%}
+
+{% liquid
+  assign placeholders = 'product-1,product-2,product-3,product-4,product-5,product-6' | split: ','
+  assign filler_descriptions = 'Fresh, simple, and made with care.|More on this soon.|Worth a closer look next time you visit.|A little something to explore.' | split: '|'
+%}
+
+<ul class="mega-menu-cards__grid list-unstyled">
+  {% for link in parent_link.links %}
+    {% liquid
+      assign placeholder_index = forloop.index0 | modulo: placeholders.size
+      assign placeholder = placeholders[placeholder_index]
+      assign description_index = forloop.index0 | modulo: filler_descriptions.size
+      assign description = filler_descriptions[description_index]
+    %}
+    <li class="mega-menu-cards__item">
+      <a href="{{ link.url }}" class="mega-menu-cards__link">
+        {{ placeholder | placeholder_svg_tag: 'mega-menu-cards__image' }}
+        <span class="mega-menu-cards__text">
+          <span class="mega-menu-cards__title">{{ link.title }}</span>
+          <span class="mega-menu-cards__description">{{ description }}</span>
+        </span>
+      </a>
+    </li>
+  {% endfor %}
+</ul>

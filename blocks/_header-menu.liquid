@@ -612,13 +612,61 @@
      resizing the box doesn't break that animation. The mega-menu's own
      internal column grid (--menu-columns-desktop etc.) is left untouched:
      its column spans are computed server-side in mega-menu-list.liquid, so
-     overriding it here would desync the grid math and misalign items. */
-  .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
+     overriding it here would desync the grid math and misalign items.
+
+     Uses :not() (not :where()) so this wins over the base rule above without
+     relying on source order - the base rule's own :not() is wrapped in
+     :where(), which carries zero specificity, so a plain :not() here is
+     guaranteed to be more specific regardless of how the stylesheet gets
+     bundled. */
+  .menu-list__list-item:not([slot='overflow']) > .menu-list__submenu {
     width: max-content;
     max-width: min(90vw, 40rem);
     left: 50%;
     transform: translateX(-50%);
     border-radius: 1.5rem;
+  }
+
+  /* "Card grid" menu style: placeholder image + title + filler description
+     per child link (snippets/mega-menu-cards.liquid), for nav items whose
+     children aren't real Shopify collections/products. */
+  .mega-menu-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mega-menu-cards__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .mega-menu-cards__image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.75rem;
+    object-fit: cover;
+  }
+
+  .mega-menu-cards__title {
+    font-weight: bold;
+  }
+
+  .mega-menu-cards__description {
+    font-size: 0.875rem;
+    opacity: 0.75;
+  }
+
+  @media screen and (max-width: 749px) {
+    .mega-menu-cards__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 {% endstylesheet %}
 
@@ -653,6 +701,10 @@
         {
           "value": "featured_collections",
           "label": "t:options.featured_collections"
+        },
+        {
+          "value": "card_grid",
+          "label": "Card grid (placeholder images)"
         }
       ],
       "default": "collection_images"
