@@ -132,63 +132,10 @@
         "enable_transparent_header_collection": true,
         "collection_color_scheme": "inverse"
       }
-    },
-    "floating_navbar": {
-      "type": "floating-navbar",
-      "blocks": {
-        "item_services": {
-          "type": "item",
-          "settings": {
-            "label": "Shop",
-            "content_type": "links",
-            "link_1_label": "Coffee",
-            "link_1_url": "#",
-            "link_2_label": "Tea",
-            "link_2_url": "#",
-            "link_3_label": "Spices",
-            "link_3_url": "#",
-            "link_4_label": "Gift sets",
-            "link_4_url": "#"
-          }
-        },
-        "item_products": {
-          "type": "item",
-          "settings": {
-            "label": "Featured",
-            "content_type": "products"
-          }
-        },
-        "item_about": {
-          "type": "item",
-          "settings": {
-            "label": "About",
-            "content_type": "links",
-            "link_1_label": "Our story",
-            "link_1_url": "#",
-            "link_2_label": "Ingredients",
-            "link_2_url": "#",
-            "link_3_label": "Farmers market",
-            "link_3_url": "#",
-            "link_4_label": "Contact",
-            "link_4_url": "#"
-          }
-        }
-      },
-      "block_order": [
-        "item_services",
-        "item_products",
-        "item_about"
-      ],
-      "name": "Floating navbar",
-      "settings": {
-        "heading": "Quick links",
-        "color_scheme": "scheme-1"
-      }
     }
   },
   "order": [
     "header_announcements_gnaCjj",
-    "header_section",
-    "floating_navbar"
+    "header_section"
   ]
 }
