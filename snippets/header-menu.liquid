@@ -54,17 +54,13 @@
             style="{% render 'submenu-font-styles', settings: block_settings %}"
           >
             {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-            {% if menu_content_type == 'card_grid' %}
-              {% render 'mega-menu-cards', parent_link: link %}
-            {% else %}
-              {% render 'mega-menu',
-                parent_link: link,
-                id: list_id,
-                menu_content_type: menu_content_type,
-                content_aspect_ratio: ratio,
-                image_border_radius: image_border_radius
-              %}
-            {% endif %}
+            {% render 'mega-menu',
+              parent_link: link,
+              id: list_id,
+              menu_content_type: menu_content_type,
+              content_aspect_ratio: ratio,
+              image_border_radius: image_border_radius
+            %}
           </div>
         </div>
       {%- endif -%}
