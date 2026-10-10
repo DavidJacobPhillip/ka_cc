@@ -66,7 +66,27 @@
                   | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 40vw, 60vw', widths: '300, 450, 600, 800'
                 }}
               {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'ingredient-spotlight__placeholder' }}
+                {%- comment -%}
+                  No merchant-uploaded illustration yet: reuse the real line-art
+                  from ingredient-icon.liquid (same artwork as the button below,
+                  just scaled up) instead of Shopify's generic placeholder_svg_tag
+                  set, which has no relation to the spice (e.g. a backpack icon
+                  for ginger). Falls back further to the fallback icon/image for
+                  the 3 button slots with no matching line-art.
+                {%- endcomment -%}
+                {%- capture large_icon -%}
+                  {%- render 'ingredient-icon', index: forloop.index0, class_name: 'ingredient-spotlight__placeholder' -%}
+                {%- endcapture -%}
+                {%- if large_icon != blank -%}
+                  {{- large_icon -}}
+                {%- else -%}
+                  {%- render 'icon-or-image',
+                    icon: block.settings.icon_fallback,
+                    image_upload: block.settings.icon_image,
+                    width: 240,
+                    class_name: 'ingredient-spotlight__placeholder'
+                  -%}
+                {%- endif -%}
               {%- endif -%}
             </div>
           </div>
@@ -216,6 +236,10 @@
     width: 100%;
     height: auto;
     display: block;
+  }
+
+  .ingredient-spotlight__placeholder {
+    color: var(--color-primary, currentColor);
   }
 
   .ingredient-spotlight__buttons {
@@ -415,7 +439,7 @@
         { "type": "spice", "settings": { "name": "Black pepper", "benefit_1": "boosts nutrient absorption", "benefit_2": "aids digestion", "benefit_3": "adds gentle heat", "icon_fallback": "pepper" } },
         { "type": "spice", "settings": { "name": "Fennel", "benefit_1": "soothes the stomach", "benefit_2": "freshens breath", "benefit_3": "rich in fiber", "icon_fallback": "plant" } },
         { "type": "spice", "settings": { "name": "Star anise", "benefit_1": "supports digestion", "benefit_2": "natural expectorant", "benefit_3": "adds licorice warmth", "icon_fallback": "snowflake" } },
-        { "type": "spice", "settings": { "name": "Ginger", "benefit_1": "aids digestion", "benefit_2": "reduces inflammation", "benefit_3": "random fact", "icon_fallback": "carrot" } },
+        { "type": "spice", "settings": { "name": "Ginger", "benefit_1": "aids digestion", "benefit_2": "reduces inflammation", "benefit_3": "used in Ayurvedic medicine for 5,000+ years", "icon_fallback": "carrot" } },
         { "type": "spice", "settings": { "name": "Coffee bean", "benefit_1": "natural energy boost", "benefit_2": "rich in antioxidants", "benefit_3": "sourced from small farms", "icon_fallback": "recycle" } },
         { "type": "spice", "settings": { "name": "Tea leaf", "benefit_1": "full of antioxidants", "benefit_2": "supports focus", "benefit_3": "hand-picked & sun-dried", "icon_fallback": "dairy" } }
       ]
