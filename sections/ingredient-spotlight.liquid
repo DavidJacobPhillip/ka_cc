@@ -4,12 +4,13 @@
   panel matching the clicked button is visible; no page reload/network request,
   it's a pure client-side show/hide keyed by block index.
 
-  Button icons: snippets/ingredient-icon.liquid has Santosh's real artwork for
-  6 of the 9 button slots (see that file's header comment for how it was
-  extracted and which slots are covered). For any block whose position has no
-  case there, or once a merchant uploads a custom "Button icon" image, this
-  falls back to icon-or-image (the shared icon set / uploaded image), same
-  pattern the theme already uses for the dietary-icon blocks elsewhere.
+  Button icons: Santosh's real artwork for all 9 spices lives in
+  snippets/ingredient-icon-sprite.liquid, rendered once below as a hidden SVG
+  sprite; ingredient-icon.liquid then points at a symbol by spice name. For a
+  name with no matching drawing, or once a merchant uploads a custom "Button
+  icon" image, this falls back to icon-or-image (the shared icon set / uploaded
+  image), same pattern the theme already uses for the dietary-icon blocks
+  elsewhere.
 
   Illustrations: pass an uploaded image via the block's "Illustration" setting.
   Falls back to a placeholder line-art SVG when empty.
@@ -25,6 +26,7 @@
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} ingredient-spotlight spacing-style"
   style="{%- render 'spacing-style', settings: section.settings %}"
 >
+  {%- render 'ingredient-icon-sprite', uid: section.id -%}
   <div class="ingredient-spotlight__inner">
     {% if section.settings.heading != blank %}
       <h2 class="ingredient-spotlight__heading h2">{{ section.settings.heading }}</h2>
@@ -68,14 +70,22 @@
               {%- else -%}
                 {%- comment -%}
                   No merchant-uploaded illustration yet: reuse the real line-art
-                  from ingredient-icon.liquid (same artwork as the button below,
-                  just scaled up) instead of Shopify's generic placeholder_svg_tag
+                  from the icon sprite (same artwork as the button below, just
+                  scaled up) instead of Shopify's generic placeholder_svg_tag
                   set, which has no relation to the spice (e.g. a backpack icon
                   for ginger). Falls back further to the fallback icon/image for
-                  the 3 button slots with no matching line-art.
+                  any spice with no matching drawing.
+
+                  Note: ginger and cinnamon are raster in the source artwork, so
+                  they soften at this size in a way the other seven don't - give
+                  those blocks a real "Illustration" image if that shows.
                 {%- endcomment -%}
                 {%- capture large_icon -%}
-                  {%- render 'ingredient-icon', index: forloop.index0, class_name: 'ingredient-spotlight__placeholder' -%}
+                  {%- render 'ingredient-icon',
+                    name: block.settings.name,
+                    uid: section.id,
+                    class_name: 'ingredient-spotlight__placeholder'
+                  -%}
                 {%- endcapture -%}
                 {%- if large_icon != blank -%}
                   {{- large_icon -}}
@@ -108,7 +118,11 @@
           >
             {%- capture custom_icon -%}
               {%- if block.settings.icon_image == blank -%}
-                {%- render 'ingredient-icon', index: forloop.index0, class_name: 'ingredient-spotlight__icon' -%}
+                {%- render 'ingredient-icon',
+                  name: block.settings.name,
+                  uid: section.id,
+                  class_name: 'ingredient-spotlight__icon'
+                -%}
               {%- endif -%}
             {%- endcapture -%}
             {%- if custom_icon != blank -%}
@@ -240,6 +254,12 @@
 
   .ingredient-spotlight__placeholder {
     color: var(--color-primary, currentColor);
+    /* The sprite symbols are square (each one is framed on its own artwork),
+       so cap the width rather than letting it fill the 420px column and make
+       the panel a good deal taller than the text beside it. */
+    width: min(100%, 300px);
+    height: auto;
+    margin-inline: auto;
   }
 
   .ingredient-spotlight__buttons {
