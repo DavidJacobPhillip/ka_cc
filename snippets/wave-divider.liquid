@@ -1,12 +1,59 @@
 {% comment %}
-  Renders a wave-shaped SVG divider, used to curve into a section below it.
-  Accepts: `fill` (CSS color for the wave, defaults to the dark brown scheme-5 tone).
+  Renders a wave-shaped SVG divider, used to curve into a section below it,
+  optionally with a line of text set along the inside of the curve.
+
+  Accepts:
+    fill     - CSS colour for the wave (defaults to the dark brown scheme-5 tone)
+    text     - optional label repeated along the inside of the curve, e.g. "Reviews ·"
+    repeat   - how many times to repeat it (default 16, enough to overrun 1440 wide)
+    text_color - CSS colour for that text (defaults to the brand terracotta)
+
+  The curve is set with preserveAspectRatio="xMidYMin slice" rather than "none".
+  "none" stretches the viewBox to whatever box CSS gives it, independently on each
+  axis - fine for a plain shape, but it would squash the text badly at narrow
+  widths (at 430px the horizontal scale is about half the vertical). "slice"
+  scales both axes by the same factor and crops the overflow instead, so the
+  lettering keeps its shape at every width. Anchored to the top (yMin) so the
+  crop always comes off the bottom, which is solid fill and runs into the section
+  below - cropping the top would clip the peak of the curve flat.
 {% endcomment %}
+
+{%- liquid
+  assign wave_text = text | default: ''
+  assign wave_repeat = repeat | default: 16
+-%}
+
 <div class="wave-divider" style="--wave-fill: {{ fill | default: '#2b1608' }};">
-  <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M0,40 C240,100 480,0 720,40 C960,80 1200,20 1440,50 L1440,100 L0,100 Z" fill="var(--wave-fill)"></path>
+  <svg
+    viewBox="0 0 1440 100"
+    preserveAspectRatio="xMidYMin slice"
+    xmlns="http://www.w3.org/2000/svg"
+    {% if wave_text == blank %}aria-hidden="true"{% else %}role="img" aria-label="{{ wave_text | strip_html | strip }}"{% endif %}
+  >
+    <path
+      d="M0,40 C240,100 480,0 720,40 C960,80 1200,20 1440,50 L1440,100 L0,100 Z"
+      fill="var(--wave-fill)"
+    ></path>
+
+    {%- if wave_text != blank -%}
+      {%- comment -%}
+        The same curve shifted down, so the text rides parallel to the edge of
+        the wave rather than sitting on it. Kept as its own path (not the fill
+        path above) because that one closes along the bottom of the box, which
+        the text would then run back along.
+      {%- endcomment -%}
+      <defs>
+        <path id="wave-divider-textpath" d="M0,74 C240,134 480,34 720,74 C960,114 1200,54 1440,84" fill="none"></path>
+      </defs>
+      <text class="wave-divider__text" fill="{{ text_color | default: '#cd643f' }}">
+        <textPath href="#wave-divider-textpath" xlink:href="#wave-divider-textpath">
+          {%- for i in (1..wave_repeat) -%}{{ wave_text }}&#160;&#160;{%- endfor -%}
+        </textPath>
+      </text>
+    {%- endif -%}
   </svg>
 </div>
+
 {% stylesheet %}
   .wave-divider {
     position: relative;
@@ -21,25 +68,40 @@
      wave starting ~56px from the left edge and stopping ~40px short of the
      right, while the coloured section it curves into is edge to edge - so both
      ends of the curve met the flat top of the band below in a visible step.
-     The wave is decoration, not content, so it should ignore the rail gutter
-     and span the viewport like the band it introduces. */
-  .shopify-section:has(.wave-divider) {
+     The wave is decoration, not content, so it ignores the rail gutter and
+     spans the viewport like the band it introduces.
+
+     The #MainContent prefix is load-bearing: the gutter comes from
+     "#MainContent > div.shopify-section" in layout/theme.liquid, and an id
+     beats a plain class, so a .shopify-section:has(...) rule alone loses to it
+     and the wave stays inset. */
+  #MainContent > div.shopify-section:has(.wave-divider) {
     padding-inline: 0;
   }
 
-  .shopify-section:has(.wave-divider) .section-content-wrapper > * {
+  #MainContent > div.shopify-section:has(.wave-divider) .section-content-wrapper > * {
     width: 100%;
   }
 
   .wave-divider svg {
     display: block;
     width: 100%;
-    height: 60px;
+    height: 72px;
+  }
+
+  .wave-divider__text {
+    font-family: var(--font-heading--family);
+    font-size: 26px;
+    letter-spacing: 0.08em;
   }
 
   @media screen and (min-width: 750px) {
     .wave-divider svg {
-      height: 110px;
+      height: 124px;
+    }
+
+    .wave-divider__text {
+      font-size: 22px;
     }
   }
 {% endstylesheet %}

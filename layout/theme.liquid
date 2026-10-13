@@ -474,7 +474,24 @@
             inset-inline-start: 0.75rem;
             /* 46px = 40px + 15%, per Santosh's direction. */
             width: 46px;
-            z-index: -1;
+            /* Above the page rather than behind it, so the rail reads as one
+               unbroken ribbon down the edge.
+
+               At -1 it sat above the coloured section backgrounds (the theme
+               puts those at -2) but below anything in normal flow, so any
+               full-bleed decoration punched a hole in it - the reviews wave
+               divider cut a visible 45px gap where the two crossed. Lowering
+               the wave instead doesn't work: something in the section wrapper
+               chain paints at 1 regardless, so the rail has to clear that.
+
+               2 is the smallest value that wins (0 and 1 are both still
+               covered, measured on the dev server) and stays well under the
+               sticky header at 8 and the menu drawer at 18, so it can't ride
+               over the navigation. Safe against content because every section
+               below the hero already pads 3.5rem clear of the rail's 58px
+               footprint; what it now covers is full-bleed background, which is
+               the intent. */
+            z-index: 2;
             background: #cd643f;
             overflow: hidden;
             pointer-events: none;
