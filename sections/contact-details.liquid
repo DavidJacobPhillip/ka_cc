@@ -1,0 +1,179 @@
+{% comment %}
+  The other ways to reach us, to sit alongside the contact form.
+
+  A bare form asks people to write a message without telling them who reads it
+  or how long it takes, and gives no route at all to the two enquiries most
+  likely to arrive - catering and "where are you this weekend". Both reference
+  sites answer those before the form, not after.
+
+  Each route is a block, so adding a wholesale or press contact later is a theme
+  editor job.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} contact-details spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  {%- if section.settings.heading != blank -%}
+    <h2 class="contact-details__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  {%- if section.settings.body != blank -%}
+    <p class="contact-details__intro">{{ section.settings.body }}</p>
+  {%- endif -%}
+
+  <ul class="contact-details__list" role="list">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'route' -%}
+        <li class="contact-details__item" {{ block.shopify_attributes }}>
+          <h3 class="contact-details__label">{{ block.settings.label }}</h3>
+          {%- if block.settings.detail != blank -%}
+            <p class="contact-details__detail">{{ block.settings.detail }}</p>
+          {%- endif -%}
+          {%- if block.settings.link_label != blank -%}
+            <a class="contact-details__link" href="{{ block.settings.link_url | default: '#' }}">
+              {{- block.settings.link_label -}}
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% stylesheet %}
+  .contact-details__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.2;
+    margin: 0 0 0.75rem;
+  }
+
+  .contact-details__intro {
+    margin: 0 0 2.25rem;
+    max-width: 52ch;
+    line-height: 1.7;
+    opacity: 0.8;
+  }
+
+  .contact-details__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .contact-details__list {
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      gap: 2.5rem;
+    }
+  }
+
+  .contact-details__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-primary, currentColor);
+    margin: 0 0 0.6rem;
+    padding-block-end: 0.6rem;
+    border-block-end: 1px solid var(--color-border, currentColor);
+  }
+
+  .contact-details__detail {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    opacity: 0.78;
+  }
+
+  .contact-details__link {
+    display: inline-block;
+    margin-block-start: 0.6rem;
+    font-size: 0.9375rem;
+    color: var(--color-primary, currentColor);
+    text-underline-offset: 0.3em;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact details",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Other ways to reach us" },
+    { "type": "textarea", "id": "body", "label": "Body" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "route",
+      "name": "Route",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "textarea", "id": "detail", "label": "Detail" },
+        { "type": "text", "id": "link_label", "label": "Link label" },
+        { "type": "url", "id": "link_url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact details",
+      "settings": {
+        "body": "The form goes straight to us. We're a small team, so give us a day or two - faster if you catch us at the market."
+      },
+      "blocks": [
+        {
+          "type": "route",
+          "settings": {
+            "label": "Email",
+            "detail": "[Draft: add the address you want public]",
+            "link_label": "hello@[draft].com",
+            "link_url": "mailto:hello@example.com"
+          }
+        },
+        {
+          "type": "route",
+          "settings": {
+            "label": "Catering & events",
+            "detail": "Weddings, offices, pop-ups - tell us roughly how many people and when, and we'll come back with options."
+          }
+        },
+        {
+          "type": "route",
+          "settings": {
+            "label": "Come find us",
+            "detail": "We pour in person every Saturday. Easiest way to try it before you buy.",
+            "link_label": "Market schedule",
+            "link_url": "/pages/visit-us"
+          }
+        },
+        {
+          "type": "route",
+          "settings": {
+            "label": "Instagram",
+            "detail": "Where the day-to-day lives.",
+            "link_label": "[Draft: @handle]",
+            "link_url": "#"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

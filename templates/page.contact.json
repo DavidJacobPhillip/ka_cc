@@ -168,9 +168,65 @@
         "padding-block-start": 40,
         "padding-block-end": 70
       }
+    },
+    "contact_details": {
+      "type": "contact-details",
+      "blocks": {
+        "r1": {
+          "type": "route",
+          "settings": {
+            "label": "Email",
+            "detail": "[Draft: add the address you want public]",
+            "link_label": "hello@[draft].com",
+            "link_url": "mailto:hello@example.com"
+          }
+        },
+        "r2": {
+          "type": "route",
+          "settings": {
+            "label": "Catering & events",
+            "detail": "Weddings, offices, pop-ups — tell us roughly how many people and when, and we'll come back with options.",
+            "link_label": "",
+            "link_url": ""
+          }
+        },
+        "r3": {
+          "type": "route",
+          "settings": {
+            "label": "Come find us",
+            "detail": "We pour in person every Saturday. Easiest way to try it before you buy.",
+            "link_label": "Market schedule",
+            "link_url": "/pages/visit-us"
+          }
+        },
+        "r4": {
+          "type": "route",
+          "settings": {
+            "label": "Instagram",
+            "detail": "Where the day-to-day lives.",
+            "link_label": "[Draft: @handle]",
+            "link_url": "#"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "heading": "Other ways to reach us",
+        "body": "The form goes straight to us. We're a small team, so give us a day or two — faster if you catch us at the market.",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
     }
   },
   "order": [
-    "section"
+    "section",
+    "contact_details"
   ]
 }
