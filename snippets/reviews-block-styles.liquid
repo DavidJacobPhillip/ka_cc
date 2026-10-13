@@ -1,0 +1,88 @@
+{% comment %}
+  Formatting for the homepage reviews run: the "Reviews ·" marquee and the
+  quote beneath it.
+
+  Those are two separate sibling sections in templates/index.json (plus the
+  wave divider above them) with no shared wrapper to hang a class on, so the
+  rules below are scoped from the wave that opens the run:
+
+    .shopify-section:has(.wave-divider)        the wave
+    + .shopify-section                         the marquee
+    + .shopify-section + .shopify-section      the quote
+
+  That does assume the three stay in that order. If they get reordered or one
+  is removed, the styling drops off rather than landing on the wrong section -
+  worth knowing, but it won't break the page.
+
+  Rendered from the wave section's custom Liquid block, next to the divider.
+  Wording is untouched; this only changes how it's set.
+{% endcomment %}
+
+{% stylesheet %}
+  /* --- the marquee ------------------------------------------------------ */
+
+  /* The marquee spans the full page, which runs it under the vertical script
+     rail pinned to the left edge - the first "Reviews" was being sliced in
+     half by it. Fading both ends hides that collision and stops the loop
+     starting and ending on a hard vertical cut. */
+  .shopify-section:has(.wave-divider) + .shopify-section marquee-component {
+    --reviews-fade: 7rem;
+
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--reviews-fade),
+      #000 calc(100% - var(--reviews-fade)),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--reviews-fade),
+      #000 calc(100% - var(--reviews-fade)),
+      transparent
+    );
+  }
+
+  /* Hold it back so it reads as a label running behind the quote instead of
+     competing with it - at full-strength white it was the loudest thing in the
+     band. The colour change to brand orange is set on the block itself in
+     templates/index.json; dimming white instead just turned it muddy grey,
+     whereas the orange recedes from the white quote on its own and picks up
+     the rail down the left edge. */
+  .shopify-section:has(.wave-divider) + .shopify-section .marquee__content {
+    opacity: 0.85;
+  }
+
+  /* --- the quote -------------------------------------------------------- */
+
+  .shopify-section:has(.wave-divider) + .shopify-section + .shopify-section
+    .section-content-wrapper
+    > *:first-child {
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  /* Attribution: smaller, dimmer and tracked out a little, so the quote is
+     clearly the thing being read and this is the footnote to it. The rule
+     above it is there to separate the two without relying on space alone. */
+  .shopify-section:has(.wave-divider) + .shopify-section + .shopify-section
+    .section-content-wrapper
+    > *:last-child {
+    opacity: 0.62;
+    letter-spacing: 0.03em;
+    line-height: 1.65;
+  }
+
+  .shopify-section:has(.wave-divider) + .shopify-section + .shopify-section
+    .section-content-wrapper
+    > *:last-child::before {
+    content: '';
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    margin: 0 auto 0.9rem;
+    background: currentColor;
+    opacity: 0.5;
+  }
+{% endstylesheet %}

@@ -14,6 +14,23 @@
     margin-block-end: -1px;
   }
 
+  /* Full-bleed the wave.
+
+     Section wrappers carry a left gutter so content clears the vertical script
+     rail, and the block inside the section is trimmed in again. That left the
+     wave starting ~56px from the left edge and stopping ~40px short of the
+     right, while the coloured section it curves into is edge to edge - so both
+     ends of the curve met the flat top of the band below in a visible step.
+     The wave is decoration, not content, so it should ignore the rail gutter
+     and span the viewport like the band it introduces. */
+  .shopify-section:has(.wave-divider) {
+    padding-inline: 0;
+  }
+
+  .shopify-section:has(.wave-divider) .section-content-wrapper > * {
+    width: 100%;
+  }
+
   .wave-divider svg {
     display: block;
     width: 100%;
