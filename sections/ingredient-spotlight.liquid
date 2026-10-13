@@ -254,12 +254,13 @@
 
   .ingredient-spotlight__placeholder {
     color: var(--color-primary, currentColor);
-    /* The sprite symbols are square (each one is framed on its own artwork),
+    /* The sprite symbols are square (each is framed on its button's circle),
        so cap the width rather than letting it fill the 420px column and make
        the panel a good deal taller than the text beside it. */
     width: min(100%, 300px);
     height: auto;
     margin-inline: auto;
+    overflow: visible;
   }
 
   .ingredient-spotlight__buttons {
@@ -299,23 +300,20 @@
   }
 
   .ingredient-spotlight__icon {
-    /* Larger than the 1.75rem this started at: several of the real button
-       icons (snippets/ingredient-icon.liquid) are thin line-art with fine
-       detail (e.g. the ginger root's wrinkle lines) that reads as an
-       illegible squiggle at 28px. 2.25rem gives the line work enough room
-       to actually be visible while still leaving a visible border ring
-       around it inside the 4rem circle. */
-    width: 2.25rem;
-    height: 2.25rem;
-    color: currentColor;
-    /* Icons scale up slightly along with the button circle on hover so they
-       don't look stranded in the middle of a bigger circle. */
-    transition: width 0.15s ease, height 0.15s ease;
-  }
+    /* Fill the button. Each icon's viewBox is its own circle from the source
+       artwork, so sizing the svg to the button lines the drawing up with the
+       CSS border ring exactly as it's drawn - the art covers ~90-100% of the
+       circle there. Sizing the icon well inside the button (this was 2.25rem
+       in a 4rem circle) left far more empty space than the artwork has, and
+       shrank the fine line work to where it reads as a squiggle.
 
-  .ingredient-spotlight__button:hover .ingredient-spotlight__icon {
-    width: 2.55rem;
-    height: 2.55rem;
+       Percentages, so this grows with the button on hover for free. */
+    width: 100%;
+    height: 100%;
+    color: currentColor;
+    /* Tea leaf and star anise are drawn slightly larger than their ring in the
+       source and spill past it on purpose; don't clip that off. */
+    overflow: visible;
   }
 
   .ingredient-spotlight__disclaimer {
