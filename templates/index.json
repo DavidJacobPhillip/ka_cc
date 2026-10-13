@@ -648,7 +648,7 @@
           "type": "custom-liquid",
           "name": "Wave divider",
           "settings": {
-            "custom_liquid": "{% render 'wave-divider', fill: '#2b1608', text: 'Reviews ·', repeat: 16 %}{% render 'reviews-block-styles' %}"
+            "custom_liquid": "{% render 'wave-divider', fill: '#2b1608', text: 'Reviews ·', repeat: 16, name: 'reviews' %}{% render 'reviews-block-styles' %}"
           },
           "blocks": {}
         }
@@ -1070,7 +1070,7 @@
                 "cap": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>[draft — caption was cut off in the mockup] when our biggest fan stops by</p>",
+                    "text": "<p>when our biggest fan stops by</p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "center",
@@ -1343,7 +1343,7 @@
                 "cap": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>[draft — caption was cut off in the mockup] some of our loyal friends</p>",
+                    "text": "<p>some of our loyal friends</p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "center",
@@ -1414,15 +1414,138 @@
         "padding-block-start": 48,
         "padding-block-end": 80
       }
+    },
+    "value_props": {
+      "type": "value-props",
+      "blocks": {
+        "p1": {
+          "type": "prop",
+          "settings": {
+            "title": "Whole spices, ground fresh",
+            "body": "Nothing pre-ground, nothing sitting in a warehouse losing its oils. We mill in small batches so the cardamom still smells like cardamom."
+          }
+        },
+        "p2": {
+          "type": "prop",
+          "settings": {
+            "title": "Two leaves, two origins",
+            "body": "Assam for malty depth, Kericho for backbone. One tea alone gives you one note; blended, they hold their own against milk and spice."
+          }
+        },
+        "p3": {
+          "type": "prop",
+          "settings": {
+            "title": "Built for a real cup",
+            "body": "Brewed the way it's made at home — on the stove, with milk, no syrups. If it disappears under a splash of oat milk, we haven't done our job."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "heading": "Why people keep coming back",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    },
+    "founder_note": {
+      "type": "founder-note",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "A note from us",
+        "heading": "We just wanted chai that tasted like home",
+        "body": "<p>[Draft — rewrite in your own voice, this is a stand-in] It started because nothing we could buy tasted like the chai we grew up on. Everything was either syrupy and sweet or so faint you lost it the moment it hit milk.</p><p>So we started making it ourselves — whole spices, ground in small batches, a tea blend picked to stand up rather than disappear. We brought it to a farmers market to see if anyone else felt the same way. They did.</p>",
+        "signature": "— [Draft: founder name]",
+        "caption": "[Draft: who's in the photo]",
+        "link_label": "Read our story",
+        "link_url": "/pages/our-story",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 72,
+        "padding-block-end": 72
+      }
+    },
+    "find_us": {
+      "type": "find-us",
+      "blocks": {
+        "m1": {
+          "type": "market",
+          "settings": {
+            "name": "Cedar Mills Farmers Market",
+            "when": "Saturdays, 9 AM – 2 PM",
+            "detail": "Brewed and served fresh every Saturday. [Draft — confirm the stall location within the market.]",
+            "link_label": "Directions",
+            "link_url": ""
+          }
+        },
+        "m2": {
+          "type": "market",
+          "settings": {
+            "name": "PSU Farmers Market",
+            "when": "[Draft: confirm day & time]",
+            "detail": "[Draft — confirm whether this is a regular spot or seasonal.] Portland State University, downtown.",
+            "link_label": "Directions",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2"
+      ],
+      "settings": {
+        "eyebrow": "Find us",
+        "heading": "We're at the market this weekend",
+        "body": "No storefront yet — we pour in person. Come find the kettle.",
+        "link_label": "All the places you can find us",
+        "link_url": "/pages/visit-us",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 72,
+        "padding-block-end": 72
+      }
+    },
+    "wave_out": {
+      "type": "section",
+      "blocks": {
+        "wave_svg": {
+          "type": "custom-liquid",
+          "name": "Wave divider (closing)",
+          "settings": {
+            "custom_liquid": "{% render 'wave-divider', fill: '#2b1608', flip: true %}"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "wave_svg"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "section_width": "full-width",
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "hero_main",
     "intro",
+    "value_props",
     "shop_teaser",
     "ingredients",
     "wave",
     "review_quote",
+    "wave_out",
+    "founder_note",
+    "find_us",
     "gallery"
   ]
 }

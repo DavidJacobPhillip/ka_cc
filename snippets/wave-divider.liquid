@@ -21,9 +21,16 @@
 {%- liquid
   assign wave_text = text | default: ''
   assign wave_repeat = repeat | default: 16
+  assign wave_class = 'wave-divider'
+  if name != blank
+    assign wave_class = wave_class | append: ' wave-divider--' | append: name
+  endif
+  if flip
+    assign wave_class = wave_class | append: ' wave-divider--flipped'
+  endif
 -%}
 
-<div class="wave-divider" style="--wave-fill: {{ fill | default: '#2b1608' }};">
+<div class="{{ wave_class }}" style="--wave-fill: {{ fill | default: '#2b1608' }};">
   <svg
     viewBox="0 0 1440 100"
     preserveAspectRatio="xMidYMin slice"
@@ -87,6 +94,18 @@
     display: block;
     width: 100%;
     height: 72px;
+  }
+
+  /* Closing the band: the same curve mirrored, so a coloured section is
+     bookended rather than entering on a curve and leaving on a hard edge.
+     Flipped ones carry no text - it would read upside down. */
+  .wave-divider--flipped {
+    margin-block-end: 0;
+    margin-block-start: -1px;
+  }
+
+  .wave-divider--flipped svg {
+    transform: scaleY(-1);
   }
 
   .wave-divider__text {

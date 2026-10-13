@@ -1,0 +1,220 @@
+{% comment %}
+  Where to find us - the farmers market schedule, on the homepage.
+
+  Both reference sites surface their physical locations on the homepage rather
+  than burying them on a Locations page, and for a brand that people currently
+  meet at a market stall this is arguably the most useful block on the site: it
+  answers "where can I actually get this" without a click.
+
+  Each market is a block, so adding a third stall or a seasonal one is a theme
+  editor job. Times live on the block so they can be corrected without touching
+  the page copy.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} find-us spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  <div class="find-us__head">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="find-us__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2 class="find-us__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.body != blank -%}
+      <p class="find-us__intro">{{ section.settings.body }}</p>
+    {%- endif -%}
+  </div>
+
+  <ul class="find-us__list" role="list">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'market' -%}
+        <li class="find-us__market" {{ block.shopify_attributes }}>
+          <h3 class="find-us__market-name">{{ block.settings.name }}</h3>
+          {%- if block.settings.when != blank -%}
+            <p class="find-us__when">{{ block.settings.when }}</p>
+          {%- endif -%}
+          {%- if block.settings.detail != blank -%}
+            <p class="find-us__detail">{{ block.settings.detail }}</p>
+          {%- endif -%}
+          {%- if block.settings.link_url != blank -%}
+            <a class="find-us__map" href="{{ block.settings.link_url }}">
+              {{ block.settings.link_label | default: 'Directions' }}
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+
+  {%- if section.settings.link_label != blank -%}
+    <a class="find-us__cta" href="{{ section.settings.link_url | default: '#' }}">
+      {{- section.settings.link_label -}}
+    </a>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .find-us__head {
+    max-width: 44ch;
+    margin-block-end: 2.75rem;
+  }
+
+  .find-us__eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-primary, currentColor);
+  }
+
+  .find-us__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+
+  .find-us__intro {
+    margin: 0;
+    line-height: 1.7;
+    opacity: 0.8;
+  }
+
+  .find-us__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .find-us__list {
+      grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  /* Card rather than a plain list: these are the one thing on the page someone
+     might want to act on immediately, so they get an edge and a hover. */
+  .find-us__market {
+    padding: 1.75rem;
+    border: 1px solid var(--color-border, currentColor);
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .find-us__market:hover {
+    border-color: var(--color-primary, currentColor);
+    transform: translateY(-2px);
+  }
+
+  .find-us__market-name {
+    font-family: var(--font-heading--family);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0 0 0.6rem;
+  }
+
+  .find-us__when {
+    margin: 0 0 0.6rem;
+    font-size: 0.9375rem;
+    color: var(--color-primary, currentColor);
+  }
+
+  .find-us__detail {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    opacity: 0.75;
+  }
+
+  .find-us__map,
+  .find-us__cta {
+    display: inline-block;
+    font-size: 0.9375rem;
+    color: var(--color-primary, currentColor);
+    text-underline-offset: 0.3em;
+  }
+
+  .find-us__map {
+    margin-block-start: 1rem;
+  }
+
+  .find-us__cta {
+    margin-block-start: 2rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Find us",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Find us" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "We're at the market this weekend" },
+    { "type": "textarea", "id": "body", "label": "Body" },
+    { "type": "text", "id": "link_label", "label": "Link label" },
+    { "type": "url", "id": "link_url", "label": "Link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72 }
+  ],
+  "blocks": [
+    {
+      "type": "market",
+      "name": "Market",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Market name" },
+        { "type": "text", "id": "when", "label": "Day & time" },
+        { "type": "textarea", "id": "detail", "label": "Detail" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Directions" },
+        { "type": "url", "id": "link_url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Find us",
+      "settings": {
+        "body": "No storefront yet - we pour in person. Come find the kettle.",
+        "link_label": "All the places you can find us",
+        "link_url": "/pages/visit-us"
+      },
+      "blocks": [
+        {
+          "type": "market",
+          "settings": {
+            "name": "Cedar Mills Farmers Market",
+            "when": "Saturdays, 9 AM – 2 PM",
+            "detail": "Brewed and served fresh every Saturday. [Draft - confirm the stall location within the market.]"
+          }
+        },
+        {
+          "type": "market",
+          "settings": {
+            "name": "PSU Farmers Market",
+            "when": "[Draft: confirm day & time]",
+            "detail": "[Draft - confirm whether this is a regular spot or seasonal.] Portland State University, downtown."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

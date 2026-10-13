@@ -1,0 +1,214 @@
+{% comment %}
+  Founder's note - a portrait alongside a short signed message.
+
+  Both Kolkata Chai Co and Elaichi Co run one of these, and it's the section
+  that does the most work for a small brand: it's the difference between "a chai
+  company" and "these particular people make this chai". Elaichi sets theirs as
+  a polaroid, which is the cue taken here - the portrait sits slightly rotated
+  on a card, so a phone snapshot looks deliberate rather than like a stock gap.
+
+  With no image set it falls back to a captioned placeholder frame rather than
+  collapsing, so the layout can be judged before the real photo exists.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} founder-note spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  <div class="founder-note__inner">
+    <figure class="founder-note__portrait">
+      <div class="founder-note__frame">
+        {%- if section.settings.portrait != blank -%}
+          {{
+            section.settings.portrait
+            | image_url: width: 800
+            | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 32vw, 80vw', widths: '300, 500, 800'
+          }}
+        {%- else -%}
+          <div class="founder-note__placeholder">
+            <span>Portrait</span>
+          </div>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.caption != blank -%}
+        <figcaption class="founder-note__caption">{{ section.settings.caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+
+    <div class="founder-note__text">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="founder-note__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="founder-note__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <div class="founder-note__body rte">{{ section.settings.body }}</div>
+      {%- endif -%}
+      {%- if section.settings.signature != blank -%}
+        <p class="founder-note__signature">{{ section.settings.signature }}</p>
+      {%- endif -%}
+      {%- if section.settings.link_label != blank -%}
+        <a class="founder-note__link" href="{{ section.settings.link_url | default: '#' }}">
+          {{- section.settings.link_label -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .founder-note__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .founder-note__inner {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+      gap: 4.5rem;
+    }
+  }
+
+  .founder-note__portrait {
+    margin: 0;
+    max-width: 22rem;
+    justify-self: center;
+  }
+
+  /* Polaroid: a white card with a deep bottom lip, tipped a degree or two. */
+  .founder-note__frame {
+    background: #fff;
+    padding: 0.75rem 0.75rem 3.25rem;
+    box-shadow: 0 10px 30px rgb(43 22 8 / 12%);
+    transform: rotate(-2deg);
+  }
+
+  .founder-note__frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .founder-note__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    background: repeating-linear-gradient(
+      -45deg,
+      #f3ece5,
+      #f3ece5 10px,
+      #ece2d8 10px,
+      #ece2d8 20px
+    );
+    color: #9b8574;
+    font-size: 0.8125rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .founder-note__caption {
+    transform: rotate(-2deg);
+    margin-block-start: -2.4rem;
+    text-align: center;
+    font-size: 0.9375rem;
+    color: #6f5a49;
+    position: relative;
+  }
+
+  .founder-note__eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-primary, currentColor);
+  }
+
+  .founder-note__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 1.25rem;
+    text-wrap: balance;
+  }
+
+  .founder-note__body {
+    font-size: 1rem;
+    line-height: 1.75;
+    opacity: 0.85;
+    max-width: 52ch;
+  }
+
+  .founder-note__body p {
+    margin: 0 0 1rem;
+  }
+
+  /* Stands in for a handwritten signature until there's a real one to drop in
+     as an image - italic serif at a larger size reads as signed rather than as
+     another line of body copy. */
+  .founder-note__signature {
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: 1.25rem;
+    margin: 1.5rem 0 0;
+  }
+
+  .founder-note__link {
+    display: inline-block;
+    margin-block-start: 1.5rem;
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    color: var(--color-primary, currentColor);
+    text-underline-offset: 0.3em;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Founder note",
+  "settings": [
+    { "type": "image_picker", "id": "portrait", "label": "Portrait" },
+    { "type": "text", "id": "caption", "label": "Photo caption" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "body", "label": "Body" },
+    { "type": "text", "id": "signature", "label": "Signature" },
+    { "type": "text", "id": "link_label", "label": "Link label" },
+    { "type": "url", "id": "link_url", "label": "Link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72 }
+  ],
+  "presets": [
+    {
+      "name": "Founder note",
+      "settings": {
+        "eyebrow": "A note from us",
+        "heading": "We just wanted chai that tasted like home",
+        "body": "<p>[Draft - rewrite in your own voice, this is a stand-in] It started because nothing we could buy tasted like the chai we grew up on. Everything was either syrupy and sweet or so faint you lost it the moment it hit milk.</p><p>So we started making it ourselves - whole spices, ground in small batches, a tea blend picked to stand up rather than disappear. We brought it to a farmers market to see if anyone else felt the same way. They did.</p>",
+        "signature": "— [Draft: founder name]",
+        "caption": "[Draft: who's in the photo]",
+        "link_label": "Read our story",
+        "link_url": "/pages/our-story"
+      }
+    }
+  ]
+}
+{% endschema %}

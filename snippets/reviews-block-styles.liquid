@@ -5,8 +5,13 @@
   with the wave above it, so the rules below are scoped from the wave that
   opens the run:
 
-    .shopify-section:has(.wave-divider)   the wave
-    + .shopify-section                    the quote
+    .shopify-section:has(.wave-divider--reviews)   the opening wave
+    + .shopify-section                             the quote
+
+  Scoped to the --reviews wave specifically, not any wave: there's now a second
+  (flipped) one closing the band below the quote, and a bare .wave-divider
+  selector would have matched that too and applied the attribution styling to
+  whatever section followed it.
 
   That assumes the two stay adjacent and in that order. If they're reordered or
   something is inserted between them the styling drops off rather than landing
@@ -20,7 +25,7 @@
 {% endcomment %}
 
 {% stylesheet %}
-  .shopify-section:has(.wave-divider) + .shopify-section .section-content-wrapper > *:first-child {
+  .shopify-section:has(.wave-divider--reviews) + .shopify-section .section-content-wrapper > *:first-child {
     line-height: 1.25;
     text-wrap: balance;
   }
@@ -28,13 +33,13 @@
   /* Attribution: smaller, dimmer and tracked out a little, so the quote is
      clearly the thing being read and this is the footnote to it. The rule
      above it separates the two without relying on space alone. */
-  .shopify-section:has(.wave-divider) + .shopify-section .section-content-wrapper > *:last-child {
+  .shopify-section:has(.wave-divider--reviews) + .shopify-section .section-content-wrapper > *:last-child {
     opacity: 0.62;
     letter-spacing: 0.03em;
     line-height: 1.65;
   }
 
-  .shopify-section:has(.wave-divider)
+  .shopify-section:has(.wave-divider--reviews)
     + .shopify-section
     .section-content-wrapper
     > *:last-child::before {
