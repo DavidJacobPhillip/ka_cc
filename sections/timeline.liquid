@@ -26,11 +26,78 @@
         <li class="timeline__entry" {{ block.shopify_attributes }}>
           <span class="timeline__marker">{{ block.settings.marker }}</span>
           <div class="timeline__content">
-            {%- if block.settings.title != blank -%}
-              <h3 class="timeline__title">{{ block.settings.title }}</h3>
-            {%- endif -%}
-            {%- if block.settings.body != blank -%}
-              <p class="timeline__body">{{ block.settings.body }}</p>
+            <div class="timeline__text">
+              {%- if block.settings.title != blank -%}
+                <h3 class="timeline__title">{{ block.settings.title }}</h3>
+              {%- endif -%}
+              {%- if block.settings.body != blank -%}
+                <p class="timeline__body">{{ block.settings.body }}</p>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%}
+              Photos. Each slot takes either an upload (image_picker, which
+              is what the theme editor offers) or the filename of a file in
+              assets/ - the milestone photos ship with the theme, and a
+              JSON template can't reference an uploaded file it doesn't
+              have an ID for. The upload wins where both are set, so
+              replacing a shipped photo later is an editor job.
+
+              Rendered at natural aspect ratio rather than cropped to a
+              common one: the set is a mix of portrait and landscape phone
+              photos, and several of the landscape ones put people at the
+              edges, where a centre crop would cut them out. The CSS gives
+              them a shared height instead, so a row still lines up.
+
+              An upload carries its own dimensions, but Liquid can't read
+              them off a theme asset, so asset photos declare theirs in a
+              "WIDTHxHEIGHT" setting. Without that the browser has no
+              aspect ratio to reserve - the CSS fixes height and leaves
+              width auto - and every photo on a page this long would jolt
+              the layout as it loaded.
+            {%- endcomment -%}
+            {%- capture photos -%}
+              {%- for i in (1..2) -%}
+                {%- liquid
+                  if i == 1
+                    assign upload = block.settings.image
+                    assign asset_name = block.settings.photo
+                    assign alt = block.settings.photo_alt
+                    assign size = block.settings.photo_size
+                  else
+                    assign upload = block.settings.image_2
+                    assign asset_name = block.settings.photo_2
+                    assign alt = block.settings.photo_2_alt
+                    assign size = block.settings.photo_2_size
+                  endif
+
+                  assign dims = size | split: 'x'
+                  assign asset_width = dims[0] | default: 900
+                  assign asset_height = dims[1] | default: 900
+                -%}
+                {%- if upload != blank -%}
+                  <img
+                    class="timeline__photo"
+                    src="{{ upload | image_url: width: 900 }}"
+                    alt="{{ alt | escape }}"
+                    width="{{ upload.width }}"
+                    height="{{ upload.height }}"
+                    loading="lazy"
+                  >
+                {%- elsif asset_name != blank -%}
+                  <img
+                    class="timeline__photo"
+                    src="{{ asset_name | asset_img_url: '900x' }}"
+                    alt="{{ alt | escape }}"
+                    width="{{ asset_width }}"
+                    height="{{ asset_height }}"
+                    loading="lazy"
+                  >
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- if photos != blank -%}
+              <div class="timeline__photos">{{ photos }}</div>
             {%- endif -%}
           </div>
         </li>
@@ -63,7 +130,9 @@
     margin: 0;
     padding: 0;
     position: relative;
-    max-width: 44rem;
+    /* Wide enough for a text column and a photo column side by side. The
+       text itself is still held to a readable measure below. */
+    max-width: 58rem;
   }
 
   /* The rail. Drawn on the list and inset by half a marker so it runs through
@@ -122,7 +191,57 @@
     margin: 0;
     line-height: 1.7;
     opacity: 0.8;
-    max-width: 52ch;
+    max-width: 46ch;
+  }
+
+  /* A justified row: every photo gets the same height and keeps its own
+     aspect ratio, so portrait and landscape shots sit on one baseline
+     without being cropped to match. */
+  .timeline__photos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block-start: 1rem;
+  }
+
+  .timeline__photo {
+    height: 8.5rem;
+    width: auto;
+    max-width: 100%;
+    border-radius: 0.5rem;
+    object-fit: cover;
+    /* Phone photos straight off a camera roll; a hairline keeps the pale
+       ones from bleeding into the page background. */
+    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.06), 0 0.5rem 1.25rem rgb(43 22 8 / 0.1);
+  }
+
+  /* Once there's room, photos move out of the text's way and sit in their
+     own column rather than stacking underneath it - otherwise the entries
+     run down the left edge and leave most of the page empty, and the page
+     gets very tall. */
+  @media screen and (min-width: 900px) {
+    .timeline__content {
+      display: grid;
+      /* The text column is capped at its own measure rather than taking
+         1fr: left to grow it would push the photos out to the far right
+         and open a dead gap in the middle of every entry. */
+      grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+      column-gap: 2.5rem;
+      align-items: start;
+    }
+
+    .timeline__photos {
+      margin-block-start: 0.35rem;
+    }
+
+    .timeline__photo {
+      height: 9.5rem;
+    }
+
+    /* Entries with no photo get the full width back. */
+    .timeline__content:not(:has(.timeline__photos)) .timeline__text {
+      grid-column: 1 / -1;
+    }
   }
 
   .timeline__thanks {
@@ -175,7 +294,20 @@
       "settings": [
         { "type": "text", "id": "marker", "label": "Year / marker" },
         { "type": "text", "id": "title", "label": "Title" },
-        { "type": "textarea", "id": "body", "label": "Body" }
+        { "type": "textarea", "id": "body", "label": "Body" },
+        { "type": "header", "content": "Photos" },
+        {
+          "type": "paragraph",
+          "content": "Upload a photo, or name a file already in the theme's assets folder. An upload wins if both are set."
+        },
+        { "type": "image_picker", "id": "image", "label": "Photo 1" },
+        { "type": "text", "id": "photo", "label": "Photo 1 asset filename" },
+        { "type": "text", "id": "photo_size", "label": "Photo 1 size, as 900x675" },
+        { "type": "text", "id": "photo_alt", "label": "Photo 1 description" },
+        { "type": "image_picker", "id": "image_2", "label": "Photo 2" },
+        { "type": "text", "id": "photo_2", "label": "Photo 2 asset filename" },
+        { "type": "text", "id": "photo_2_size", "label": "Photo 2 size, as 900x675" },
+        { "type": "text", "id": "photo_2_alt", "label": "Photo 2 description" }
       ]
     },
     {

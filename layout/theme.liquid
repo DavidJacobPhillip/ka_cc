@@ -219,7 +219,7 @@
       }
 
       /* ---------------------------------------------------------------
-         Dropdowns as cards.
+         Dropdowns: bare lists, no panel.
 
          Out of the box this is Horizon's mega menu: the submenu is a
          full-bleed panel pinned to the header (position: absolute; width:
@@ -229,7 +229,7 @@
          whole viewport - measured at 1280x132 for "shop", holding two
          words.
 
-         So: shrink it to a card that hangs under its own parent link.
+         So: shrink it to just the links, hanging under their own parent.
          That means undoing the full-bleed chain at every level, since
          each one sets its own width/grid:
 
@@ -273,16 +273,18 @@
              row-anchored submenu used to sit. */
           top: calc(100% + var(--header-padding) + var(--border-bottom-width, 0px));
 
-          /* Cream rather than the theme's white --color-background: the
-             card should read as a piece of the page, not as a system
-             popover. Same value as scheme-2. */
-          background-color: rgb(250 246 242);
-          border-radius: 1.25rem;
-          box-shadow: 0 1.25rem 2.5rem rgb(43 22 8 / 0.14);
+          /* No panel at all - the links sit straight on whatever is behind
+             the header. The theme paints --color-background (white) here,
+             so that has to be cleared explicitly, along with the drawer
+             shadow it inherits from the mega-menu rules. The padding above
+             stays: it's what positions the list and gives it a hit area. */
+          background-color: transparent;
+          box-shadow: none;
 
           /* The stock reveal is a clip-path rect growing downward, which
-             would square off the rounded corners for the whole animation.
-             Fade and lift instead. */
+             clips the links to a hard horizontal edge mid-fade and, with
+             no panel behind them, looks like a rendering fault rather than
+             an animation. Fade and lift instead. */
           clip-path: none;
           opacity: 0;
           transform: translateY(-0.4rem);
@@ -399,33 +401,71 @@
           }
         }
 
-        /* Chevron on anything that opens a dropdown, rotating when it's
-           open, plus an underline on the parent label so it's obvious
-           which one you're in. Drawn with borders rather than an icon so
-           it scales with the nav's font-size (which is itself a clamp) and
-           inherits the link colour across the transparent/solid header
-           states. */
-        #header-component .menu-list__link[aria-haspopup='true']::after {
-          content: '';
-          flex: none;
-          align-self: center;
-          width: 0.26em;
-          height: 0.26em;
-          margin-inline-start: 0.34em;
-          border-right: 0.07em solid currentColor;
-          border-bottom: 0.07em solid currentColor;
-          transform: translateY(-0.09em) rotate(45deg);
-          transition: transform 0.18s var(--animation-easing, ease);
+        /* Hover/open marker: the label thickens slightly.
+
+           Not font-weight. The nav is set in Noto Serif Display Extra
+           Condensed, which ships here as a single 400-weight .woff
+           (assets/NotoCondensed.woff), so asking for a heavier weight gets
+           a synthesised faux-bold - and, worse, a wider one. The nav is a
+           centred flex row, so re-measuring any one label nudges every
+           other item sideways on hover.
+
+           -webkit-text-stroke paints outward from the existing glyph
+           outlines without touching metrics, so nothing reflows. It's in
+           em, so it tracks the nav's clamped font-size, and currentColor
+           keeps it correct in both the white-on-transparent and
+           white-on-terracotta header states.
+
+           Applied on open as well as hover so it survives the pointer
+           moving down into the submenu, and so keyboard focus (which
+           opens the menu) gets the same marker. */
+        #header-component .menu-list__link {
+          -webkit-text-stroke: 0 currentColor;
+          transition: -webkit-text-stroke-width 0.15s var(--animation-easing, ease);
         }
 
-        #header-component .menu-list__link[aria-expanded='true']::after {
-          transform: translateY(0.04em) rotate(-135deg);
+        #header-component .menu-list__link:hover,
+        #header-component .menu-list__link[aria-expanded='true'] {
+          -webkit-text-stroke-width: 0.019em;
         }
 
-        #header-component .menu-list__link[aria-expanded='true'] .menu-list__link-title {
-          text-decoration: underline;
-          text-underline-offset: 0.16em;
-          text-decoration-thickness: 0.045em;
+        /* Same idea one level down, keeping the colour shift as well since
+           the submenu links are small enough that weight alone is a weak
+           signal. */
+        #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
+          .mega-menu__link {
+            -webkit-text-stroke: 0 currentColor;
+            transition: color 0.15s var(--animation-easing, ease),
+              -webkit-text-stroke-width 0.15s var(--animation-easing, ease);
+          }
+
+          .mega-menu__link:hover {
+            -webkit-text-stroke-width: 0.021em;
+          }
+        }
+
+        /* While the header is transparent - the home page over the hero,
+           and product/collection pages over their media - the submenu
+           links have no panel to sit on any more and would be dark brown
+           straight onto a photo. Turn them white, which is exactly what
+           the nav links above them already do in this state (see the
+           --color-foreground override near the top of this block); the
+           condition here is the same one. Terracotta-on-hover goes too,
+           for the same reason - the stroke carries hover on its own. */
+        :is(
+          #header-component[transparent]:not([data-sticky-state='active']),
+          #header-component[transparent='always'][data-sticky-state='active']
+        )
+          .menu-list__list-item:where(:not([slot='overflow']))
+          > .menu-list__submenu {
+          .mega-menu__link,
+          .mega-menu__link:hover {
+            color: #ffffff;
+          }
+
+          .mega-menu__link--parent {
+            color: rgb(255 255 255 / 0.72);
+          }
         }
       }
 
