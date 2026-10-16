@@ -1,0 +1,3 @@
+# Build tooling, not theme files - must not be pushed to the store.
+scripts/
+.env.example
