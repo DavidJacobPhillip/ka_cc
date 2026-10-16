@@ -259,7 +259,11 @@
           --kcc-submenu-padding-inline: 1.75rem;
 
           width: max-content;
-          min-width: 13rem;
+          /* Low enough that the card hugs its longest label. At 13rem the
+             two-item "shop" menu was a 13rem card holding two four-letter
+             words, which read as a mistake rather than as spacing; this
+             only kicks in to stop a very short menu becoming a sliver. */
+          min-width: 7.5rem;
           max-width: 22rem;
           left: calc(-1 * var(--kcc-submenu-padding-inline));
           /* Top padding is deliberately much smaller than the bottom:
@@ -292,7 +296,7 @@
           background-color: rgb(250 246 242 / 0.84);
           backdrop-filter: blur(16px) saturate(1.15);
           -webkit-backdrop-filter: blur(16px) saturate(1.15);
-          border-radius: 0.1875rem;
+          border-radius: 0.45rem;
           box-shadow: 0 0.75rem 1.75rem rgb(43 22 8 / 0.11);
 
           /* The stock reveal is a clip-path rect growing downward, which
@@ -386,11 +390,15 @@
 
           .mega-menu__link {
             display: block;
-            padding: 0.55rem 0;
-            font-family: var(--font-body--family);
-            font-size: 1.0625rem;
-            line-height: 1.35;
-            letter-spacing: 0.005em;
+            padding: 0.4rem 0;
+            /* The same condensed display serif as the nav above, at about
+               a third the size. In the body sans it read as a different
+               site's menu bolted under ours - the two faces had nothing
+               in common and the 48px-to-17px drop made the break louder.
+               Same family, much quieter: it reads as one system. */
+            font-family: var(--font-heading--family);
+            font-size: 1.5rem;
+            line-height: 1.15;
             /* main-menu's own labels are already lowercase ("chai",
                "farmers markets"); the theme's submenu settings force
                uppercase over the top of them. */
