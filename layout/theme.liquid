@@ -219,7 +219,7 @@
       }
 
       /* ---------------------------------------------------------------
-         Dropdowns: bare lists, no panel.
+         Dropdowns as frosted cards.
 
          Out of the box this is Horizon's mega menu: the submenu is a
          full-bleed panel pinned to the header (position: absolute; width:
@@ -262,7 +262,13 @@
           min-width: 13rem;
           max-width: 22rem;
           left: calc(-1 * var(--kcc-submenu-padding-inline));
-          padding: 1.25rem var(--kcc-submenu-padding-inline);
+          /* Top padding is deliberately much smaller than the bottom:
+             it is the only part of the gap below the nav label that is
+             ours to shrink. The rest is fixed - the <li> is taller than
+             its own text, then the row's block padding, then the first
+             link's own padding - so starting the card's contents close to
+             its top edge is what actually closes the distance. */
+          padding: 0.45rem var(--kcc-submenu-padding-inline) 1.1rem;
 
           /* The <li> only wraps the link, so its bottom edge sits above
              the header row's by exactly .header__columns' block padding
@@ -273,18 +279,26 @@
              row-anchored submenu used to sit. */
           top: calc(100% + var(--header-padding) + var(--border-bottom-width, 0px));
 
-          /* No panel at all - the links sit straight on whatever is behind
-             the header. The theme paints --color-background (white) here,
-             so that has to be cleared explicitly, along with the drawer
-             shadow it inherits from the mega-menu rules. The padding above
-             stays: it's what positions the list and gives it a hit area. */
-          background-color: transparent;
-          box-shadow: none;
+          /* Translucent rather than the theme's solid white: cream at 84%
+             with the page blurred behind it, so you can still read what
+             it's covering without the links fighting it. The blur is what
+             makes the translucency work - straight alpha over the hero
+             photo goes muddy - but it's progressive, and the alpha alone
+             stays legible where backdrop-filter isn't supported.
+
+             Corners barely rounded, and a shadow light enough to separate
+             the card from the page without implying a heavier panel than
+             the background is. */
+          background-color: rgb(250 246 242 / 0.84);
+          backdrop-filter: blur(16px) saturate(1.15);
+          -webkit-backdrop-filter: blur(16px) saturate(1.15);
+          border-radius: 0.1875rem;
+          box-shadow: 0 0.75rem 1.75rem rgb(43 22 8 / 0.11);
 
           /* The stock reveal is a clip-path rect growing downward, which
-             clips the links to a hard horizontal edge mid-fade and, with
-             no panel behind them, looks like a rendering fault rather than
-             an animation. Fade and lift instead. */
+             would square off the rounded corners for the whole animation
+             and clip the blur to a hard edge mid-fade. Fade and lift
+             instead. */
           clip-path: none;
           opacity: 0;
           transform: translateY(-0.4rem);
@@ -444,29 +458,6 @@
           }
         }
 
-        /* While the header is transparent - the home page over the hero,
-           and product/collection pages over their media - the submenu
-           links have no panel to sit on any more and would be dark brown
-           straight onto a photo. Turn them white, which is exactly what
-           the nav links above them already do in this state (see the
-           --color-foreground override near the top of this block); the
-           condition here is the same one. Terracotta-on-hover goes too,
-           for the same reason - the stroke carries hover on its own. */
-        :is(
-          #header-component[transparent]:not([data-sticky-state='active']),
-          #header-component[transparent='always'][data-sticky-state='active']
-        )
-          .menu-list__list-item:where(:not([slot='overflow']))
-          > .menu-list__submenu {
-          .mega-menu__link,
-          .mega-menu__link:hover {
-            color: #ffffff;
-          }
-
-          .mega-menu__link--parent {
-            color: rgb(255 255 255 / 0.72);
-          }
-        }
       }
 
       /* Above the mobile hamburger cutoff (750px), the four nav items at
