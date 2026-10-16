@@ -21,9 +21,10 @@
  *   node scripts/shopify-admin.mjs pages --apply    # create the missing pages
  *   node scripts/shopify-admin.mjs menu             # dry run
  *   node scripts/shopify-admin.mjs menu --apply     # rewrite main-menu
+ *   node scripts/shopify-admin.mjs files --apply    # upload photos to Files
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -237,12 +238,31 @@ async function check(env) {
   const data = await gql(
     env,
     `{ shop { name myshopifyDomain }
+       currentAppInstallation { accessScopes { handle } }
        pages(first: 50) { nodes { handle title templateSuffix } }
        menus(first: 20) { nodes { handle title items { title url } } } }`
   );
 
   console.log(`\n${c.bold('Store')}  ${data.shop.name}  ${c.dim(data.shop.myshopifyDomain)}`);
   console.log(`${c.bold('API')}    ${env.SHOPIFY_API_VERSION}\n`);
+
+  // A missing scope shows up as a confusing permission error deep inside a
+  // mutation, so surface what's actually been granted up front. Scope changes
+  // in the Dev Dashboard only take effect once the app is re-installed, which
+  // is the step that's easy to miss.
+  const scopes = new Set((data.currentAppInstallation?.accessScopes ?? []).map((s) => s.handle));
+  console.log(c.bold('Scopes'));
+  for (const [scope, what] of [
+    ['write_online_store_pages', 'pages'],
+    ['write_online_store_navigation', 'menus'],
+    ['write_products', 'products and collections'],
+    ['write_files', 'uploading photos to Files'],
+    ['write_publications', 'publishing collections to the Online Store'],
+  ]) {
+    const ok = scopes.has(scope);
+    console.log(`  ${ok ? c.green('✓') : c.red('✗')} ${scope.padEnd(32)} ${c.dim(what)}`);
+  }
+  console.log();
 
   console.log(c.bold('Pages'));
   if (!data.pages.nodes.length) console.log(c.dim('  (none)'));
@@ -362,7 +382,130 @@ async function collections(env) {
 
 /* ------------------------------------------------------------------ main -- */
 
-const COMMANDS = { check, pages, collections, menu };
+/* ------------------------------------------------------------------ files -- */
+
+/**
+ * Uploads the site photography to Shopify Files.
+ *
+ * Why this matters: every image setting in the theme is an image_picker, and a
+ * picker can only reference a file in Shopify Files - never a theme asset.
+ * While the photos ship in assets/ they can only be chosen by typing a filename
+ * into a text box, and they have no focal point, so every crop is locked to
+ * dead centre. Once they're in Files, each one becomes a normal drag-and-drop
+ * pick in the theme editor, with a draggable focal point.
+ *
+ * Needs the write_files scope, which the app didn't originally have - `check`
+ * reports whether it's been granted.
+ *
+ * Two steps per file, which is how the Files API works: stagedUploadsCreate
+ * hands back a signed URL to POST the bytes to, then fileCreate registers the
+ * uploaded object. Files already in the store are skipped, never replaced.
+ */
+async function files(env) {
+  const dir = join(ROOT, 'KCC Website Photos');
+  let names;
+  try {
+    names = readdirSync(dir)
+      .filter((n) => /\.(jpe?g|png|heic)$/i.test(n))
+      .sort();
+  } catch {
+    fail(`No source folder at ${dir}`);
+  }
+  if (!names.length) fail(`No images found in ${dir}`);
+
+  // Check the scopes before touching the Files API - without this the first
+  // query dies with a raw ACCESS_DENIED dump that doesn't say what to do.
+  const perms = await gql(env, `{ currentAppInstallation { accessScopes { handle } } }`);
+  const scopes = new Set(perms.currentAppInstallation.accessScopes.map((s) => s.handle));
+  const missing = ['read_files', 'write_files'].filter((s) => !scopes.has(s));
+  if (missing.length) {
+    fail(
+      `The app is missing ${missing.join(' and ')}.\n\n` +
+        '  Add them at dev.shopify.com > your app > Configuration, then\n' +
+        '  re-install the app on the store - scope changes only take effect\n' +
+        '  once the install is re-approved.\n\n' +
+        '  Re-run `node scripts/shopify-admin.mjs check` to confirm.'
+    );
+  }
+
+  // Shopify derives the Files handle from the filename, so compare on that.
+  const existing = await gql(
+    env,
+    `{ files(first: 250) { nodes { ... on MediaImage { id image { url } } } } }`
+  );
+  const have = new Set(
+    (existing.files?.nodes ?? [])
+      .map((n) => n?.image?.url?.split('/').pop()?.split('?')[0]?.toLowerCase())
+      .filter(Boolean)
+  );
+
+  const todo = names.filter((n) => !have.has(n.toLowerCase()));
+  for (const n of names.filter((n) => have.has(n.toLowerCase())))
+    console.log(`  ${c.dim('skip')}   ${n} ${c.dim('(already in Files)')}`);
+  for (const n of todo) console.log(`  ${c.yellow('upload')} ${n}`);
+  if (!todo.length) return console.log(`\n${c.green('✓')} Nothing to upload.\n`);
+  if (!APPLY)
+    return console.log(`\n${c.dim('Dry run. Re-run with --apply to upload these.')}\n`);
+
+  for (const name of todo) {
+    const body = readFileSync(join(dir, name));
+    const staged = await gql(
+      env,
+      `mutation($input: [StagedUploadInput!]!) {
+         stagedUploadsCreate(input: $input) {
+           stagedTargets { url resourceUrl parameters { name value } }
+           userErrors { field message } } }`,
+      {
+        input: [
+          {
+            filename: name,
+            mimeType: mimeFor(name),
+            httpMethod: 'POST',
+            resource: 'FILE',
+            fileSize: String(body.length),
+          },
+        ],
+      }
+    );
+    if (userErrors(staged.stagedUploadsCreate, name)) continue;
+
+    const target = staged.stagedUploadsCreate.stagedTargets[0];
+    const form = new FormData();
+    for (const p of target.parameters) form.append(p.name, p.value);
+    form.append('file', new Blob([body]), name);
+    const put = await fetch(target.url, { method: 'POST', body: form });
+    if (!put.ok) {
+      console.log(`  ${c.red('✗')} ${name} - staged upload returned ${put.status}`);
+      continue;
+    }
+
+    const created = await gql(
+      env,
+      `mutation($files: [FileCreateInput!]!) {
+         fileCreate(files: $files) {
+           files { fileStatus ... on MediaImage { id } }
+           userErrors { field message } } }`,
+      { files: [{ originalSource: target.resourceUrl, contentType: 'IMAGE', alt: '' }] }
+    );
+    if (!userErrors(created.fileCreate, name)) console.log(`  ${c.green('✓')} ${name}`);
+  }
+
+  console.log(
+    c.dim(
+      '\n  Now pick them in the theme editor. Each image block has a real\n' +
+        '  picker again, and "Edit image" sets the focal point.\n'
+    )
+  );
+}
+
+function mimeFor(name) {
+  const ext = name.toLowerCase().split('.').pop();
+  if (ext === 'png') return 'image/png';
+  if (ext === 'heic') return 'image/heic';
+  return 'image/jpeg';
+}
+
+const COMMANDS = { check, pages, collections, menu, files };
 
 if (!COMMANDS[CMD]) {
   console.log(`
@@ -372,6 +515,7 @@ ${c.bold('Usage')}  node scripts/shopify-admin.mjs <command> [--apply]
   pages        Create the pages the theme has templates for
   collections  Create the chai / coffee collections
   menu         Point main-menu at real URLs
+  files        Upload the site photography to Shopify Files
 
 ${c.dim('Without --apply every command is a dry run.')}
 `);
