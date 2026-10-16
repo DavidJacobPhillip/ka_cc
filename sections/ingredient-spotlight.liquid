@@ -338,28 +338,44 @@
 
   /* The doubled class is deliberate: the theme sets heading colour via
      "h2, .h2.h2, ..." at (0,2,0), so a single class here loses and the
-     heading stays near-black. */
+     heading stays near-black. Weight needs the same specificity for the
+     same reason.
+
+     700 is a synthesised bold - NotoCondensed.woff ships at 400 only - but
+     unlike the nav, where faux-bold's extra width shifted neighbouring items,
+     this heading is centred and alone on its line, so nothing moves. Compared
+     against -webkit-text-stroke at the same size and the real weight read
+     cleaner. */
   .ingredient-spotlight .ingredient-spotlight__heading.h2 {
     color: var(--color-primary, currentColor);
+    font-weight: 700;
   }
 
   .ingredient-spotlight__heading {
+    /* Was pinned to the intro section's heading size, formula copied from
+       layout/theme.liquid's [id$="__intro"] .text-block.h2 > * rules. That
+       match is now deliberately broken - this heading is set a notch larger -
+       but the responsive curve is still the intro's, scaled, so the two stay
+       in proportion as the viewport changes. Both ends of the clamp() are
+       otherwise identical to that rule, and the mobile base and >=750px
+       override are kept separate so a future change to the intro's numbers
+       can still be diffed against this one line-for-line. */
+    --kcc-heading-scale: 1.13;
+
     margin: 0;
     text-align: center;
-    /* Matches the intro section's ("Let's create connections...") heading
-       font-size exactly, formula copied from layout/theme.liquid's
-       [id$="__intro"] .text-block.h2 > * rules per Santosh's request that
-       this heading render at the same size. Both ends of the clamp() are
-       identical to that rule; kept as two separate declarations (mobile
-       base + >=750px override) rather than one combined expression so a
-       future change to the intro's numbers can be diffed against this one
-       line-for-line. */
-    font-size: calc(var(--font-h2--size) * clamp(0.935, calc(0.935 + ((100vw - 320px) / 160px) * 0.11), 1.045));
+    font-size: calc(
+      var(--font-h2--size) * var(--kcc-heading-scale) *
+        clamp(0.935, calc(0.935 + ((100vw - 320px) / 160px) * 0.11), 1.045)
+    );
   }
 
   @media screen and (min-width: 750px) {
     .ingredient-spotlight__heading {
-      font-size: calc(var(--font-h2--size) * clamp(1.045, calc(1.045 + ((100vw - 750px) / 550px) * 0.495), 1.54));
+      font-size: calc(
+        var(--font-h2--size) * var(--kcc-heading-scale) *
+          clamp(1.045, calc(1.045 + ((100vw - 750px) / 550px) * 0.495), 1.54)
+      );
     }
   }
 
@@ -404,7 +420,7 @@
     margin: 0;
     text-align: center;
     color: var(--kcc-ingredient-ink);
-    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-size: clamp(2.25rem, 5.6vw, 3.75rem);
     line-height: 1.05;
   }
 
@@ -418,8 +434,8 @@
     list-style: none;
     text-align: center;
     color: var(--kcc-ingredient-ink);
-    font-size: 1.0625rem;
-    line-height: 1.5;
+    font-size: 1.1875rem;
+    line-height: 1.55;
   }
 
   @media screen and (min-width: 750px) {
@@ -577,12 +593,16 @@
      ink rather than grey - it's a legal line, but the grandma line underneath
      it is doing brand work and shouldn't look like small print. */
   .ingredient-spotlight__disclaimer {
-    align-self: stretch;
+    /* align-self: center rather than stretch - stretch pins it to the
+       content's left edge, so centring the text alone would leave the block
+       itself off-centre on wide viewports. */
+    align-self: center;
     max-width: 52rem;
     margin-block-start: 1.5rem;
     color: var(--kcc-ingredient-ink);
-    font-size: 0.9375rem;
-    line-height: 1.6;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-align: center;
     opacity: 0.9;
   }
 
