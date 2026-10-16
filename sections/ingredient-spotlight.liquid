@@ -20,7 +20,20 @@
   assign first_block = section.blocks | first
 %}
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- comment -%}
+  The spice-pattern watermark rides on the theme's own section-background
+  element rather than on a pseudo-element of the content div. That element is
+  already exactly viewport-wide and absolutely positioned, so the pattern gets
+  its full-bleed for free; doing it with a 100vw pseudo-element instead added
+  9px of horizontal overflow on mobile, because 100vw counts the scrollbar.
+
+  The URL has to be handed to the CSS from here: {% stylesheet %} is static and
+  never sees Liquid, so asset_url can't be written inside it.
+{%- endcomment -%}
+<div
+  class="section-background color-{{ section.settings.color_scheme }} ingredient-spotlight__bg"
+  style="--kcc-ingredient-pattern: url('{{ 'ingredient-pattern.svg' | asset_url }}');"
+></div>
 <div
   id="ingredient-spotlight-{{ section.id }}"
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} ingredient-spotlight spacing-style"
@@ -69,21 +82,19 @@
                 }}
               {%- else -%}
                 {%- comment -%}
-                  No merchant-uploaded illustration yet: reuse the real line-art
-                  from the icon sprite (same artwork as the button below, just
-                  scaled up) instead of Shopify's generic placeholder_svg_tag
-                  set, which has no relation to the spice (e.g. a backpack icon
-                  for ginger). Falls back further to the fallback icon/image for
-                  any spice with no matching drawing.
+                  No merchant-uploaded illustration: use the big line-art from
+                  the design icon set (see ingredient-illustration.liquid)
+                  rather than Shopify's generic placeholder_svg_tag, which has
+                  no relation to the spice.
 
-                  Note: ginger and cinnamon are raster in the source artwork, so
-                  they soften at this size in a way the other seven don't - give
-                  those blocks a real "Illustration" image if that shows.
+                  This used to scale up the small button icon instead, which
+                  capped the illustration at 300px because ginger and cinnamon
+                  are embedded rasters in that artwork. The design set is vector
+                  for all nine, so the ceiling is gone.
                 {%- endcomment -%}
                 {%- capture large_icon -%}
-                  {%- render 'ingredient-icon',
+                  {%- render 'ingredient-illustration',
                     name: block.settings.name,
-                    uid: section.id,
                     class_name: 'ingredient-spotlight__placeholder'
                   -%}
                 {%- endcapture -%}
@@ -175,12 +186,47 @@
 </script>
 
 {% stylesheet %}
+  /* One ink colour for the whole section - the illustrations carry it baked in
+     (an <img> can't inherit currentColor), so the name, benefits, disclaimer
+     and the selected button are matched to the artwork rather than to the
+     theme's near-black foreground. */
+  .ingredient-spotlight {
+    --kcc-ingredient-ink: #5c2f16;
+  }
+
+  /* The spice-pattern watermark, tiled across the full-bleed background
+     element. Drawn on a pseudo-element so it layers over the colour scheme's
+     own background rather than replacing it, and so it can carry its own
+     opacity without fading the section's content. */
+  .ingredient-spotlight__bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ingredient-spotlight__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--kcc-ingredient-pattern);
+    background-repeat: repeat;
+    background-size: 26rem auto;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
   .ingredient-spotlight__inner {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
     width: 100%;
+  }
+
+  /* The doubled class is deliberate: the theme sets heading colour via
+     "h2, .h2.h2, ..." at (0,2,0), so a single class here loses and the
+     heading stays near-black. */
+  .ingredient-spotlight .ingredient-spotlight__heading.h2 {
+    color: var(--color-primary, currentColor);
   }
 
   .ingredient-spotlight__heading {
@@ -203,11 +249,29 @@
     }
   }
 
+  .ingredient-spotlight__panels {
+    width: 100%;
+  }
+
+  /* Name and benefits on the left, illustration on the right. The columns are
+     weighted towards the illustration because it's the thing worth looking at;
+     the text is three short lines and doesn't need half the width. */
   .ingredient-spotlight__panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
     gap: 1.5rem;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ingredient-spotlight__panel {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: center;
+      justify-items: stretch;
+      gap: 2.5rem;
+      min-height: 22rem;
+    }
   }
 
   .ingredient-spotlight__panel[hidden] {
@@ -218,30 +282,47 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     min-width: 0;
   }
 
   .ingredient-spotlight__name {
     margin: 0;
     text-align: center;
+    color: var(--kcc-ingredient-ink);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.05;
   }
 
   .ingredient-spotlight__benefits {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.3rem;
     margin: 0;
     padding: 0;
     list-style: none;
     text-align: center;
+    color: var(--kcc-ingredient-ink);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ingredient-spotlight__text,
+    .ingredient-spotlight__benefits {
+      align-items: flex-start;
+      text-align: start;
+    }
+
+    .ingredient-spotlight__name {
+      text-align: start;
+    }
   }
 
   .ingredient-spotlight__image {
     flex: 0 0 auto;
-    width: 60%;
-    max-width: 420px;
+    width: 100%;
     margin-inline: auto;
   }
 
@@ -252,15 +333,28 @@
     display: block;
   }
 
+  /* The design-set illustrations are vector at every spice, so this is free to
+     be as large as the column allows - the old 300px cap existed only because
+     ginger and cinnamon were rasters in the button artwork. Each file is
+     cropped to its own art bounds and their aspect ratios differ, so height is
+     capped too, otherwise a wide one (carom, 1.62:1) and a square one
+     (cinnamon, 1:1) would set very different panel heights and the icon row
+     below would jump as you clicked between them. */
   .ingredient-spotlight__placeholder {
-    color: var(--color-primary, currentColor);
-    /* The sprite symbols are square (each is framed on its button's circle),
-       so cap the width rather than letting it fill the 420px column and make
-       the panel a good deal taller than the text beside it. */
-    width: min(100%, 300px);
+    width: 100%;
+    max-width: 34rem;
+    max-height: 20rem;
     height: auto;
+    object-fit: contain;
     margin-inline: auto;
-    overflow: visible;
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ingredient-spotlight__placeholder {
+      max-width: 20rem;
+      max-height: 14rem;
+    }
   }
 
   .ingredient-spotlight__buttons {
@@ -295,8 +389,13 @@
     border-width: 1.5px;
   }
 
+  /* Selected: the ring and the drawing both go to the dark ink, so the active
+     spice reads as the same colour as the big illustration it's showing while
+     the other eight stay in the lighter terracotta. */
   .ingredient-spotlight__button.is-active {
     border-width: 2px;
+    border-color: var(--kcc-ingredient-ink);
+    color: var(--kcc-ingredient-ink);
   }
 
   .ingredient-spotlight__icon {
@@ -316,16 +415,25 @@
     overflow: visible;
   }
 
+  /* Kept to the same measure as the rest of the section and in the section's
+     ink rather than grey - it's a legal line, but the grandma line underneath
+     it is doing brand work and shouldn't look like small print. */
   .ingredient-spotlight__disclaimer {
-    font-size: 0.8rem;
-    opacity: 0.75;
+    align-self: stretch;
+    max-width: 52rem;
+    margin-block-start: 1.5rem;
+    color: var(--kcc-ingredient-ink);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    opacity: 0.9;
   }
 
-  @media screen and (max-width: 749px) {
-    .ingredient-spotlight__image {
-      width: 100%;
-      max-width: 320px;
-    }
+  .ingredient-spotlight__disclaimer p {
+    margin: 0 0 0.9rem;
+  }
+
+  .ingredient-spotlight__disclaimer p:last-child {
+    margin-block-end: 0;
   }
 {% endstylesheet %}
 

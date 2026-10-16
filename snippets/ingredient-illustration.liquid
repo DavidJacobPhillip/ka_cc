@@ -1,0 +1,72 @@
+{% comment %}
+  The large line-art illustration for one spice, from Santosh's design icon
+  set (KCC Marketing/KCC Design Icons 1.0).
+
+  These are a different, much more detailed drawing than the small circular
+  button icons in ingredient-icon-sprite.liquid - and crucially they're vector
+  for all nine spices. Ginger and cinnamon are embedded rasters in the button
+  artwork and turn to mush above about 150px, which is why the spotlight used
+  to cap its illustration at 300px. These don't have that ceiling.
+
+  Each file is cropped to its own artwork bounds (so there's no invisible
+  artboard padding throwing off the layout) and carries the brand brown as a
+  fill on the root, since an <img> can't inherit currentColor. Aspect ratios
+  differ per spice, so width/height come from the table below to stop the
+  layout jumping as each one loads.
+
+  Keyed on the spice's display name, matching ingredient-icon.liquid's mapping
+  so a block only has to be named once.
+
+  Accepts:
+    name       - the spice's display name, e.g. 'Black pepper'
+    class_name - class for the <img>
+{% endcomment %}
+
+{%- liquid
+  assign key = name | default: '' | handle
+  assign art = ''
+  assign ratio = ''
+
+  case key
+    when 'ginger'
+      assign art = 'ingredient-art-ginger.svg'
+      assign ratio = '2787x2351'
+    when 'cardamom', 'green-cardamom'
+      assign art = 'ingredient-art-cardamom.svg'
+      assign ratio = '1500x1280'
+    when 'cinnamon', 'cinnamon-stick', 'cinnamon-sticks'
+      assign art = 'ingredient-art-cinnamon.svg'
+      assign ratio = '2723x2719'
+    when 'cloves', 'clove'
+      assign art = 'ingredient-art-cloves.svg'
+      assign ratio = '1742x1593'
+    when 'black-pepper', 'pepper', 'peppercorn', 'peppercorns'
+      assign art = 'ingredient-art-pepper.svg'
+      assign ratio = '1713x1416'
+    when 'fennel', 'fennel-seeds', 'carom', 'carom-seeds', 'ajwain', 'carom-seeds-ajwain'
+      assign art = 'ingredient-art-carom.svg'
+      assign ratio = '2441x1510'
+    when 'star-anise', 'anise'
+      assign art = 'ingredient-art-star-anise.svg'
+      assign ratio = '2574x1990'
+    when 'coffee-bean', 'coffee-beans', 'coffee'
+      assign art = 'ingredient-art-coffee.svg'
+      assign ratio = '2912x2130'
+    when 'tea-leaf', 'tea-leaves', 'black-tea', 'tea'
+      assign art = 'ingredient-art-tea.svg'
+      assign ratio = '3084x2514'
+  endcase
+
+  assign dims = ratio | split: 'x'
+-%}
+
+{%- if art != blank -%}
+  <img
+    class="{{ class_name }}"
+    src="{{ art | asset_url }}"
+    alt="{{ name | escape }}"
+    width="{{ dims[0] }}"
+    height="{{ dims[1] }}"
+    loading="lazy"
+  >
+{%- endif -%}
