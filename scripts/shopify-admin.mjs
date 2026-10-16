@@ -3,8 +3,11 @@
  * Admin API helper for the things the Shopify CLI can't do: pages and navigation.
  *
  * The CLI only manages themes. Pages and menus are store data, so they need the
- * Admin GraphQL API and a token from a custom app (Settings > Apps and sales
- * channels > Develop apps).
+ * Admin GraphQL API and credentials from an app created in the Dev Dashboard
+ * (dev.shopify.com). Admin-created custom apps were retired on 2026-01-01, so
+ * there's no permanent token any more: the client id/secret are exchanged for a
+ * 24h token on each run via the client credentials grant. Nothing long-lived
+ * ends up on disk, which is the happier outcome anyway.
  *
  * Nothing here writes unless you pass --apply. Without it every command prints
  * the plan and exits, so you can see exactly what would hit the live store -
@@ -37,7 +40,7 @@ function loadEnv() {
   } catch {
     fail(
       'No .env found.\n' +
-        '  Copy .env.example to .env and add your Admin API token.\n' +
+        '  Copy .env.example to .env and add your Dev Dashboard credentials.\n' +
         '  (.env is gitignored - it will not be committed.)'
     );
   }
@@ -46,12 +49,66 @@ function loadEnv() {
     const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
     if (m) env[m[1]] = m[2].replace(/^["']|["']$/g, '');
   }
-  if (!env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_ADMIN_TOKEN.includes('xxxx')) {
-    fail('SHOPIFY_ADMIN_TOKEN is missing or still the placeholder in .env');
-  }
   if (!env.SHOPIFY_STORE) fail('SHOPIFY_STORE is missing from .env');
   env.SHOPIFY_API_VERSION ||= '2026-07';
+
+  const hasStatic = env.SHOPIFY_ADMIN_TOKEN && !env.SHOPIFY_ADMIN_TOKEN.includes('xxxx');
+  const hasClient =
+    env.SHOPIFY_CLIENT_ID &&
+    env.SHOPIFY_CLIENT_SECRET &&
+    !env.SHOPIFY_CLIENT_ID.includes('xxxx') &&
+    !env.SHOPIFY_CLIENT_SECRET.includes('xxxx');
+
+  if (!hasStatic && !hasClient) {
+    fail(
+      'No usable credentials in .env.\n' +
+        '  Set either:\n' +
+        '    SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET  (Dev Dashboard app - preferred)\n' +
+        '    SHOPIFY_ADMIN_TOKEN                        (legacy admin-created custom app)'
+    );
+  }
+  env._mode = hasClient ? 'client_credentials' : 'static_token';
   return env;
+}
+
+/**
+ * Dev Dashboard apps don't hand out a permanent token any more - you exchange
+ * the client id/secret for one that lasts 24h. That's minted fresh on each run,
+ * so nothing long-lived is ever written to disk.
+ *
+ * Only works when the app and the store are in the same Shopify organization,
+ * which is the case here (it's Santosh's own store).
+ */
+async function mintToken(env) {
+  const res = await fetch(`https://${env.SHOPIFY_STORE}/admin/oauth/access_token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: env.SHOPIFY_CLIENT_ID,
+      client_secret: env.SHOPIFY_CLIENT_SECRET,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    const reason =
+      body.match(/<title>([^<]+)<\/title>/)?.[1] ??
+      body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200);
+    fail(
+      `Could not exchange client credentials for a token (HTTP ${res.status}).\n` +
+        `  ${reason}\n\n` +
+        '  Common causes:\n' +
+        '    - the app is not installed on this store yet\n' +
+        '    - client id/secret belong to a different organization\n' +
+        `    - SHOPIFY_STORE is wrong (currently ${env.SHOPIFY_STORE})`
+    );
+  }
+  const json = await res.json();
+  if (!json.access_token) fail(`No access_token in response: ${JSON.stringify(json)}`);
+  const hours = Math.round((json.expires_in ?? 0) / 3600);
+  console.log(c.dim(`  (minted a ${hours}h token via client credentials)`));
+  return json.access_token;
 }
 
 /**
@@ -123,7 +180,7 @@ async function gql(env, query, variables = {}) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': env.SHOPIFY_ADMIN_TOKEN,
+        'X-Shopify-Access-Token': env._token,
       },
       body: JSON.stringify({ query, variables }),
     }
@@ -132,7 +189,7 @@ async function gql(env, query, variables = {}) {
   if (res.status === 401 || res.status === 403) {
     fail(
       `Store rejected the token (HTTP ${res.status}).\n` +
-        '  Check the token is correct and the app has the scopes it needs:\n' +
+        '  The app must be installed on this store, and granted the scopes it needs:\n' +
         '    write_content (or write_online_store_pages)  - pages\n' +
         '    write_online_store_navigation                - menus'
     );
@@ -281,4 +338,6 @@ ${c.dim('Without --apply every command is a dry run.')}
 
 const env = loadEnv();
 if (!APPLY && CMD !== 'check') console.log(c.dim('\n(dry run)'));
+env._token =
+  env._mode === 'client_credentials' ? await mintToken(env) : env.SHOPIFY_ADMIN_TOKEN;
 await COMMANDS[CMD](env);
