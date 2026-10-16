@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "main": {
       "type": "product-information",
@@ -229,7 +228,10 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image_position": "cover"
+            "image_position": "cover",
+            "photo": "kcc-ladle-pour.jpg",
+            "photo_size": "1800x1800",
+            "photo_alt": "Chai ladled from the pot into a waiting cup"
           },
           "blocks": {}
         },
@@ -271,10 +273,17 @@
               "blocks": {}
             }
           },
-          "block_order": ["caption", "heading", "body"]
+          "block_order": [
+            "caption",
+            "heading",
+            "body"
+          ]
         }
       },
-      "block_order": ["media", "content"],
+      "block_order": [
+        "media",
+        "content"
+      ],
       "name": "Provenance",
       "settings": {
         "media_position": "right",
@@ -331,7 +340,9 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             },
             "row_how_to_brew": {
               "type": "_accordion-row",
@@ -350,7 +361,9 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             },
             "row_shipping": {
               "type": "_accordion-row",
@@ -369,13 +382,22 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             }
           },
-          "block_order": ["row_whats_in_it", "row_how_to_brew", "row_shipping"]
+          "block_order": [
+            "row_whats_in_it",
+            "row_how_to_brew",
+            "row_shipping"
+          ]
         }
       },
-      "block_order": ["heading", "accordion"],
+      "block_order": [
+        "heading",
+        "accordion"
+      ],
       "name": "Product details",
       "settings": {
         "content_direction": "column",
@@ -658,5 +680,10 @@
       }
     }
   },
-  "order": ["main", "editorial", "details_accordion", "product_recommendations_iA6pyd"]
+  "order": [
+    "main",
+    "editorial",
+    "details_accordion",
+    "product_recommendations_iA6pyd"
+  ]
 }

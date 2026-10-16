@@ -1,0 +1,44 @@
+{%- doc -%}
+  Renders a responsive <img> for a photo that ships in the theme's assets/
+  folder, as opposed to one uploaded to Shopify Files.
+
+  Why this exists: every image setting in the stock theme is an image_picker,
+  which can only reference a file in Shopify Files - a JSON template has no way
+  to point one at a theme asset. Uploading to Files needs the write_files
+  Admin API scope, which this store's app doesn't have, so the site's
+  photography ships with the theme instead and the blocks that display it reach
+  for this.
+
+  Dimensions have to be passed in: Liquid can read width/height off an uploaded
+  image object, but an asset is just a filename. Without them nothing reserves
+  an aspect ratio and the page reflows as each photo arrives.
+
+  @param {string} photo - Filename of an image in assets/, e.g. 'kcc-big-pour.jpg'
+  @param {string} [size] - Its intrinsic size as 'WIDTHxHEIGHT', e.g. '1800x1199'
+  @param {string} [alt] - Alt text. Pass '' deliberately for purely decorative photos.
+  @param {string} [class] - Class attribute for the <img>
+  @param {string} [sizes] - The sizes attribute; defaults to full viewport width
+  @param {string} [loading] - 'lazy' (default) or 'eager' for above-the-fold
+{%- enddoc -%}
+
+{%- liquid
+  assign dims = size | default: '' | split: 'x'
+  assign intrinsic_width = dims[0] | default: 1800
+  assign intrinsic_height = dims[1] | default: 1200
+-%}
+<img
+  src="{{ photo | asset_img_url: '1600x' }}"
+  srcset="
+    {{ photo | asset_img_url: '400x' }} 400w,
+    {{ photo | asset_img_url: '600x' }} 600w,
+    {{ photo | asset_img_url: '900x' }} 900w,
+    {{ photo | asset_img_url: '1200x' }} 1200w,
+    {{ photo | asset_img_url: '1600x' }} 1600w
+  "
+  sizes="{{ sizes | default: '100vw' }}"
+  alt="{{ alt | escape }}"
+  width="{{ intrinsic_width }}"
+  height="{{ intrinsic_height }}"
+  class="{{ class }}"
+  loading="{{ loading | default: 'lazy' }}"
+>

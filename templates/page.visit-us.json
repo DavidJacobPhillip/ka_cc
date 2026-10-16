@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "location": {
       "type": "media-with-content",
@@ -17,7 +16,10 @@
           "static": true,
           "settings": {
             "media_type": "image",
-            "image_position": "cover"
+            "image_position": "cover",
+            "photo": "kcc-market-stall.jpg",
+            "photo_size": "1800x1350",
+            "photo_alt": "The Ka Chai stall under its canopy with a queue of customers"
           },
           "blocks": {}
         },
@@ -59,10 +61,17 @@
               "blocks": {}
             }
           },
-          "block_order": ["caption", "heading", "body"]
+          "block_order": [
+            "caption",
+            "heading",
+            "body"
+          ]
         }
       },
-      "block_order": ["media", "content"],
+      "block_order": [
+        "media",
+        "content"
+      ],
       "name": "Location",
       "settings": {
         "media_position": "left",
@@ -120,7 +129,9 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             },
             "market_2": {
               "type": "_accordion-row",
@@ -139,13 +150,21 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             }
           },
-          "block_order": ["market_1", "market_2"]
+          "block_order": [
+            "market_1",
+            "market_2"
+          ]
         }
       },
-      "block_order": ["heading", "accordion"],
+      "block_order": [
+        "heading",
+        "accordion"
+      ],
       "name": "Markets",
       "settings": {
         "content_direction": "column",
@@ -159,5 +178,8 @@
       }
     }
   },
-  "order": ["location", "markets"]
+  "order": [
+    "location",
+    "markets"
+  ]
 }

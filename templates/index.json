@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "hero_main": {
       "type": "hero",
@@ -294,7 +293,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-spices-overhead.jpg",
+                    "photo_size": "1800x1350",
+                    "photo_alt": "Jars of whole chai spices and a measuring scoop laid out on a steel tray"
                   },
                   "blocks": {}
                 },
@@ -427,7 +429,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-cup-handover.jpg",
+                    "photo_size": "1800x1199",
+                    "photo_alt": "A small cup of filter coffee passed from one pair of hands to another"
                   },
                   "blocks": {}
                 },
@@ -881,7 +886,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-pour-into-cup.jpg",
+                    "photo_size": "1199x1800",
+                    "photo_alt": "Chai poured in a long stream into a paper cup at the market stall"
                   },
                   "blocks": {}
                 },
@@ -972,7 +980,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-founder-booth.jpg",
+                    "photo_size": "1350x1800",
+                    "photo_alt": "Santosh sitting at the Ka Chai booth under the banner, checking his phone"
                   },
                   "blocks": {}
                 },
@@ -1063,7 +1074,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-regular-with-cup.jpg",
+                    "photo_size": "1199x1800",
+                    "photo_alt": "A regular customer cradling a cup of chai at the stall"
                   },
                   "blocks": {}
                 },
@@ -1154,7 +1168,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-cup-in-hands.jpg",
+                    "photo_size": "1800x1800",
+                    "photo_alt": "A cup of chai steaming in both hands on a cold market morning"
                   },
                   "blocks": {}
                 },
@@ -1245,7 +1262,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-big-pour.jpg",
+                    "photo_size": "1800x1800",
+                    "photo_alt": "Chai poured from a jug into a large steel urn"
                   },
                   "blocks": {}
                 },
@@ -1336,7 +1356,10 @@
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
-                    "padding-inline-end": 0
+                    "padding-inline-end": 0,
+                    "photo": "kcc-friends-at-market.jpg",
+                    "photo_size": "1800x1199",
+                    "photo_alt": "Three friends walking the market together, each holding a cup"
                   },
                   "blocks": {}
                 },
@@ -1462,13 +1485,16 @@
         "heading": "We just wanted chai that tasted like home",
         "body": "<p>[Draft — rewrite in your own voice, this is a stand-in] It started because nothing we could buy tasted like the chai we grew up on. Everything was either syrupy and sweet or so faint you lost it the moment it hit milk.</p><p>So we started making it ourselves — whole spices, ground in small batches, a tea blend picked to stand up rather than disappear. We brought it to a farmers market to see if anyone else felt the same way. They did.</p>",
         "signature": "— [Draft: founder name]",
-        "caption": "[Draft: who's in the photo]",
+        "caption": "Mid-pour at Cedar Mills, where most of this started",
         "link_label": "Read our story",
         "link_url": "/pages/our-story",
         "color_scheme": "scheme-2",
         "section_width": "page-width",
         "padding-block-start": 72,
-        "padding-block-end": 72
+        "padding-block-end": 72,
+        "photo": "kcc-making-chai-stall.jpg",
+        "photo_size": "1199x1800",
+        "photo_alt": "Pouring freshly made chai into a cup behind the market stall"
       }
     },
     "find_us": {

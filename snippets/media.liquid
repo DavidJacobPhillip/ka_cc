@@ -45,6 +45,20 @@
           class: 'media-block__media border-style',
           unset_image_tag: unset_image_tag
         %}
+      {% elsif block_settings.photo != blank %}
+        {% comment %}
+          A photo shipped in assets/ rather than uploaded to Shopify Files -
+          see snippets/kcc-asset-photo.liquid for why that distinction exists.
+          An upload still wins, so this never gets in the way of the theme
+          editor.
+        {% endcomment %}
+        {% render 'kcc-asset-photo',
+          photo: block_settings.photo,
+          size: block_settings.photo_size,
+          alt: block_settings.photo_alt,
+          class: 'media-block__media border-style',
+          sizes: '(min-width: 750px) 50vw, 100vw'
+        %}
       {% else %}
         <div class="placeholder-image media-block__media border-style">
           {{ 'detailed-apparel-1' | placeholder_svg_tag: 'hero__image' }}

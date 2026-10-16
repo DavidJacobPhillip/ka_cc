@@ -25,6 +25,17 @@
             | image_url: width: 800
             | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 32vw, 80vw', widths: '300, 500, 800'
           }}
+        {%- elsif section.settings.photo != blank -%}
+          {%- comment -%}
+            A portrait shipped in assets/ rather than uploaded - see
+            snippets/kcc-asset-photo.liquid. An upload still takes priority.
+          {%- endcomment -%}
+          {%- render 'kcc-asset-photo',
+            photo: section.settings.photo,
+            size: section.settings.photo_size,
+            alt: section.settings.photo_alt,
+            sizes: '(min-width: 750px) 32vw, 80vw'
+          -%}
         {%- else -%}
           <div class="founder-note__placeholder">
             <span>Portrait</span>
@@ -174,6 +185,14 @@
   "name": "Founder note",
   "settings": [
     { "type": "image_picker", "id": "portrait", "label": "Portrait" },
+    {
+      "type": "text",
+      "id": "photo",
+      "label": "...or a theme asset filename",
+      "info": "A file in the theme's assets folder. Ignored if a portrait is uploaded above."
+    },
+    { "type": "text", "id": "photo_size", "label": "Theme asset size, as 1199x1800" },
+    { "type": "text", "id": "photo_alt", "label": "Theme asset description" },
     { "type": "text", "id": "caption", "label": "Photo caption" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
     { "type": "text", "id": "heading", "label": "Heading" },

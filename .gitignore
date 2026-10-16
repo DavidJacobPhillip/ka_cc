@@ -16,3 +16,9 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Camera originals for the site photography (~92MB of full-size JPEG/HEIC).
+# The web-sized copies that the theme actually serves are committed in
+# assets/ as kcc-*.jpg; keeping the masters out stops the repo ballooning.
+# They stay on disk so photos can be re-cropped or re-exported later.
+KCC Website Photos/

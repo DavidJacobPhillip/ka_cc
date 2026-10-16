@@ -105,10 +105,87 @@
         "padding-block-start": 64,
         "padding-block-end": 72
       }
+    },
+    "in_the_room": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover",
+            "photo": "kcc-event-crowd.jpg",
+            "photo_size": "1800x1199",
+            "photo_alt": "Guests holding cups of chai and talking at a catered event"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Catering</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>We bring the kettle, you bring the room</h2>",
+                "type_preset": "h2"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>Two hundred and fifty cups in a single session is a normal day for us. We pour on site, so the chai reaches people the way it should - hot, fresh, and handed over.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "caption",
+            "heading",
+            "body"
+          ]
+        }
+      },
+      "block_order": [
+        "media",
+        "content"
+      ],
+      "name": "Photo",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "header",
+    "in_the_room",
     "offer",
     "enquire"
   ]

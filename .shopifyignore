@@ -1,3 +1,8 @@
 # Build tooling, not theme files - must not be pushed to the store.
 scripts/
 .env.example
+
+# Camera originals for the site photography (~92MB). The web-sized copies
+# live in assets/ as kcc-*.jpg; these are the masters to re-crop from and
+# must never be pushed to the store.
+KCC Website Photos/

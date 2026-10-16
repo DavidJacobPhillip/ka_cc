@@ -62,10 +62,87 @@
         "padding-block-start": 64,
         "padding-block-end": 88
       }
+    },
+    "meanwhile": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover",
+            "photo": "kcc-stall-setup.jpg",
+            "photo_size": "1800x1350",
+            "photo_alt": "The Ka Chai stall set up under its canopy at the farmers market"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>In the meantime</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>Find us under the canopy</h2>",
+                "type_preset": "h2"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>The cafe is still coming. Until it opens, the stall is where we are every Saturday - same chai, same people, just with more weather involved.</p>",
+                "type_preset": "rte",
+                "max_width": "narrow"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "caption",
+            "heading",
+            "body"
+          ]
+        }
+      },
+      "block_order": [
+        "media",
+        "content"
+      ],
+      "name": "Photo",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "header",
+    "meanwhile",
     "markets"
   ]
 }
