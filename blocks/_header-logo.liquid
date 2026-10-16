@@ -53,13 +53,39 @@
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
   >
-    {% render 'image',
-      image: settings.logo,
-      class: 'header-logo__image',
-      height: block_settings.custom_height,
-      text_fallback: shop.name,
-      style: logo_style
-    %}
+    {%- comment -%}
+      No logo has ever been uploaded through Theme settings > Logo (that
+      picker needs a real Files upload to register), so the stock fallback
+      here was the shop name as plain text. The artwork we actually use
+      ships in assets/ instead - the same white lockup the hero and the
+      index-only nav badge (assets/nav-scroll-color.js) already point at -
+      so fall back to that rather than to text.
+
+      White because every header state it appears in is dark: the solid
+      terracotta top row (scheme-3) on content pages, and the transparent
+      state over product/collection media, which already paints the nav
+      links white for the same reason.
+
+      If Santosh ever does upload a logo in Theme settings, that wins and
+      this branch stops rendering - nothing here needs undoing first.
+    {%- endcomment -%}
+    {% if settings.logo != blank %}
+      {% render 'image',
+        image: settings.logo,
+        class: 'header-logo__image',
+        height: block_settings.custom_height,
+        text_fallback: shop.name,
+        style: logo_style
+      %}
+    {% else %}
+      <img
+        src="{{ 'logo-white.png' | asset_url }}"
+        alt="{{ shop.name }}"
+        class="header-logo__image header-logo__image--packaged"
+        width="1376"
+        height="709"
+      >
+    {% endif %}
   </span>
 
   {% if use_inverse_logo %}

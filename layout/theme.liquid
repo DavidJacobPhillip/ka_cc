@@ -71,10 +71,87 @@
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
     <style>
-      /* No header logo anywhere on the site; the header is nav-text only. */
-      #header-component .header-logo {
-        display: none !important;
-      }
+      {%- comment -%}
+        The header logo used to be hidden sitewide ("the header is nav-text
+        only"), which was only ever right for the hero: the index template
+        has its own giant lockup in the hero, plus a small badge that fades
+        in on scroll (injected by assets/nav-scroll-color.js, styled as
+        .nav-logo-badge further down). Every OTHER template therefore had no
+        logo at all - and so no way back to the home page from the nav.
+
+        So the hide is now index-only, and on the rest of the site the
+        theme's own .header-logo does the job. That element is already a
+        real <a href="/"> with an accessible name, so it's a better home
+        button than the index badge (which is aria-hidden and
+        pointer-events: none, being purely decorative alongside the hero).
+        blocks/_header-logo.liquid supplies the white artwork, since no logo
+        is set in Theme settings.
+      {%- endcomment -%}
+      {% if template == 'index' %}
+        #header-component .header-logo {
+          display: none !important;
+        }
+      {% else %}
+        /* Pulled out of the centre column's flow and pinned to the left
+           edge, matching .nav-logo-badge's geometry exactly so the logo
+           sits in the same place whether you arrive from the home page or
+           anywhere else. header.liquid puts the logo in the centre column
+           (logo_position: center) right next to the menu, which is not
+           where we want it; .header__column--center is position: static,
+           so this resolves against .header__row--top (position: relative),
+           the same containing block the badge uses. */
+        @media screen and (min-width: 750px) {
+          #header-component .header-logo {
+            position: absolute;
+            left: var(--page-margin);
+            top: 50%;
+            transform: translateY(-50%);
+            /* The block's own stylesheet sets height: 100%, which against
+               the row's full height would stretch the link well past the
+               artwork; the image below is the thing that gets sized. */
+            height: auto;
+            width: auto;
+            /* _header-logo.liquid pulls the logo flush to its column's
+               padding edge with a negative inline margin - irrelevant once
+               it's absolutely positioned, and it would offset `left`. */
+            margin-inline: 0;
+          }
+        }
+
+        /* Mobile keeps the logo in the normal flow. The header collapses to
+           a leftA/leftB/center/rightA/rightB grid there and the centre
+           column is otherwise empty (the menu becomes the drawer), so the
+           logo gets that slot to itself - the same slot the index badge
+           takes at this breakpoint. */
+        @media screen and (max-width: 749px) {
+          #header-component .header-logo {
+            height: auto;
+            width: auto;
+            margin-inline: 0;
+          }
+        }
+
+        /* The packaged fallback <img> has none of the --header-logo-image-*
+           variables the theme's own image render sets (those come from the
+           image snippet's inline style), so .header-logo__image's
+           height/width resolve to nothing and the PNG renders at its
+           intrinsic 1376px. Size it explicitly instead, height-only with
+           width: auto so the 1.94:1 lockup keeps its proportions. Same
+           clamp values as .nav-logo-badge, so the logo is the same size
+           here as the one that fades in over the hero. */
+        #header-component .header-logo__image--packaged {
+          height: clamp(2.5rem, 5vw, 4rem);
+          width: auto;
+          max-width: none;
+          object-fit: contain;
+        }
+
+        @media screen and (max-width: 749px) {
+          #header-component .header-logo__image--packaged {
+            height: clamp(2.75rem, 11vw, 3.5rem);
+          }
+        }
+      {% endif %}
 
       /* Force white nav text while the header is transparent (unscrolled/top
          of page), matching the same condition the theme itself uses to decide
@@ -139,6 +216,217 @@
          nav is set at 3.5rem. */
       #header-component .menu-list {
         --menu-horizontal-gap: 2.25rem;
+      }
+
+      /* ---------------------------------------------------------------
+         Dropdowns as cards.
+
+         Out of the box this is Horizon's mega menu: the submenu is a
+         full-bleed panel pinned to the header (position: absolute; width:
+         100%; left: 0), revealed by animating a clip-path rect down from
+         the top, with a six-column grid inside it. For two or three links
+         per section that reads as a huge empty white band across the
+         whole viewport - measured at 1280x132 for "shop", holding two
+         words.
+
+         So: shrink it to a card that hangs under its own parent link.
+         That means undoing the full-bleed chain at every level, since
+         each one sets its own width/grid:
+
+           .menu-list__submenu        absolute, width: 100%, clip-path
+           .menu-list__submenu-inner  grid-column: 2, section padding
+           .mega-menu                 grid, 40px/1200px/40px page columns
+           .mega-menu__grid           6-column grid, 40px inline padding
+           .mega-menu__list           subgrid over those 6 columns
+           .mega-menu__column         spans n of them
+
+         Desktop only - below 750px the nav collapses to the drawer
+         (snippets/header-drawer.liquid), which is separate markup and
+         isn't touched by any of this.
+         --------------------------------------------------------------- */
+      @media screen and (min-width: 750px) {
+        /* The card is positioned against its own <li> rather than the
+           header row, which is what anchors it under its parent link
+           instead of to the viewport edge. */
+        #header-component .menu-list__list-item {
+          position: relative;
+        }
+
+        #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
+          /* Shared with the links below so the first item's text lines up
+             directly under the parent nav label - the card's left edge
+             overhangs by exactly its own padding. */
+          --kcc-submenu-padding-inline: 1.75rem;
+
+          width: max-content;
+          min-width: 13rem;
+          max-width: 22rem;
+          left: calc(-1 * var(--kcc-submenu-padding-inline));
+          padding: 1.25rem var(--kcc-submenu-padding-inline);
+
+          /* The <li> only wraps the link, so its bottom edge sits above
+             the header row's by exactly .header__columns' block padding
+             (--header-padding, confirmed identical at every desktop width
+             from 780px to 1920px even though the row's own height is
+             font-driven and varies). Adding that back lands the card flush
+             against the bottom of the bar, where the theme's own
+             row-anchored submenu used to sit. */
+          top: calc(100% + var(--header-padding) + var(--border-bottom-width, 0px));
+
+          /* Cream rather than the theme's white --color-background: the
+             card should read as a piece of the page, not as a system
+             popover. Same value as scheme-2. */
+          background-color: rgb(250 246 242);
+          border-radius: 1.25rem;
+          box-shadow: 0 1.25rem 2.5rem rgb(43 22 8 / 0.14);
+
+          /* The stock reveal is a clip-path rect growing downward, which
+             would square off the rounded corners for the whole animation.
+             Fade and lift instead. */
+          clip-path: none;
+          opacity: 0;
+          transform: translateY(-0.4rem);
+          transition: opacity 0.18s var(--ease-out-cubic, ease),
+            transform 0.18s var(--ease-out-cubic, ease);
+        }
+
+        #header-component
+          .menu-list__list-item:where(:not([slot='overflow'])):has([aria-expanded='true'])
+          > .menu-list__submenu,
+        #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu:hover {
+          opacity: 1;
+          transform: none;
+        }
+
+        /* The panel now handles the whole animation, so the theme's
+           separate inner-content fade would just double it up. */
+        #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
+          --submenu-content-opacity: 1;
+        }
+
+        /* Invisible bridge across the gap the `top` offset above opens up
+           between the link and the card. Without it, moving the pointer
+           down to the card leaves the <li> for ~11px of dead space, which
+           fires pointerleave and closes the menu before you arrive. It's
+           part of the submenu, so the theme's own
+           ".menu-list__submenu:is(:hover)" rule keeps things open while
+           the pointer is crossing it. Wider than the card on the link's
+           side so an approach from the parent label is always covered. */
+        #header-component
+          .menu-list__list-item:where(:not([slot='overflow']))
+          > .menu-list__submenu::before {
+          content: '';
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          right: 0;
+          height: calc(var(--header-padding) + 2px);
+        }
+
+        /* The full-width bar the overflow-list paints behind the menu to
+           animate submenu height against. Nothing is full-width any more. */
+        #header-component .overflow-menu::after {
+          display: none;
+        }
+
+        /* Undoing the page-grid chain described above. */
+        #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
+          .menu-list__submenu-inner {
+            display: block;
+            grid-column: auto;
+            padding: 0;
+          }
+
+          .mega-menu,
+          .mega-menu__grid {
+            display: block;
+            width: auto;
+            padding: 0;
+            grid-template-columns: none;
+          }
+
+          .mega-menu__list {
+            display: flex;
+            flex-direction: column;
+            grid-template-columns: none;
+            gap: 0;
+          }
+
+          .mega-menu__column {
+            display: block;
+            grid-column: auto;
+          }
+
+          /* Third-level links (a submenu under a submenu) stack under their
+             parent rather than opening a further panel - there are none in
+             main-menu today, but the markup supports them and an unstyled
+             nested <ul> would inherit the multi-column `column-count` the
+             mega menu sets inline. */
+          .mega-menu__list ul {
+            column-count: 1 !important;
+            margin: 0;
+            padding-inline-start: 0.9rem;
+          }
+
+          .mega-menu__link {
+            display: block;
+            padding: 0.55rem 0;
+            font-family: var(--font-body--family);
+            font-size: 1.0625rem;
+            line-height: 1.35;
+            letter-spacing: 0.005em;
+            /* main-menu's own labels are already lowercase ("chai",
+               "farmers markets"); the theme's submenu settings force
+               uppercase over the top of them. */
+            text-transform: none;
+            color: rgb(43 22 8);
+            transition: color 0.15s var(--animation-easing, ease);
+          }
+
+          .mega-menu__link:hover {
+            color: rgb(205 100 63);
+          }
+
+          /* A section label with its own children, e.g. a "shop" column
+             heading above a list. Nothing in main-menu nests this deep
+             yet, so this is only here so it degrades sensibly if it does. */
+          .mega-menu__link--parent {
+            font-size: 0.8125rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgb(205 100 63);
+            padding-block-end: 0.15rem;
+          }
+        }
+
+        /* Chevron on anything that opens a dropdown, rotating when it's
+           open, plus an underline on the parent label so it's obvious
+           which one you're in. Drawn with borders rather than an icon so
+           it scales with the nav's font-size (which is itself a clamp) and
+           inherits the link colour across the transparent/solid header
+           states. */
+        #header-component .menu-list__link[aria-haspopup='true']::after {
+          content: '';
+          flex: none;
+          align-self: center;
+          width: 0.26em;
+          height: 0.26em;
+          margin-inline-start: 0.34em;
+          border-right: 0.07em solid currentColor;
+          border-bottom: 0.07em solid currentColor;
+          transform: translateY(-0.09em) rotate(45deg);
+          transition: transform 0.18s var(--animation-easing, ease);
+        }
+
+        #header-component .menu-list__link[aria-expanded='true']::after {
+          transform: translateY(0.04em) rotate(-135deg);
+        }
+
+        #header-component .menu-list__link[aria-expanded='true'] .menu-list__link-title {
+          text-decoration: underline;
+          text-underline-offset: 0.16em;
+          text-decoration-thickness: 0.045em;
+        }
       }
 
       /* Above the mobile hamburger cutoff (750px), the four nav items at
