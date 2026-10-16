@@ -229,9 +229,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-row-of-cups.jpg",
-            "photo_size": "1800x1199",
-            "photo_alt": "A row of cups being filled one after another at the stall"
+            "image": "shopify://shop_images/DSC03276.jpg"
           },
           "blocks": {}
         },

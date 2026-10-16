@@ -17,9 +17,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-steam-pot.jpg",
-            "photo_size": "1800x1371",
-            "photo_alt": "Steam rising off a pot of chai as it is stirred"
+            "image": "shopify://shop_images/DSC03473.jpg"
           },
           "blocks": {}
         },
@@ -93,9 +91,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-spice-table.jpg",
-            "photo_size": "1800x1199",
-            "photo_alt": "Jars of whole spices and steel trays laid out on the stall table"
+            "image": "shopify://shop_images/DSC03601.jpg"
           },
           "blocks": {}
         },

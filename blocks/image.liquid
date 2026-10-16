@@ -53,20 +53,6 @@
         style: image_border_style,
         sizes: sizes
     }}
-  {%- elsif block_settings.photo != blank -%}
-    {%- comment -%}
-      A photo shipped in the theme's assets/ folder rather than uploaded to
-      Shopify Files - see snippets/kcc-asset-photo.liquid for why that
-      distinction exists here. An upload still wins, so this never gets in the
-      way of the theme editor.
-    {%- endcomment -%}
-    {%- render 'kcc-asset-photo',
-      photo: block_settings.photo,
-      size: block_settings.photo_size,
-      alt: block_settings.photo_alt,
-      class: 'image-block__image border-style',
-      sizes: sizes
-    -%}
   {%- else -%}
     <div class="placeholder-image border-style size-style" style="{{ image_border_style }}">
       {{ 'detailed-apparel-1' | placeholder_svg_tag: 'hero__image' }}
@@ -132,22 +118,6 @@
       "type": "image_picker",
       "id": "image",
       "label": "t:settings.image"
-    },
-    {
-      "type": "text",
-      "id": "photo",
-      "label": "...or a theme asset filename",
-      "info": "A file in the theme's assets folder, e.g. kcc-big-pour.jpg. Ignored if an image is uploaded above."
-    },
-    {
-      "type": "text",
-      "id": "photo_size",
-      "label": "Theme asset size, as 1800x1199"
-    },
-    {
-      "type": "text",
-      "id": "photo_alt",
-      "label": "Theme asset description"
     },
     {
       "type": "url",

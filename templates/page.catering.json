@@ -115,9 +115,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-event-crowd.jpg",
-            "photo_size": "1800x1199",
-            "photo_alt": "Guests holding cups of chai and talking at a catered event"
+            "image": "shopify://shop_images/DSC03110.jpg"
           },
           "blocks": {}
         },

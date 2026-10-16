@@ -294,9 +294,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-spices-overhead.jpg",
-                    "photo_size": "1800x1350",
-                    "photo_alt": "Jars of whole chai spices and a measuring scoop laid out on a steel tray"
+                    "image": "shopify://shop_images/IMG_6117.heic"
                   },
                   "blocks": {}
                 },
@@ -430,9 +428,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-cup-handover.jpg",
-                    "photo_size": "1800x1199",
-                    "photo_alt": "A small cup of filter coffee passed from one pair of hands to another"
+                    "image": "shopify://shop_images/DSC03202.jpg"
                   },
                   "blocks": {}
                 },
@@ -887,9 +883,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-pour-into-cup.jpg",
-                    "photo_size": "1199x1800",
-                    "photo_alt": "Chai poured in a long stream into a paper cup at the market stall"
+                    "image": "shopify://shop_images/DSC03080.jpg"
                   },
                   "blocks": {}
                 },
@@ -981,9 +975,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-founder-booth.jpg",
-                    "photo_size": "1350x1800",
-                    "photo_alt": "Santosh sitting at the Ka Chai booth under the banner, checking his phone"
+                    "image": "shopify://shop_images/IMG_2333.heic"
                   },
                   "blocks": {}
                 },
@@ -1075,9 +1067,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-regular-with-cup.jpg",
-                    "photo_size": "1199x1800",
-                    "photo_alt": "A regular customer cradling a cup of chai at the stall"
+                    "image": "shopify://shop_images/DSC03548.jpg"
                   },
                   "blocks": {}
                 },
@@ -1169,9 +1159,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-cup-in-hands.jpg",
-                    "photo_size": "1800x1800",
-                    "photo_alt": "A cup of chai steaming in both hands on a cold market morning"
+                    "image": "shopify://shop_images/DSC03486.jpg"
                   },
                   "blocks": {}
                 },
@@ -1263,9 +1251,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-big-pour.jpg",
-                    "photo_size": "1800x1800",
-                    "photo_alt": "Chai poured from a jug into a large steel urn"
+                    "image": "shopify://shop_images/DSC03615.jpg"
                   },
                   "blocks": {}
                 },
@@ -1357,9 +1343,7 @@
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0,
-                    "photo": "kcc-friends-at-market.jpg",
-                    "photo_size": "1800x1199",
-                    "photo_alt": "Three friends walking the market together, each holding a cup"
+                    "image": "shopify://shop_images/DSC03494.jpg"
                   },
                   "blocks": {}
                 },
@@ -1492,9 +1476,7 @@
         "section_width": "page-width",
         "padding-block-start": 72,
         "padding-block-end": 72,
-        "photo": "kcc-making-chai-stall.jpg",
-        "photo_size": "1199x1800",
-        "photo_alt": "Pouring freshly made chai into a cup behind the market stall"
+        "portrait": "shopify://shop_images/DSC03034.jpg"
       }
     },
     "find_us": {

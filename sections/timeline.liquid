@@ -36,61 +36,31 @@
             </div>
 
             {%- comment -%}
-              Photos. Each slot takes either an upload (image_picker, which
-              is what the theme editor offers) or the filename of a file in
-              assets/ - the milestone photos ship with the theme, and a
-              JSON template can't reference an uploaded file it doesn't
-              have an ID for. The upload wins where both are set, so
-              replacing a shipped photo later is an editor job.
+              Photos. Two optional slots per entry, uploaded through the
+              theme editor like any other image.
 
               Rendered at natural aspect ratio rather than cropped to a
               common one: the set is a mix of portrait and landscape phone
               photos, and several of the landscape ones put people at the
               edges, where a centre crop would cut them out. The CSS gives
               them a shared height instead, so a row still lines up.
-
-              An upload carries its own dimensions, but Liquid can't read
-              them off a theme asset, so asset photos declare theirs in a
-              "WIDTHxHEIGHT" setting. Without that the browser has no
-              aspect ratio to reserve - the CSS fixes height and leaves
-              width auto - and every photo on a page this long would jolt
-              the layout as it loaded.
             {%- endcomment -%}
             {%- capture photos -%}
               {%- for i in (1..2) -%}
-                {%- liquid
-                  if i == 1
-                    assign upload = block.settings.image
-                    assign asset_name = block.settings.photo
-                    assign alt = block.settings.photo_alt
-                    assign size = block.settings.photo_size
-                  else
-                    assign upload = block.settings.image_2
-                    assign asset_name = block.settings.photo_2
-                    assign alt = block.settings.photo_2_alt
-                    assign size = block.settings.photo_2_size
-                  endif
-
-                  assign dims = size | split: 'x'
-                  assign asset_width = dims[0] | default: 900
-                  assign asset_height = dims[1] | default: 900
-                -%}
-                {%- if upload != blank -%}
+                {%- if i == 1 -%}
+                  {%- assign image = block.settings.image -%}
+                {%- else -%}
+                  {%- assign image = block.settings.image_2 -%}
+                {%- endif -%}
+                {%- if image != blank -%}
                   <img
                     class="timeline__photo"
-                    src="{{ upload | image_url: width: 900 }}"
-                    alt="{{ alt | escape }}"
-                    width="{{ upload.width }}"
-                    height="{{ upload.height }}"
-                    loading="lazy"
-                  >
-                {%- elsif asset_name != blank -%}
-                  <img
-                    class="timeline__photo"
-                    src="{{ asset_name | asset_img_url: '900x' }}"
-                    alt="{{ alt | escape }}"
-                    width="{{ asset_width }}"
-                    height="{{ asset_height }}"
+                    src="{{ image | image_url: width: 900 }}"
+                    srcset="{{ image | image_url: width: 400 }} 400w, {{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w"
+                    sizes="(min-width: 900px) 19rem, 50vw"
+                    alt="{{ image.alt | escape }}"
+                    width="{{ image.width }}"
+                    height="{{ image.height }}"
                     loading="lazy"
                   >
                 {%- endif -%}
@@ -296,18 +266,8 @@
         { "type": "text", "id": "title", "label": "Title" },
         { "type": "textarea", "id": "body", "label": "Body" },
         { "type": "header", "content": "Photos" },
-        {
-          "type": "paragraph",
-          "content": "Upload a photo, or name a file already in the theme's assets folder. An upload wins if both are set."
-        },
         { "type": "image_picker", "id": "image", "label": "Photo 1" },
-        { "type": "text", "id": "photo", "label": "Photo 1 asset filename" },
-        { "type": "text", "id": "photo_size", "label": "Photo 1 size, as 900x675" },
-        { "type": "text", "id": "photo_alt", "label": "Photo 1 description" },
-        { "type": "image_picker", "id": "image_2", "label": "Photo 2" },
-        { "type": "text", "id": "photo_2", "label": "Photo 2 asset filename" },
-        { "type": "text", "id": "photo_2_size", "label": "Photo 2 size, as 900x675" },
-        { "type": "text", "id": "photo_2_alt", "label": "Photo 2 description" }
+        { "type": "image_picker", "id": "image_2", "label": "Photo 2" }
       ]
     },
     {

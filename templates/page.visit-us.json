@@ -17,9 +17,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-market-stall.jpg",
-            "photo_size": "1800x1350",
-            "photo_alt": "The Ka Chai stall under its canopy with a queue of customers"
+            "image": "shopify://shop_images/IMG_4983.heic"
           },
           "blocks": {}
         },

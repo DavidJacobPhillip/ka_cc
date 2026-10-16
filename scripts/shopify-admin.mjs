@@ -25,7 +25,7 @@
  */
 
 import { readFileSync, readdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -402,7 +402,9 @@ async function collections(env) {
  * uploaded object. Files already in the store are skipped, never replaced.
  */
 async function files(env) {
-  const dir = join(ROOT, 'KCC Website Photos');
+  // --from picks a different source folder; the default is the photo drop.
+  const fromArg = process.argv.indexOf('--from');
+  const dir = fromArg > -1 ? resolve(process.argv[fromArg + 1]) : join(ROOT, 'KCC Website Photos');
   let names;
   try {
     names = readdirSync(dir)

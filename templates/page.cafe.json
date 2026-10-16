@@ -72,9 +72,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-stall-setup.jpg",
-            "photo_size": "1800x1350",
-            "photo_alt": "The Ka Chai stall set up under its canopy at the farmers market"
+            "image": "shopify://shop_images/IMG_4910.heic"
           },
           "blocks": {}
         },

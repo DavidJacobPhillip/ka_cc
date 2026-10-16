@@ -229,9 +229,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "photo": "kcc-ladle-pour.jpg",
-            "photo_size": "1800x1800",
-            "photo_alt": "Chai ladled from the pot into a waiting cup"
+            "image": "shopify://shop_images/DSC03170.jpg"
           },
           "blocks": {}
         },

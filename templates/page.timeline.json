@@ -30,9 +30,7 @@
             "marker": "Oct 17, 2023",
             "title": "The friend who gave me the idea",
             "body": "Ashay Shah was telling me how his friends wanted high quality chai and could not find it at OSU. The need was there, with no solution in sight.",
-            "photo": "timeline-2023-10-17-ashay.jpg",
-            "photo_size": "900x675",
-            "photo_alt": "Santosh and Ashay Shah sitting at a table"
+            "image": "shopify://shop_images/timeline-2023-10-17-ashay.jpg"
           }
         },
         "m02": {
@@ -41,9 +39,7 @@
             "marker": "Jan 23, 2024",
             "title": "Making chai for the first time in my life",
             "body": "At Srini and Sailaja Datla uncle and aunty's house in Hyderabad, where I learned how to make chai, literally never having done it before then.",
-            "photo": "timeline-2024-01-23-first-chai.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Santosh at a stovetop in Hyderabad making chai for the first time"
+            "image": "shopify://shop_images/timeline-2024-01-23-first-chai.jpg"
           }
         },
         "m03": {
@@ -52,9 +48,7 @@
             "marker": "Apr 18, 2024",
             "title": "The first person to try my first recipe",
             "body": "Shivani Thakor said it was a 6 or 7 out of 10 for my first chai. I'll take it.",
-            "photo": "timeline-2024-04-18-shivani.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Shivani Thakor in a kitchen beside pots of chai on the stove"
+            "image": "shopify://shop_images/timeline-2024-04-18-shivani.jpg"
           }
         },
         "m04": {
@@ -63,12 +57,8 @@
             "marker": "Jun 1, 2024",
             "title": "First chai stall, at OSU ISA Holi",
             "body": "Jay Shah came just to support me and stood next to me for more than an hour. Akhila, Arushi, Rohan and Vaishnavi took advantage of the heat from the stove and stood there only for that reason. Abhishek Enaguthi was the first person to buy my chai, and he gave me $10 as well. Thanks to the OSU ISA exec committee for letting it happen: Shreyes, Khushi, Varsha, Mandaakini and Kaushik.",
-            "photo": "timeline-2024-06-01-osu-holi.jpg",
-            "photo_size": "900x675",
-            "photo_alt": "The first chai stall set up on grass at OSU ISA Holi",
-            "photo_2": "timeline-2024-06-01-first-sale.jpg",
-            "photo_2_size": "507x900",
-            "photo_2_alt": "Abhishek Enaguthi covered in Holi colour, holding the first cup of chai ever sold"
+            "image": "shopify://shop_images/timeline-2024-06-01-osu-holi.jpg",
+            "image_2": "shopify://shop_images/timeline-2024-06-01-first-sale.jpg"
           }
         },
         "m05": {
@@ -77,12 +67,8 @@
             "marker": "Aug 22, 2024",
             "title": "First Portland downtown stall",
             "body": "And the first customers there, Hussein and Carlos.",
-            "photo": "timeline-2024-08-22-portland-stall-a.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "A small chai cart set up on a downtown Portland street",
-            "photo_2": "timeline-2024-08-22-portland-stall-b.jpg",
-            "photo_2_size": "675x900",
-            "photo_2_alt": "Hussein and Carlos holding cups of chai on the sidewalk"
+            "image": "shopify://shop_images/timeline-2024-08-22-portland-stall-a.jpg",
+            "image_2": "shopify://shop_images/timeline-2024-08-22-portland-stall-b.jpg"
           }
         },
         "m06": {
@@ -91,12 +77,8 @@
             "marker": "May 3, 2025",
             "title": "First farmers market: Cedar Mills",
             "body": "Jim Risdon was the first farmers market customer. This was also the first time I made two gallons of chai at once.",
-            "photo": "timeline-2025-05-03-first-market-a.jpg",
-            "photo_size": "900x675",
-            "photo_alt": "The Ka Chai stall under a canopy on the first day at Cedar Mills Farmers Market",
-            "photo_2": "timeline-2025-05-03-first-market-b.jpg",
-            "photo_2_size": "900x675",
-            "photo_2_alt": "Santosh serving a customer across the market table"
+            "image": "shopify://shop_images/timeline-2025-05-03-first-market-a.jpg",
+            "image_2": "shopify://shop_images/timeline-2025-05-03-first-market-b.jpg"
           }
         },
         "m07": {
@@ -105,9 +87,7 @@
             "marker": "May 24, 2025",
             "title": "First informal employee",
             "body": "Vivek Srirama has helped me at six markets so far and has literally become a part of the business in a way.",
-            "photo": "timeline-2025-05-24-vivek.jpg",
-            "photo_size": "900x675",
-            "photo_alt": "Santosh and Vivek Srirama behind the stall at a market"
+            "image": "shopify://shop_images/timeline-2025-05-24-vivek.jpg"
           }
         },
         "m08": {
@@ -116,9 +96,7 @@
             "marker": "Jun 24, 2025",
             "title": "First catering event",
             "body": "Deeksha Easwar's high school graduation, 30 cups of chai and coffee. Aunty and uncle said they wanted to support the growth of my business and made sure to tell everyone about what I had started, and the Chinmaya Mission family was eager to help spread the word. This was the first time I express shipped coffee from India to make it happen, so they could have fresh filter coffee.",
-            "photo": "timeline-2025-06-24-first-catering.jpg",
-            "photo_size": "900x675",
-            "photo_alt": "Santosh with the Easwar family at the graduation catering"
+            "image": "shopify://shop_images/timeline-2025-06-24-first-catering.jpg"
           }
         },
         "m09": {
@@ -127,9 +105,7 @@
             "marker": "Aug 15, 2025",
             "title": "Chai spices and tea leaves",
             "body": "Huge thanks go to Nishant Vashisht for pushing me to finally make these come to life.",
-            "photo": "timeline-2025-08-15-spices-tea.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "A hand holding two jars of Ka Chai masala and Indian grade tea powder"
+            "image": "shopify://shop_images/timeline-2025-08-15-spices-tea.jpg"
           }
         },
         "m10": {
@@ -138,9 +114,7 @@
             "marker": "Nov 5, 2025",
             "title": "First retail location: NW Accent",
             "body": "Rose City Delights told me to check this place out. Kati Foster was very kind in letting me sell my spices here on consignment.",
-            "photo": "timeline-2025-11-05-nw-accent.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Santosh outside the NW Accent storefront"
+            "image": "shopify://shop_images/timeline-2025-11-05-nw-accent.jpg"
           }
         },
         "m11": {
@@ -157,9 +131,7 @@
             "marker": "Jan 29, 2026",
             "title": "Testing out a chai concentrate",
             "body": "Heman gave us the green light to start figuring out ODA approval on the concentrate.",
-            "photo": "timeline-2026-01-29-concentrate-test.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Santosh and Heman holding a bottle of the first chai concentrate"
+            "image": "shopify://shop_images/timeline-2026-01-29-concentrate-test.jpg"
           }
         },
         "m13": {
@@ -168,9 +140,7 @@
             "marker": "Mar 28, 2026",
             "title": "Ka Chai's first official employees",
             "body": "Lakshmi Sawney and Frank Gehman. Technically Lakshmi had her training a week or two prior, but who's counting.",
-            "photo": "timeline-2026-03-28-first-employees.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Lakshmi Sawney, Santosh and Frank Gehman together"
+            "image": "shopify://shop_images/timeline-2026-03-28-first-employees.jpg"
           }
         },
         "m14": {
@@ -179,9 +149,7 @@
             "marker": "May 23, 2026",
             "title": "Packaged chai",
             "body": "Got in through the BUILT Oregon booth and decided to have a crack at making a packaged chai version, just in time for ODA approval too. For the first few markets the bottles we sold still didn't have stickers on them.",
-            "photo": "timeline-2026-05-23-packaged-chai.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "A bottle of Ka masala chai held up in the light"
+            "image": "shopify://shop_images/timeline-2026-05-23-packaged-chai.jpg"
           }
         },
         "m15": {
@@ -190,9 +158,7 @@
             "marker": "Jun 15, 2026",
             "title": "Testing at Cathedral Coffee",
             "body": "Seeing whether we could get an authentic chai up and running in a cafe. Rob Pisha has been absolutely amazing in helping me scale this business. We spent nearly three hours doing iterations of tests here.",
-            "photo": "timeline-2026-06-15-cathedral-coffee.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Pouring a test chai at Cathedral Coffee"
+            "image": "shopify://shop_images/timeline-2026-06-15-cathedral-coffee.jpg"
           }
         },
         "m16": {
@@ -201,9 +167,7 @@
             "marker": "Jun 27, 2026",
             "title": "Alex Calderon running Cedar Mills on his own",
             "body": "Well, I did help in the beginning to make the chai. But other than that, all him.",
-            "photo": "timeline-2026-06-27-cedar-mills-solo.jpg",
-            "photo_size": "512x900",
-            "photo_alt": "Alex Calderon stirring a pot of chai at the Cedar Mills stall"
+            "image": "shopify://shop_images/timeline-2026-06-27-cedar-mills-solo.jpg"
           }
         },
         "m17": {
@@ -212,9 +176,7 @@
             "marker": "Jul 6, 2026",
             "title": "First wholesale concentrate order",
             "body": "Courtesy of Heman Bojwani at Earthly Gourmet for supporting this.",
-            "photo": "timeline-2026-07-06-wholesale.jpg",
-            "photo_size": "675x900",
-            "photo_alt": "Bottles of Ka chai concentrate packed on ice for the first wholesale order"
+            "image": "shopify://shop_images/timeline-2026-07-06-wholesale.jpg"
           }
         },
         "ty": {
