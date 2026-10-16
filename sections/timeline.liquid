@@ -1,0 +1,192 @@
+{% comment %}
+  A dated timeline, for the "timeline + thanks" page.
+
+  Each entry is a block with a marker (a year, a season, whatever), a heading and
+  a line or two. The thanks list at the end is a separate block type, since it's
+  a different shape of content - names rather than events - and deserves to look
+  different rather than being forced into the same rail.
+
+  The connecting line is drawn on the list, not on each entry, so it stops
+  cleanly at the last marker instead of trailing past it.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} timeline spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  {%- if section.settings.heading != blank -%}
+    <h2 class="timeline__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+
+  {%- assign entries = section.blocks | where: 'type', 'entry' -%}
+  {%- if entries.size > 0 -%}
+    <ol class="timeline__list" role="list">
+      {%- for block in entries -%}
+        <li class="timeline__entry" {{ block.shopify_attributes }}>
+          <span class="timeline__marker">{{ block.settings.marker }}</span>
+          <div class="timeline__content">
+            {%- if block.settings.title != blank -%}
+              <h3 class="timeline__title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.body != blank -%}
+              <p class="timeline__body">{{ block.settings.body }}</p>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  {%- endif -%}
+
+  {%- assign thanks = section.blocks | where: 'type', 'thanks' -%}
+  {%- for block in thanks -%}
+    <div class="timeline__thanks" {{ block.shopify_attributes }}>
+      {%- if block.settings.title != blank -%}
+        <h3 class="timeline__thanks-title">{{ block.settings.title }}</h3>
+      {%- endif -%}
+      {%- if block.settings.body != blank -%}
+        <div class="timeline__thanks-body rte">{{ block.settings.body }}</div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+  .timeline__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    margin: 0 0 2.5rem;
+  }
+
+  .timeline__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    max-width: 44rem;
+  }
+
+  /* The rail. Drawn on the list and inset by half a marker so it runs through
+     the centre of the dots, and stops at the final one rather than trailing. */
+  .timeline__list::before {
+    content: '';
+    position: absolute;
+    inset-block: 0.6rem auto;
+    height: calc(100% - 1.2rem);
+    inset-inline-start: 0.35rem;
+    width: 1px;
+    background: var(--color-border, currentColor);
+    opacity: 0.6;
+  }
+
+  .timeline__entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    padding-inline-start: 2.25rem;
+    padding-block-end: 2.25rem;
+  }
+
+  .timeline__entry:last-child {
+    padding-block-end: 0;
+  }
+
+  .timeline__entry::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.45rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--color-primary, currentColor);
+  }
+
+  .timeline__marker {
+    font-family: var(--font-heading--family);
+    font-size: 0.8125rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-primary, currentColor);
+  }
+
+  .timeline__title {
+    font-family: var(--font-heading--family);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0.15rem 0 0.35rem;
+  }
+
+  .timeline__body {
+    margin: 0;
+    line-height: 1.7;
+    opacity: 0.8;
+    max-width: 52ch;
+  }
+
+  .timeline__thanks {
+    margin-block-start: 3.5rem;
+    padding-block-start: 2.5rem;
+    border-block-start: 1px solid var(--color-border, currentColor);
+    max-width: 44rem;
+  }
+
+  .timeline__thanks-title {
+    font-family: var(--font-heading--family);
+    font-size: 1.375rem;
+    margin: 0 0 1rem;
+  }
+
+  .timeline__thanks-body {
+    line-height: 1.8;
+    opacity: 0.85;
+  }
+
+  .timeline__thanks-body p {
+    margin: 0 0 0.75rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Timeline",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "entry",
+      "name": "Entry",
+      "settings": [
+        { "type": "text", "id": "marker", "label": "Year / marker" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "body", "label": "Body" }
+      ]
+    },
+    {
+      "type": "thanks",
+      "name": "Thanks",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "richtext", "id": "body", "label": "Body" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Timeline" }]
+}
+{% endschema %}

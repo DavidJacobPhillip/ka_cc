@@ -1,0 +1,115 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Catering",
+        "heading": "Chai for a room full of people",
+        "body": "<p>Weddings, offices, markets, birthdays. We bring the kettle, the spices and enough cups — you bring the people.</p>",
+        "link_label": "Ask for a quote",
+        "link_url": "/pages/contact",
+        "alignment": "center",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 88,
+        "padding-block-end": 56
+      }
+    },
+    "offer": {
+      "type": "value-props",
+      "blocks": {
+        "a": {
+          "type": "prop",
+          "settings": {
+            "title": "We pour on site",
+            "body": "Brewed fresh in front of your guests, not carafes made three hours earlier. [Draft — confirm what equipment you can bring and what you need from the venue.]"
+          }
+        },
+        "b": {
+          "type": "prop",
+          "settings": {
+            "title": "Chai and filter coffee",
+            "body": "Both, or just one. Dairy and non-dairy as standard — tell us roughly how the split usually goes for your crowd."
+          }
+        },
+        "c": {
+          "type": "prop",
+          "settings": {
+            "title": "Any size, within reason",
+            "body": "[Draft — confirm your real minimum and maximum headcount, and how much notice you need.]"
+          }
+        }
+      },
+      "block_order": [
+        "a",
+        "b",
+        "c"
+      ],
+      "settings": {
+        "heading": "How it works",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    },
+    "enquire": {
+      "type": "contact-details",
+      "blocks": {
+        "e1": {
+          "type": "route",
+          "settings": {
+            "label": "Get a quote",
+            "detail": "Send the date, rough headcount and the venue. We'll come back with options and a price.",
+            "link_label": "Contact form",
+            "link_url": "/pages/contact"
+          }
+        },
+        "e2": {
+          "type": "route",
+          "settings": {
+            "label": "Try it first",
+            "detail": "Come find us at the market before you book — easiest way to know if it's right for your event.",
+            "link_label": "Market schedule",
+            "link_url": "/pages/visit-us"
+          }
+        },
+        "e3": {
+          "type": "route",
+          "settings": {
+            "label": "Lead time",
+            "detail": "[Draft — confirm how far ahead you need booking.]",
+            "link_label": "",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "e1",
+        "e2",
+        "e3"
+      ],
+      "settings": {
+        "heading": "Booking",
+        "body": "",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 72
+      }
+    }
+  },
+  "order": [
+    "header",
+    "offer",
+    "enquire"
+  ]
+}

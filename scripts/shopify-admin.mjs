@@ -119,12 +119,21 @@ const PAGES = [
   { handle: 'our-story', title: 'Our Story', template: 'our-story' },
   { handle: 'brew-guide', title: 'Brew Guide', template: 'brew-guide' },
   { handle: 'visit-us', title: 'Visit Us', template: 'visit-us' },
+  { handle: 'catering', title: 'Catering', template: 'catering' },
+  { handle: 'timeline', title: 'Timeline + Thanks', template: 'timeline' },
+  { handle: 'cafe', title: 'Cafe', template: 'cafe' },
+];
+
+/** Collections the shop submenu needs. Products are assigned separately. */
+const COLLECTIONS = [
+  { handle: 'chai', title: 'Chai', body: 'Masala chai blends \u2014 whole spices, ground fresh.' },
+  { handle: 'coffee', title: 'Coffee', body: 'South Indian filter coffee, arabica and robusta with chicory.' },
 ];
 
 /**
- * The nav, mirroring the labels already in the header. Anything still pointing
- * at a page that doesn't exist is left commented in the notes rather than
- * silently linking to the homepage, which is the current bug.
+ * The nav. Every label that was already in the header is kept - 11 of its 12
+ * items pointed at "/" , which is the bug being fixed here, not the labels
+ * themselves. Each one now resolves to a real page, collection or blog.
  */
 const MENU = {
   handle: 'main-menu',
@@ -135,24 +144,29 @@ const MENU = {
       type: 'HTTP',
       url: '/collections/all',
       items: [
-        { title: 'chai', type: 'HTTP', url: '/collections/all' },
-        { title: 'coffee', type: 'HTTP', url: '/collections/all' },
+        { title: 'chai', type: 'HTTP', url: '/collections/chai' },
+        { title: 'coffee', type: 'HTTP', url: '/collections/coffee' },
       ],
     },
     {
       title: 'locations',
       type: 'HTTP',
       url: '/pages/visit-us',
-      items: [{ title: 'farmers markets', type: 'HTTP', url: '/pages/visit-us' }],
+      items: [
+        { title: 'farmers markets', type: 'HTTP', url: '/pages/visit-us' },
+        { title: 'cafe location', type: 'HTTP', url: '/pages/cafe' },
+      ],
     },
-    { title: 'catering', type: 'HTTP', url: '/pages/contact' },
+    { title: 'catering', type: 'HTTP', url: '/pages/catering' },
     {
       title: 'explore',
       type: 'HTTP',
       url: '/pages/brew-guide',
       items: [
         { title: 'how to make chai', type: 'HTTP', url: '/pages/brew-guide' },
+        { title: 'fun recipes + blog', type: 'HTTP', url: '/blogs/news' },
         { title: 'our story', type: 'HTTP', url: '/pages/our-story' },
+        { title: 'timeline + thanks', type: 'HTTP', url: '/pages/timeline' },
       ],
     },
   ],
@@ -319,17 +333,45 @@ async function menu(env) {
   if (!userErrors(payload, MENU.handle)) console.log(`\n  ${c.green('✓')} ${MENU.handle} written\n`);
 }
 
+async function collections(env) {
+  const existing = await gql(env, `{ collections(first: 100) { nodes { handle } } }`);
+  const have = new Set(existing.collections.nodes.map((x) => x.handle));
+  const todo = COLLECTIONS.filter((x) => !have.has(x.handle));
+
+  for (const x of COLLECTIONS.filter((x) => have.has(x.handle)))
+    console.log(`  ${c.dim('skip')}   /collections/${x.handle} ${c.dim('(exists)')}`);
+  for (const x of todo) console.log(`  ${c.yellow('create')} /collections/${x.handle}`);
+  if (!todo.length) return console.log(`\n${c.green('✓')} Nothing to create.\n`);
+  if (!APPLY) return console.log(`\n${c.dim('Dry run. Re-run with --apply to create these.')}\n`);
+
+  for (const x of todo) {
+    const d = await gql(
+      env,
+      `mutation($input: CollectionInput!) {
+         collectionCreate(input: $input) {
+           collection { handle } userErrors { field message } } }`,
+      { input: { title: x.title, handle: x.handle, descriptionHtml: x.body } }
+    );
+    if (!userErrors(d.collectionCreate, `/collections/${x.handle}`))
+      console.log(`  ${c.green('✓')} created /collections/${x.handle}`);
+  }
+  console.log(
+    c.dim('\n  Collections are empty - products still need assigning to them.\n')
+  );
+}
+
 /* ------------------------------------------------------------------ main -- */
 
-const COMMANDS = { check, pages, menu };
+const COMMANDS = { check, pages, collections, menu };
 
 if (!COMMANDS[CMD]) {
   console.log(`
 ${c.bold('Usage')}  node scripts/shopify-admin.mjs <command> [--apply]
 
-  check    Verify the token and list the store's pages and menus
-  pages    Create the pages the theme has templates for
-  menu     Point main-menu at real URLs
+  check        Verify the token and list the store's pages and menus
+  pages        Create the pages the theme has templates for
+  collections  Create the chai / coffee collections
+  menu         Point main-menu at real URLs
 
 ${c.dim('Without --apply every command is a dry run.')}
 `);

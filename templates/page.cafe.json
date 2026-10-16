@@ -1,0 +1,71 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Cafe",
+        "heading": "A cafe is coming",
+        "body": "<p>Not yet — but it's the plan. [Draft — confirm timing, neighbourhood, or whether to say anything specific at all.]</p><p>Until then the kettle is at the farmers market every Saturday, which is the best place to find us.</p>",
+        "link_label": "Where to find us now",
+        "link_url": "/pages/visit-us",
+        "alignment": "center",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 104,
+        "padding-block-end": 72
+      }
+    },
+    "markets": {
+      "type": "find-us",
+      "blocks": {
+        "m1": {
+          "type": "market",
+          "settings": {
+            "name": "Cedar Mills Farmers Market",
+            "when": "Saturdays, 9 AM – 2 PM",
+            "detail": "Brewed and served fresh every Saturday.",
+            "link_label": "Directions",
+            "link_url": ""
+          }
+        },
+        "m2": {
+          "type": "market",
+          "settings": {
+            "name": "PSU Farmers Market",
+            "when": "[Draft: confirm day & time]",
+            "detail": "Portland State University, downtown.",
+            "link_label": "Directions",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2"
+      ],
+      "settings": {
+        "eyebrow": "In the meantime",
+        "heading": "Find the kettle",
+        "body": "",
+        "link_label": "All the places you can find us",
+        "link_url": "/pages/visit-us",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 88
+      }
+    }
+  },
+  "order": [
+    "header",
+    "markets"
+  ]
+}

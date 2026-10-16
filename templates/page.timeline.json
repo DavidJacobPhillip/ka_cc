@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Timeline + thanks",
+        "heading": "How we got here",
+        "body": "<p>[Draft — replace these milestones with the real ones. Dates and details are placeholders.]</p>",
+        "alignment": "center",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 88,
+        "padding-block-end": 56
+      }
+    },
+    "story": {
+      "type": "timeline",
+      "blocks": {
+        "t1": {
+          "type": "entry",
+          "settings": {
+            "marker": "[Draft: year]",
+            "title": "A kettle and a folding table",
+            "body": "The first market stall. [Draft — confirm which market and when.]"
+          }
+        },
+        "t2": {
+          "type": "entry",
+          "settings": {
+            "marker": "[Draft: year]",
+            "title": "The blend settled down",
+            "body": "Assam for depth, Kericho for backbone — the ratio stopped changing every week."
+          }
+        },
+        "t3": {
+          "type": "entry",
+          "settings": {
+            "marker": "[Draft: year]",
+            "title": "Cedar Mills, every Saturday",
+            "body": "A regular slot rather than one-off markets. 9 AM to 2 PM."
+          }
+        },
+        "t4": {
+          "type": "entry",
+          "settings": {
+            "marker": "Now",
+            "title": "Shipping from the site",
+            "body": "[Draft — confirm when online orders opened.]"
+          }
+        },
+        "ty": {
+          "type": "thanks",
+          "settings": {
+            "title": "Thanks",
+            "body": "<p>[Draft — this is the part worth writing properly. Name the people who lent equipment, took a shift, or bought the first cup.]</p><p>And everyone who came back a second time.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "ty"
+      ],
+      "settings": {
+        "heading": "",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 48,
+        "padding-block-end": 88
+      }
+    }
+  },
+  "order": [
+    "header",
+    "story"
+  ]
+}
