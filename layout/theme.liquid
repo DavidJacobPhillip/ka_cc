@@ -253,10 +253,14 @@
         }
 
         #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu {
-          /* Shared with the links below so the first item's text lines up
-             directly under the parent nav label - the card's left edge
-             overhangs by exactly its own padding. */
           --kcc-submenu-padding-inline: 1.75rem;
+
+          /* How far the card starts above its resting place, as its own
+             variable rather than inline in `transform`: the card is also
+             translated horizontally to centre it (below), and the two
+             have to live in one transform without the open state wiping
+             out the centring. */
+          --kcc-submenu-lift: -0.4rem;
 
           width: max-content;
           /* Low enough that the card hugs its longest label. At 13rem the
@@ -265,7 +269,13 @@
              only kicks in to stop a very short menu becoming a sliver. */
           min-width: 7.5rem;
           max-width: 22rem;
-          left: calc(-1 * var(--kcc-submenu-padding-inline));
+
+          /* Centred on its parent label. The <li> is the containing block
+             (see position: relative above), so 50% is the middle of the
+             nav item and the translate pulls the card back by half its
+             own width - which is the only way to centre something whose
+             width is max-content and therefore unknown here. */
+          left: 50%;
           /* Top padding is deliberately much smaller than the bottom:
              it is the only part of the gap below the nav label that is
              ours to shrink. The rest is fixed - the <li> is taller than
@@ -305,7 +315,7 @@
              instead. */
           clip-path: none;
           opacity: 0;
-          transform: translateY(-0.4rem);
+          transform: translateX(-50%) translateY(var(--kcc-submenu-lift));
           transition: opacity 0.18s var(--ease-out-cubic, ease),
             transform 0.18s var(--ease-out-cubic, ease);
         }
@@ -314,8 +324,11 @@
           .menu-list__list-item:where(:not([slot='overflow'])):has([aria-expanded='true'])
           > .menu-list__submenu,
         #header-component .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu:hover {
+          /* Only the lift is cancelled on open - the -50% that centres the
+             card has to stay, so this can't be `transform: none`. */
+          --kcc-submenu-lift: 0rem;
+
           opacity: 1;
-          transform: none;
         }
 
         /* The panel now handles the whole animation, so the theme's
@@ -399,6 +412,10 @@
             font-family: var(--font-heading--family);
             font-size: 1.5rem;
             line-height: 1.15;
+            /* display: block above means each link already fills the card's
+               width, so this centres every item against the card - and so
+               against the nav label the card is centred on. */
+            text-align: center;
             /* main-menu's own labels are already lowercase ("chai",
                "farmers markets"); the theme's submenu settings force
                uppercase over the top of them. */
