@@ -1,0 +1,18 @@
+# Secrets. The Admin API token is a full write credential for the live store -
+# it must never reach the repo, which is pushed to GitHub.
+.env
+.env.*
+!.env.example
+*.token
+secrets.json
+
+# Shopify CLI
+.shopify/
+*.lock
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
