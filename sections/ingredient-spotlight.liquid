@@ -349,21 +349,11 @@
   .ingredient-spotlight .ingredient-spotlight__heading.h2 {
     color: var(--color-primary, currentColor);
     font-weight: 700;
-  }
-
-  .ingredient-spotlight__heading {
-    /* Was pinned to the intro section's heading size, formula copied from
-       layout/theme.liquid's [id$="__intro"] .text-block.h2 > * rules. That
-       match is now deliberately broken - this heading is set a notch larger -
-       but the responsive curve is still the intro's, scaled, so the two stay
-       in proportion as the viewport changes. Both ends of the clamp() are
-       otherwise identical to that rule, and the mobile base and >=750px
-       override are kept separate so a future change to the intro's numbers
-       can still be diffed against this one line-for-line. */
-    --kcc-heading-scale: 1.13;
-
-    margin: 0;
-    text-align: center;
+    /* Font-size has to live here too, at this specificity. The theme's
+       "h2, .h2.h2, ..." sets font-size at (0,2,0) and this element carries
+       both .ingredient-spotlight__heading and .h2, so the plain single-class
+       rule below never won - the heading rendered at a bare
+       var(--font-h2--size) and every change to the formula did nothing. */
     font-size: calc(
       var(--font-h2--size) * var(--kcc-heading-scale) *
         clamp(0.935, calc(0.935 + ((100vw - 320px) / 160px) * 0.11), 1.045)
@@ -371,12 +361,29 @@
   }
 
   @media screen and (min-width: 750px) {
-    .ingredient-spotlight__heading {
+    .ingredient-spotlight .ingredient-spotlight__heading.h2 {
       font-size: calc(
         var(--font-h2--size) * var(--kcc-heading-scale) *
           clamp(1.045, calc(1.045 + ((100vw - 750px) / 550px) * 0.495), 1.54)
       );
     }
+  }
+
+  .ingredient-spotlight__heading {
+    /* The size formula is the intro section's, copied from
+       layout/theme.liquid's [id$="__intro"] .text-block.h2 > * rules, so the
+       two headings stay in proportion as the viewport changes. It lives in
+       the higher-specificity rule above; this is just the dial.
+
+       1 is the formula's own result - which is a large jump from what the
+       heading used to render at, because what it used to render at was the
+       theme's plain var(--font-h2--size) with this formula losing the
+       cascade entirely. Turn this down to shrink the heading without
+       touching the curve. */
+    --kcc-heading-scale: 1;
+
+    margin: 0;
+    text-align: center;
   }
 
   .ingredient-spotlight__panels {
@@ -593,16 +600,17 @@
      ink rather than grey - it's a legal line, but the grandma line underneath
      it is doing brand work and shouldn't look like small print. */
   .ingredient-spotlight__disclaimer {
-    /* align-self: center rather than stretch - stretch pins it to the
-       content's left edge, so centring the text alone would leave the block
-       itself off-centre on wide viewports. */
+    /* The block is centred on the page but its text is ragged-right inside
+       it: align-self does the first (stretch would pin the block to the
+       content's left edge), text-align the second. Both paragraphs share the
+       box, so they share a left edge too. */
     align-self: center;
     max-width: 52rem;
     margin-block-start: 1.5rem;
     color: var(--kcc-ingredient-ink);
     font-size: 1.0625rem;
     line-height: 1.65;
-    text-align: center;
+    text-align: left;
     opacity: 0.9;
   }
 
