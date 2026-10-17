@@ -194,21 +194,24 @@
     scroller.addEventListener('pointercancel', endDrag);
 
     // --- the drift
-    let hovered = false;
+    let focused = false;
     let visible = true;
     let last = 0;
     let frame = 0;
 
-    scroller.addEventListener('pointerenter', () => { hovered = true; });
-    scroller.addEventListener('pointerleave', () => { hovered = false; });
-    scroller.addEventListener('focusin', () => { hovered = true; });
-    scroller.addEventListener('focusout', () => { hovered = false; });
+    /* Deliberately no pause on hover: the cursor often rests over a
+       full-width strip without anyone meaning to stop it, and having it
+       freeze underneath you reads as broken. Dragging still takes over, and
+       keyboard focus still holds it still so it can't move under someone
+       tabbing through. */
+    scroller.addEventListener('focusin', () => { focused = true; });
+    scroller.addEventListener('focusout', () => { focused = false; });
 
     const tick = (now) => {
       frame = requestAnimationFrame(tick);
       const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
       last = now;
-      if (dragging || hovered || !visible || reduceMotion.matches) return;
+      if (dragging || focused || !visible || reduceMotion.matches) return;
       pos += SPEED * dt;
       if (loopWidth && pos >= loopWidth) pos -= loopWidth;
       scroller.scrollLeft = pos;
@@ -232,12 +235,36 @@
         .observe(root);
     }
 
+    /*
+      Hold the drift until the photos are actually on screen. They're lazy
+      and far down the page, so without this the strip starts sliding the
+      moment you reach it and the first thing you see is empty frames
+      drifting past - measured taking several seconds on a cold load. The
+      race means a slow or broken image delays this by at most 4s rather
+      than stopping it.
+    */
+    const photosReady = () => {
+      const imgs = [...rows.querySelectorAll('img')];
+      const pending = imgs.filter((img) => !img.complete || !img.naturalWidth);
+      if (!pending.length) return Promise.resolve();
+      return Promise.race([
+        Promise.all(pending.map((img) => new Promise((done) => {
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        }))),
+        new Promise((done) => setTimeout(done, 4000)),
+      ]);
+    };
+
     const start = () => {
       setupLoop();
-      cancelAnimationFrame(frame);
-      last = 0;
-      pos = scroller.scrollLeft;
-      frame = requestAnimationFrame(tick);
+      photosReady().then(() => {
+        measure();
+        cancelAnimationFrame(frame);
+        last = 0;
+        pos = scroller.scrollLeft;
+        frame = requestAnimationFrame(tick);
+      });
     };
 
     /*
@@ -319,6 +346,23 @@
     display: none;
   }
 
+  /* Fade both ends. Without it the strip is cut by a hard vertical edge, and
+     a photo sliding under that edge looks clipped rather than like it's
+     carrying on past the page. */
+  @supports (mask-image: linear-gradient(to right, transparent, black)) {
+    .photo-gallery__scroller {
+      --pg-fade: clamp(1.5rem, 4vw, 4rem);
+
+      mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        black var(--pg-fade),
+        black calc(100% - var(--pg-fade)),
+        transparent 100%
+      );
+    }
+  }
+
   .photo-gallery__scroller.is-dragging {
     cursor: grabbing;
     /* Momentum from a flick would fight the pointer while it's down. */
@@ -397,14 +441,17 @@
   .photo-gallery__caption {
     margin-block-start: 0.75rem;
     color: var(--pg-caption-color);
-    /* Sized so the current captions each sit on one line under their own
-       photo - the longest ("hey look! it's our CEO, avoid eye contact") is
-       the one that sets this. */
-    font-size: clamp(0.6875rem, 1vw, 0.8125rem);
+    font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
     line-height: 1.35;
     text-align: center;
-    /* Bounded by the photo above it, which the item width now guarantees. */
-    max-width: 100%;
+    /* The item has an explicit width, so a caption wider than its photo
+       overflows it rather than widening the strip - which means a caption
+       can be readable AND stay on one line, overhanging its picture a
+       little. 115% keeps that overhang well inside the gap between photos;
+       past it a caption wraps instead of colliding with its neighbour. */
+    flex: none;
+    width: max-content;
+    max-width: 115%;
   }
 
   .photo-gallery__caption p {
