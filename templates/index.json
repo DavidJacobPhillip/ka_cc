@@ -788,8 +788,8 @@
         "photo_2": {
           "type": "photo",
           "settings": {
-            "image": "shopify://shop_images/IMG_2333.heic",
-            "caption": "<p>hey look! it's our CEO, avoid eye contact</p>"
+            "image": "shopify://shop_images/DSC03110.jpg",
+            "caption": "<p>it's our CEO, avoid eye contact</p>"
           }
         },
         "photo_3": {
@@ -819,6 +819,83 @@
             "image": "shopify://shop_images/DSC03494.jpg",
             "caption": "<p>some of our loyal friends</p>"
           }
+        },
+        "photo_7": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03170.jpg",
+            "caption": "<p>the ladle doing its thing</p>"
+          }
+        },
+        "photo_8": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03473.jpg",
+            "caption": "<p>90% steam, 10% chai</p>"
+          }
+        },
+        "photo_9": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03276.jpg",
+            "caption": "<p>an assembly line of sorts</p>"
+          }
+        },
+        "photo_10": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03034.jpg",
+            "caption": "<p>chai doesn't make itself</p>"
+          }
+        },
+        "photo_11": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03601.jpg",
+            "caption": "<p>every spice, out on the table</p>"
+          }
+        },
+        "photo_12": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/IMG_6117.heic",
+            "caption": "<p>the spice tray from above</p>"
+          }
+        },
+        "photo_13": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03352.jpg",
+            "caption": "<p>measured twice, poured once</p>"
+          }
+        },
+        "photo_14": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/DSC03202.jpg",
+            "caption": "<p>the handoff</p>"
+          }
+        },
+        "photo_15": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/IMG_8953.heic",
+            "caption": "<p>saturday morning at cedar mills</p>"
+          }
+        },
+        "photo_16": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/IMG_6851.heic",
+            "caption": "<p>packing day</p>"
+          }
+        },
+        "photo_17": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/IMG_4983.heic",
+            "caption": "<p>look for the canopy</p>"
+          }
         }
       },
       "block_order": [
@@ -827,7 +904,18 @@
         "photo_3",
         "photo_4",
         "photo_5",
-        "photo_6"
+        "photo_6",
+        "photo_7",
+        "photo_8",
+        "photo_9",
+        "photo_10",
+        "photo_11",
+        "photo_12",
+        "photo_13",
+        "photo_14",
+        "photo_15",
+        "photo_16",
+        "photo_17"
       ],
       "name": "Yum in Action",
       "settings": {

@@ -244,7 +244,13 @@
       than stopping it.
     */
     const photosReady = () => {
-      const imgs = [...rows.querySelectorAll('img')];
+      /* Only the photos near the left edge. The rest are lazy and sitting
+         off to the right, so they won't load until they're scrolled to -
+         waiting on those would hit the timeout every single time. */
+      const base = rows.getBoundingClientRect().left;
+      const reach = scroller.clientWidth * 1.5;
+      const imgs = [...rows.querySelectorAll('img')]
+        .filter((img) => img.getBoundingClientRect().left - base < reach);
       const pending = imgs.filter((img) => !img.complete || !img.naturalWidth);
       if (!pending.length) return Promise.resolve();
       return Promise.race([
@@ -344,29 +350,6 @@
 
   .photo-gallery__scroller::-webkit-scrollbar {
     display: none;
-  }
-
-  /* Fade both ends. Without it the strip is cut by a hard vertical edge, and
-     a photo sliding under that edge looks clipped rather than like it's
-     carrying on past the page. */
-  @supports (mask-image: linear-gradient(to right, transparent, black)) {
-    .photo-gallery__scroller {
-      --pg-fade: clamp(1.5rem, 4vw, 4rem);
-
-      mask-image: linear-gradient(
-        to right,
-        transparent 0,
-        black var(--pg-fade),
-        black calc(100% - var(--pg-fade)),
-        transparent 100%
-      );
-    }
-  }
-
-  .photo-gallery__scroller.is-dragging {
-    cursor: grabbing;
-    /* Momentum from a flick would fight the pointer while it's down. */
-    scroll-behavior: auto;
   }
 
   .photo-gallery__track {
