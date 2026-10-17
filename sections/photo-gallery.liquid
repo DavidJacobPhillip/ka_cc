@@ -28,6 +28,7 @@
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
+  id="photo-gallery-{{ section.id }}"
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} photo-gallery spacing-style"
   style="
     {%- render 'spacing-style', settings: section.settings %}
@@ -40,7 +41,8 @@
     {%- endif -%}
 
     <div class="photo-gallery__scroller">
-      <div class="photo-gallery__rows">
+      <div class="photo-gallery__track">
+        <div class="photo-gallery__rows">
         {%- comment -%}
           Split into fixed-size rows here rather than letting a grid do it.
           A grid would share column widths between the rows, which would
@@ -55,7 +57,11 @@
           {%- if row_photos.size > 0 -%}
             <ul class="photo-gallery__row list-unstyled" role="list">
               {%- for block in row_photos -%}
-                <li class="photo-gallery__item" {{ block.shopify_attributes }}>
+                <li
+                  class="photo-gallery__item"
+                  style="--pg-ratio: {{ block.settings.image.aspect_ratio | default: 1 }};"
+                  {{ block.shopify_attributes }}
+                >
                   <figure class="photo-gallery__figure">
                     {%- if block.settings.image != blank -%}
                       {%- comment -%}
@@ -92,10 +98,161 @@
             </ul>
           {%- endif -%}
         {%- endfor -%}
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  (() => {
+    const root = document.getElementById('photo-gallery-{{ section.id }}');
+    if (!root) return;
+    const scroller = root.querySelector('.photo-gallery__scroller');
+    const track = root.querySelector('.photo-gallery__track');
+    const rows = track && track.firstElementChild;
+    if (!scroller || !track || !rows) return;
+
+    /*
+      A continuous drift rather than a slideshow: the strip is a single
+      native scroller, so dragging it, flicking it on a phone and
+      two-finger scrolling all keep working for free. The scrollbar is
+      hidden in CSS - the half-visible photo at the edge is the affordance,
+      and the drift itself tells you it moves.
+
+      Looping works by cloning the row block once and wrapping scrollLeft
+      back by exactly one copy's width, so the seam never shows. Nothing
+      is cloned when the photos already fit, since there'd be nothing to
+      scroll to.
+    */
+    const SPEED = 32;                      // px per second
+
+    /*
+      The drift keeps its own sub-pixel position. Reading scrollLeft back
+      rounds to whole pixels, so "scrollLeft += 0.5" each frame reads the
+      rounded value, adds half a pixel and writes a number that rounds
+      straight back down - the strip sticks after a pixel or two and never
+      moves again. Measured exactly that before this was here.
+    */
+    let pos = 0;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let loopWidth = 0;
+    let cloned = false;
+
+    const gapOf = () => parseFloat(getComputedStyle(track).columnGap) || 0;
+
+    const setupLoop = () => {
+      if (cloned || scroller.scrollWidth <= scroller.clientWidth + 1) return;
+      const copy = rows.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      // the clone is decorative; keep it out of the tab order
+      copy.querySelectorAll('a, button').forEach((el) => el.setAttribute('tabindex', '-1'));
+      track.appendChild(copy);
+      cloned = true;
+      measure();
+    };
+
+    const measure = () => {
+      loopWidth = cloned ? rows.getBoundingClientRect().width + gapOf() : 0;
+    };
+
+    // --- manual dragging
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+    let moved = 0;
+
+    scroller.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      dragging = true;
+      moved = 0;
+      startX = e.clientX;
+      startScroll = scroller.scrollLeft;
+      scroller.classList.add('is-dragging');
+      try { scroller.setPointerCapture(e.pointerId); } catch {}
+    });
+
+    scroller.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      // Only take over once it's clearly a drag, so a plain tap on a phone
+      // still scrolls the page vertically.
+      if (moved > 4) {
+        e.preventDefault();
+        scroller.scrollLeft = startScroll - dx;
+      }
+    });
+
+    const endDrag = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      scroller.classList.remove('is-dragging');
+      try { scroller.releasePointerCapture(e.pointerId); } catch {}
+    };
+    scroller.addEventListener('pointerup', endDrag);
+    scroller.addEventListener('pointercancel', endDrag);
+
+    // --- the drift
+    let hovered = false;
+    let visible = true;
+    let last = 0;
+    let frame = 0;
+
+    scroller.addEventListener('pointerenter', () => { hovered = true; });
+    scroller.addEventListener('pointerleave', () => { hovered = false; });
+    scroller.addEventListener('focusin', () => { hovered = true; });
+    scroller.addEventListener('focusout', () => { hovered = false; });
+
+    const tick = (now) => {
+      frame = requestAnimationFrame(tick);
+      const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
+      last = now;
+      if (dragging || hovered || !visible || reduceMotion.matches) return;
+      pos += SPEED * dt;
+      if (loopWidth && pos >= loopWidth) pos -= loopWidth;
+      scroller.scrollLeft = pos;
+    };
+
+    // Wrapping also has to happen while a person scrolls or drags, not just
+    // while the drift runs, or they hit a hard end.
+    scroller.addEventListener('scroll', () => {
+      // Anything that didn't come from the drift - a drag, a flick, a
+      // trackpad, a keyboard - resyncs the accumulator, and wraps so a
+      // person scrolling never reaches a hard end.
+      if (Math.abs(scroller.scrollLeft - pos) < 2) return;
+      pos = scroller.scrollLeft;
+      if (!loopWidth) return;
+      if (pos >= loopWidth) { pos -= loopWidth; scroller.scrollLeft = pos; }
+      else if (pos <= 0) { pos += loopWidth; scroller.scrollLeft = pos; }
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; })
+        .observe(root);
+    }
+
+    const start = () => {
+      setupLoop();
+      cancelAnimationFrame(frame);
+      last = 0;
+      pos = scroller.scrollLeft;
+      frame = requestAnimationFrame(tick);
+    };
+
+    /*
+      Deliberately not gated on window.load: this page never reaches
+      readyState "complete" within any reasonable time (measured - it sits
+      at "interactive"), so waiting for load meant the drift never started.
+      One rAF is enough, since layout only needs the photos' width/height
+      attributes, which are on the markup. setupLoop is idempotent, so the
+      later calls just cover a late relayout.
+    */
+    requestAnimationFrame(start);
+    window.addEventListener('load', () => { setupLoop(); measure(); }, { once: true });
+    window.addEventListener('resize', () => { setupLoop(); measure(); });
+  })();
+</script>
 
 {% stylesheet %}
   .photo-gallery {
@@ -129,7 +286,10 @@
     transform: rotate(180deg);
     margin: 0;
     font-family: var(--font-heading--family);
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    /* Deliberately big - it reads as a title down the side of the strip
+       rather than a caption, and at this size it stands roughly as tall as
+       the photos beside it. */
+    font-size: clamp(2.25rem, 6vw, 5rem);
     line-height: 1;
     color: var(--color-primary, currentColor);
     white-space: nowrap;
@@ -142,9 +302,38 @@
     overflow-x: auto;
     overflow-y: visible;
     min-width: 0;
-    scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
+    cursor: grab;
+    /* No scrollbar and no arrows: the drift plus the half-visible photo at
+       the edge say it moves. Still a real scroller underneath, so flicking,
+       trackpads and keyboards all work. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Dragging a photo would otherwise start a native image drag or select
+       the captions. */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .photo-gallery__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .photo-gallery__scroller.is-dragging {
+    cursor: grabbing;
+    /* Momentum from a flick would fight the pointer while it's down. */
+    scroll-behavior: auto;
+  }
+
+  .photo-gallery__track {
+    display: flex;
+    gap: var(--pg-gap);
+    width: max-content;
+  }
+
+  .photo-gallery__image {
+    -webkit-user-drag: none;
+    user-drag: none;
   }
 
   .photo-gallery__rows {
@@ -164,8 +353,14 @@
 
   /* flex: none so each item is exactly its photo's width at the shared
      height - neither stretched to fill the row nor shrunk to fit it. */
+  /* Width comes from the photo's own aspect ratio at the shared height.
+     Doing it here rather than letting the image size the item is what lets
+     the caption be bounded by the picture - a ch cap can't know how wide
+     any given photo is, so it either wrapped short captions or let long
+     ones stretch the strip. */
   .photo-gallery__item {
     flex: none;
+    width: calc(var(--pg-image-height) * var(--pg-ratio, 1));
     scroll-snap-align: start;
   }
 
@@ -176,14 +371,17 @@
     /* Not stretch: that would pull the <img> out to the item's width and,
        with object-fit: cover, crop it back to a shape it isn't. */
     align-items: center;
+    width: 100%;
   }
 
   .photo-gallery__image,
   .photo-gallery__placeholder {
     height: var(--pg-image-height);
-    width: auto;
-    max-width: none;
+    width: 100%;
     display: block;
+    /* The item is already the photo's exact ratio, so this crops nothing -
+       it just guards against a rounding sliver. */
+    object-fit: cover;
   }
 
   .photo-gallery__placeholder {
@@ -197,15 +395,16 @@
   }
 
   .photo-gallery__caption {
-    margin-block-start: 0.85rem;
+    margin-block-start: 0.75rem;
     color: var(--pg-caption-color);
-    font-size: clamp(0.9375rem, 1.3vw, 1.1875rem);
-    line-height: 1.4;
+    /* Sized so the current captions each sit on one line under their own
+       photo - the longest ("hey look! it's our CEO, avoid eye contact") is
+       the one that sets this. */
+    font-size: clamp(0.6875rem, 1vw, 0.8125rem);
+    line-height: 1.35;
     text-align: center;
-    /* A caption longer than its photo is wide would otherwise stretch the
-       whole column, since the item is sized by its content. Capping it in ch
-       makes a wordy one wrap under the photo instead. */
-    max-width: 24ch;
+    /* Bounded by the photo above it, which the item width now guarantees. */
+    max-width: 100%;
   }
 
   .photo-gallery__caption p {
