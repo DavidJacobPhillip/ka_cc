@@ -1,0 +1,255 @@
+{% comment %}
+  "Yum in Action" - the homepage photo strip.
+
+  Replaces a stack of generic group/image/text blocks that could only produce
+  one row of identically-cropped squares. Photos here keep their own aspect
+  ratio and are matched on height instead, so a square pour sits next to a
+  wide market shot without either being cut to fit - the same justified-row
+  idea the timeline uses.
+
+  The grid is laid out in reading order across a fixed number of rows, and
+  scrolls sideways when the photos are wider than the page. That's deliberate
+  rather than a fallback: at full width the last column sits half-visible,
+  which is what tells you there's more to drag.
+{% endcomment %}
+
+{%- liquid
+  assign photos = section.blocks | where: 'type', 'photo'
+  assign rows = section.settings.rows | plus: 0
+  if rows < 1
+    assign rows = 1
+  endif
+  # ceil(count / rows), since Liquid's divided_by truncates on integers.
+  assign columns = photos.size | plus: rows | minus: 1 | divided_by: rows
+  if columns < 1
+    assign columns = 1
+  endif
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} photo-gallery spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  <div class="photo-gallery__inner">
+    {%- if section.settings.label != blank -%}
+      <p class="photo-gallery__label">{{ section.settings.label }}</p>
+    {%- endif -%}
+
+    <div class="photo-gallery__scroller">
+      <div class="photo-gallery__rows">
+        {%- comment -%}
+          Split into fixed-size rows here rather than letting a grid do it.
+          A grid would share column widths between the rows, which would
+          stretch the narrower photo in each column; these rows are
+          independent, so every photo keeps its own width at the shared
+          height - which is what the mockup shows, its two rows not lining
+          up with each other.
+        {%- endcomment -%}
+        {%- for row in (1..rows) -%}
+          {%- assign start = forloop.index0 | times: columns -%}
+          {%- assign row_photos = photos | slice: start, columns -%}
+          {%- if row_photos.size > 0 -%}
+            <ul class="photo-gallery__row list-unstyled" role="list">
+              {%- for block in row_photos -%}
+                <li class="photo-gallery__item" {{ block.shopify_attributes }}>
+                  <figure class="photo-gallery__figure">
+                    {%- if block.settings.image != blank -%}
+                      {%- comment -%}
+                        Height is fixed by CSS and width follows the aspect
+                        ratio, so the intrinsic width/height attributes are
+                        what stop the row reflowing as each photo arrives.
+                      {%- endcomment -%}
+                      <img
+                        class="photo-gallery__image"
+                        src="{{ block.settings.image | image_url: width: 1200 }}"
+                        srcset="
+                          {{ block.settings.image | image_url: width: 400 }} 400w,
+                          {{ block.settings.image | image_url: width: 700 }} 700w,
+                          {{ block.settings.image | image_url: width: 1000 }} 1000w,
+                          {{ block.settings.image | image_url: width: 1400 }} 1400w
+                        "
+                        sizes="(min-width: 750px) 34vw, 70vw"
+                        alt="{{ block.settings.image.alt | escape }}"
+                        width="{{ block.settings.image.width }}"
+                        height="{{ block.settings.image.height }}"
+                        loading="lazy"
+                      >
+                    {%- else -%}
+                      <div class="photo-gallery__placeholder">
+                        {{ 'detailed-apparel-1' | placeholder_svg_tag: 'photo-gallery__placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.caption != blank -%}
+                      <figcaption class="photo-gallery__caption">{{ block.settings.caption }}</figcaption>
+                    {%- endif -%}
+                  </figure>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .photo-gallery {
+    /* Sampled from Santosh's mockup rather than taken from a colour scheme -
+       it's a caption accent, not a surface, and no scheme carries it. */
+    --pg-caption-color: #3c6224;
+    /* The floor matters more than it looks: below about 13rem the photos get
+       narrower than their own captions on a phone, and the caption starts
+       setting the column width instead of the picture. */
+    --pg-image-height: clamp(13rem, 24vw, 19rem);
+    --pg-gap: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  .photo-gallery__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(0.75rem, 2vw, 2rem);
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .photo-gallery__label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    line-height: 1;
+    color: var(--color-primary, currentColor);
+    white-space: nowrap;
+  }
+
+  /* The sideways scroll. overflow-y stays visible so nothing clips the
+     captions, and min-width: 0 is what actually lets a grid child shrink
+     below its content and become scrollable at all. */
+  .photo-gallery__scroller {
+    overflow-x: auto;
+    overflow-y: visible;
+    min-width: 0;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+
+  .photo-gallery__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pg-gap);
+    width: max-content;
+  }
+
+  .photo-gallery__row {
+    display: flex;
+    gap: var(--pg-gap);
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* flex: none so each item is exactly its photo's width at the shared
+     height - neither stretched to fill the row nor shrunk to fit it. */
+  .photo-gallery__item {
+    flex: none;
+    scroll-snap-align: start;
+  }
+
+  .photo-gallery__figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    /* Not stretch: that would pull the <img> out to the item's width and,
+       with object-fit: cover, crop it back to a shape it isn't. */
+    align-items: center;
+  }
+
+  .photo-gallery__image,
+  .photo-gallery__placeholder {
+    height: var(--pg-image-height);
+    width: auto;
+    max-width: none;
+    display: block;
+  }
+
+  .photo-gallery__placeholder {
+    aspect-ratio: 1;
+    background: var(--color-border, #eee);
+  }
+
+  .photo-gallery__placeholder-svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  .photo-gallery__caption {
+    margin-block-start: 0.85rem;
+    color: var(--pg-caption-color);
+    font-size: clamp(0.9375rem, 1.3vw, 1.1875rem);
+    line-height: 1.4;
+    text-align: center;
+    /* A caption longer than its photo is wide would otherwise stretch the
+       whole column, since the item is sized by its content. Capping it in ch
+       makes a wordy one wrap under the photo instead. */
+    max-width: 24ch;
+  }
+
+  .photo-gallery__caption p {
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .photo-gallery__inner {
+      gap: 0.75rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Photo gallery",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Rotated label", "default": "Yum in Action" },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Rows",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2,
+      "info": "Photos fill left to right across this many rows, then scroll sideways."
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "richtext", "id": "caption", "label": "Caption" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Photo gallery" }]
+}
+{% endschema %}
