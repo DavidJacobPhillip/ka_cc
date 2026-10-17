@@ -29,7 +29,10 @@
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <div
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} photo-gallery spacing-style"
-  style="{%- render 'spacing-style', settings: section.settings %}"
+  style="
+    {%- render 'spacing-style', settings: section.settings %}
+    --pg-image-height-max: {{ section.settings.image_height }}px;
+  "
 >
   <div class="photo-gallery__inner">
     {%- if section.settings.label != blank -%}
@@ -100,9 +103,15 @@
        it's a caption accent, not a surface, and no scheme carries it. */
     --pg-caption-color: #3c6224;
     /* The floor matters more than it looks: below about 13rem the photos get
-       narrower than their own captions on a phone, and the caption starts
-       setting the column width instead of the picture. */
-    --pg-image-height: clamp(13rem, 24vw, 19rem);
+       narrower than their own captions, and the caption starts setting the
+       column width instead of the picture - which is exactly how "just make
+       them smaller" goes wrong here.
+
+       32vw, not 24: the middle term has to stay clear of the setting at
+       ordinary desktop widths, or raising "Photo height" in the editor does
+       nothing visible and reads as broken. At 1280px this leaves the setting
+       in charge and the floor governs on a phone. */
+    --pg-image-height: clamp(13rem, 32vw, var(--pg-image-height-max, 19rem));
     --pg-gap: clamp(1rem, 2.5vw, 2rem);
   }
 
@@ -224,6 +233,17 @@
       "step": 1,
       "default": 2,
       "info": "Photos fill left to right across this many rows, then scroll sideways."
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Photo height",
+      "min": 160,
+      "max": 420,
+      "step": 10,
+      "unit": "px",
+      "default": 350,
+      "info": "Desktop maximum. Photos keep their own shape and are matched on height."
     },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
     {

@@ -832,11 +832,12 @@
       "name": "Yum in Action",
       "settings": {
         "label": "Yum in Action",
-        "rows": 2,
+        "rows": 1,
         "color_scheme": "scheme-1",
         "section_width": "page-width",
         "padding-block-start": 48,
-        "padding-block-end": 80
+        "padding-block-end": 80,
+        "image_height": 350
       }
     },
     "value_props": {
