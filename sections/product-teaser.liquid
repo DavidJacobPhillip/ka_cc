@@ -1,0 +1,298 @@
+{% comment %}
+  The two product cards that sit just under the hero.
+
+  This replaces a stack of generic group/image/text/button blocks. That setup
+  had three problems that couldn't be fixed from the theme editor:
+
+  1. The image block only offers square, 16/9 or natural. It was set to square,
+     so two landscape photos (4:3 and 3:2) were being centre-cropped by 25% and
+     33% to force them into squares. Here the ratio is a real setting and
+     defaults to 4:3, which is the chai photo's native ratio and only trims the
+     sides of the coffee one.
+  2. The cards stretched to the full page width, which made each one over 40%
+     of a laptop viewport and pushed the section to 821px tall - the tallest
+     thing on the page after the hero. The row is capped and centred instead.
+  3. The call to action was a full-bleed solid bar reading "add to cart", which
+     can't add anything to a cart - it's a link, and the store has no products
+     yet. It's a text link by default now, and `cta_style` flips it back to a
+     button once there's something to buy.
+
+  Title sits below the image, which is the way round every other card on this
+  site reads.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} product-teaser spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+    <div class="product-teaser__head">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="product-teaser__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="product-teaser__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- liquid
+    case section.settings.image_ratio
+      when 'square'
+        assign ratio = '1'
+      when 'three-two'
+        assign ratio = '3 / 2'
+      when 'four-three'
+        assign ratio = '4 / 3'
+    endcase
+  -%}
+
+  <ul
+    class="product-teaser__grid"
+    role="list"
+    style="--pt-max: {{ section.settings.max_width }}rem;"
+  >
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'product' -%}
+        <li class="product-teaser__card" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            {%- comment -%}
+              `adapt` leaves --pt-ratio unset so the image keeps its own shape.
+              Every other option pins both cards to the same ratio so their
+              captions sit on a shared baseline.
+            {%- endcomment -%}
+            <div
+              class="product-teaser__media"
+              {% if ratio %}style="--pt-ratio: {{ ratio }};"{% endif %}
+            >
+              <img
+                class="product-teaser__image"
+                src="{{ block.settings.image | image_url: width: 900 }}"
+                srcset="{{ block.settings.image | image_url: width: 440 }} 440w, {{ block.settings.image | image_url: width: 660 }} 660w, {{ block.settings.image | image_url: width: 900 }} 900w"
+                sizes="(min-width: 750px) 26rem, 90vw"
+                alt="{{ block.settings.image.alt | escape }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+              >
+            </div>
+          {%- endif -%}
+
+          <div class="product-teaser__body">
+            {%- if block.settings.title != blank -%}
+              <h3 class="product-teaser__title">{{ block.settings.title | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.body != blank -%}
+              {%- comment -%}
+                Escaped because these are plain-text settings, and the coffee
+                copy contains a bare ampersand.
+              {%- endcomment -%}
+              <p class="product-teaser__line">{{ block.settings.body | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.link_label != blank -%}
+              <a
+                class="product-teaser__cta product-teaser__cta--{{ section.settings.cta_style }}"
+                href="{{ block.settings.link_url | default: '/collections/all' }}"
+              >
+                {{- block.settings.link_label -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% stylesheet %}
+  .product-teaser__head {
+    text-align: center;
+    margin-block-end: 2.5rem;
+  }
+
+  .product-teaser__eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-primary, currentColor);
+  }
+
+  .product-teaser__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /* Capped and centred rather than filling the page. At full width each card
+     was over 40% of a laptop viewport, which read as two billboards instead of
+     a pair of products. */
+  .product-teaser__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.25rem, 3vw, 2rem);
+    max-width: var(--pt-max, 54rem);
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-teaser__grid {
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    }
+  }
+
+  /* A soft warm fill and the same hairline-plus-shadow the timeline photos
+     use, rather than the lone outlined rectangle this section used to be. */
+  .product-teaser__card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 1rem 1.5rem;
+    border-radius: 0.75rem;
+    /* White rather than var(--color-background): the section sits on the cream
+       scheme, so the variable would resolve to the same cream and the card
+       would disappear against it. */
+    background: #fff;
+    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.06), 0 0.5rem 1.5rem rgb(43 22 8 / 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .product-teaser__card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.08), 0 0.875rem 2rem rgb(43 22 8 / 0.12);
+  }
+
+  .product-teaser__media {
+    aspect-ratio: var(--pt-ratio, auto);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .product-teaser__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-teaser__body {
+    display: flex;
+    flex-direction: column;
+    /* Pushes the link to the bottom edge so both cards' links line up even
+       when one description runs a line longer. */
+    flex: 1;
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+    text-align: center;
+  }
+
+  .product-teaser__title {
+    font-family: var(--font-heading--family);
+    font-size: 1.375rem;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .product-teaser__line {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  .product-teaser__cta {
+    margin-block-start: auto;
+    padding-block-start: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--color-primary, currentColor);
+    text-underline-offset: 0.3em;
+  }
+
+  /* The button form, for once there are products to sell. */
+  .product-teaser__cta--button {
+    margin-inline: auto;
+    padding: 0.75rem 1.75rem;
+    border-radius: 2rem;
+    background: var(--color-primary, currentColor);
+    color: var(--color-background, #fff);
+    text-decoration: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product teaser",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image shape",
+      "info": "4:3 matches the product photos and keeps both cards the same height.",
+      "options": [
+        { "value": "four-three", "label": "4:3" },
+        { "value": "three-two", "label": "3:2" },
+        { "value": "square", "label": "Square" },
+        { "value": "adapt", "label": "Natural (no crop)" }
+      ],
+      "default": "four-three"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Call to action",
+      "options": [
+        { "value": "link", "label": "Text link" },
+        { "value": "button", "label": "Button" }
+      ],
+      "default": "link"
+    },
+    { "type": "range", "id": "max_width", "label": "Row width", "min": 36, "max": 80, "step": 2, "unit": "rem", "default": 54 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "body", "label": "Description" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop" },
+        { "type": "url", "id": "link_url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product teaser",
+      "blocks": [
+        { "type": "product", "settings": { "title": "Chai Masala + Tea", "link_label": "Shop" } },
+        { "type": "product", "settings": { "title": "Indian Filter Coffee", "link_label": "Shop" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

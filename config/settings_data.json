@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "favicon": "shopify://shop_images/kcc-favicon.png",
     "type_body_font": "noto_sans_n4",
     "type_subheading_font": "noto_sans_n4",
     "type_heading_font": "noto_serif_n4",

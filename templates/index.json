@@ -169,351 +169,39 @@
       }
     },
     "shop_teaser": {
-      "type": "section",
+      "type": "product-teaser",
       "blocks": {
-        "cards_row": {
-          "type": "group",
-          "name": "Product cards",
+        "card_1": {
+          "type": "product",
           "settings": {
-            "link": "",
-            "open_in_new_tab": false,
-            "content_direction": "row",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "center",
-            "vertical_alignment": "flex-start",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 32,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "placeholder": "",
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "card_1": {
-              "type": "group",
-              "name": "Chai Masala + Tea card",
-              "settings": {
-                "link": "",
-                "open_in_new_tab": false,
-                "content_direction": "column",
-                "vertical_on_mobile": true,
-                "horizontal_alignment": "flex-start",
-                "vertical_alignment": "center",
-                "align_baseline": false,
-                "horizontal_alignment_flex_direction_column": "center",
-                "vertical_alignment_flex_direction_column": "center",
-                "gap": 12,
-                "width": "fill",
-                "custom_width": 100,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "custom_height": 100,
-                "inherit_color_scheme": false,
-                "color_scheme": "scheme-1",
-                "background_media": "none",
-                "video_position": "cover",
-                "background_image_position": "cover",
-                "border": "solid",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 12,
-                "placeholder": "",
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "padding-block-start": 20,
-                "padding-block-end": 20,
-                "padding-inline-start": 20,
-                "padding-inline-end": 20
-              },
-              "blocks": {
-                "title": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h3>Chai Masala + Tea</h3>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "center",
-                    "type_preset": "h4",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "image": {
-                  "type": "image",
-                  "settings": {
-                    "link": "",
-                    "image_ratio": "square",
-                    "width": "fill",
-                    "custom_width": 100,
-                    "width_mobile": "fill",
-                    "custom_width_mobile": 100,
-                    "height": "fit",
-                    "border": "none",
-                    "border_width": 1,
-                    "border_opacity": 100,
-                    "border_radius": 8,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0,
-                    "image": "shopify://shop_images/IMG_6117.heic"
-                  },
-                  "blocks": {}
-                },
-                "line": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.</p>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "center",
-                    "type_preset": "paragraph",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "button": {
-                  "type": "button",
-                  "settings": {
-                    "label": "add to cart",
-                    "link": "shopify://collections/all",
-                    "open_in_new_tab": false,
-                    "style_class": "button",
-                    "width": "fill",
-                    "custom_width": 100,
-                    "width_mobile": "fit-content",
-                    "custom_width_mobile": 100
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "title",
-                "image",
-                "line",
-                "button"
-              ]
-            },
-            "card_2": {
-              "type": "group",
-              "name": "Filter coffee card",
-              "settings": {
-                "link": "",
-                "open_in_new_tab": false,
-                "content_direction": "column",
-                "vertical_on_mobile": true,
-                "horizontal_alignment": "flex-start",
-                "vertical_alignment": "center",
-                "align_baseline": false,
-                "horizontal_alignment_flex_direction_column": "center",
-                "vertical_alignment_flex_direction_column": "center",
-                "gap": 12,
-                "width": "fill",
-                "custom_width": 100,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "custom_height": 100,
-                "inherit_color_scheme": false,
-                "color_scheme": "scheme-1",
-                "background_media": "none",
-                "video_position": "cover",
-                "background_image_position": "cover",
-                "border": "solid",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 12,
-                "placeholder": "",
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "padding-block-start": 20,
-                "padding-block-end": 20,
-                "padding-inline-start": 20,
-                "padding-inline-end": 20
-              },
-              "blocks": {
-                "title": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h3>Indian Filter Coffee</h3>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "center",
-                    "type_preset": "h4",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "image": {
-                  "type": "image",
-                  "settings": {
-                    "link": "",
-                    "image_ratio": "square",
-                    "width": "fill",
-                    "custom_width": 100,
-                    "width_mobile": "fill",
-                    "custom_width_mobile": 100,
-                    "height": "fit",
-                    "border": "none",
-                    "border_width": 1,
-                    "border_opacity": 100,
-                    "border_radius": 8,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0,
-                    "image": "shopify://shop_images/DSC03202.jpg"
-                  },
-                  "blocks": {}
-                },
-                "line": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>Carefully roasted arabica &amp; robusta beans blended with chicory root. Coffee like no other.</p>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "center",
-                    "type_preset": "paragraph",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "var(--color-foreground)",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "button": {
-                  "type": "button",
-                  "settings": {
-                    "label": "add to cart",
-                    "link": "",
-                    "open_in_new_tab": false,
-                    "style_class": "button",
-                    "width": "fill",
-                    "custom_width": 100,
-                    "width_mobile": "fit-content",
-                    "custom_width_mobile": 100
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "title",
-                "image",
-                "line",
-                "button"
-              ]
-            }
-          },
-          "block_order": [
-            "card_1",
-            "card_2"
-          ]
+            "image": "shopify://shop_images/IMG_6117.heic",
+            "title": "Chai Masala + Tea",
+            "body": "Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.",
+            "link_label": "Shop",
+            "link_url": "shopify://collections/all"
+          }
+        },
+        "card_2": {
+          "type": "product",
+          "settings": {
+            "image": "shopify://shop_images/DSC03202.jpg",
+            "title": "Indian Filter Coffee",
+            "body": "Carefully roasted arabica & robusta beans blended with chicory root. Coffee like no other.",
+            "link_label": "Shop",
+            "link_url": "shopify://collections/all"
+          }
         }
       },
       "block_order": [
-        "cards_row"
+        "card_1",
+        "card_2"
       ],
-      "name": "Shop teaser",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 32,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
+        "image_ratio": "four-three",
+        "cta_style": "link",
+        "max_width": 54,
         "color_scheme": "scheme-2",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
+        "section_width": "page-width",
         "padding-block-start": 48,
         "padding-block-end": 64
       }
@@ -928,63 +616,6 @@
         "image_height": 350
       }
     },
-    "value_props": {
-      "type": "value-props",
-      "blocks": {
-        "p1": {
-          "type": "prop",
-          "settings": {
-            "title": "Whole spices, ground fresh",
-            "body": "Nothing pre-ground, nothing sitting in a warehouse losing its oils. We mill in small batches so the cardamom still smells like cardamom."
-          }
-        },
-        "p2": {
-          "type": "prop",
-          "settings": {
-            "title": "Two leaves, two origins",
-            "body": "Assam for malty depth, Kericho for backbone. One tea alone gives you one note; blended, they hold their own against milk and spice."
-          }
-        },
-        "p3": {
-          "type": "prop",
-          "settings": {
-            "title": "Built for a real cup",
-            "body": "Brewed the way it's made at home — on the stove, with milk, no syrups. If it disappears under a splash of oat milk, we haven't done our job."
-          }
-        }
-      },
-      "block_order": [
-        "p1",
-        "p2",
-        "p3"
-      ],
-      "settings": {
-        "heading": "Why people keep coming back",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 64,
-        "padding-block-end": 64
-      }
-    },
-    "founder_note": {
-      "type": "founder-note",
-      "blocks": {},
-      "block_order": [],
-      "settings": {
-        "eyebrow": "A note from us",
-        "heading": "We just wanted chai that tasted like home",
-        "body": "<p>[Draft — rewrite in your own voice, this is a stand-in] It started because nothing we could buy tasted like the chai we grew up on. Everything was either syrupy and sweet or so faint you lost it the moment it hit milk.</p><p>So we started making it ourselves — whole spices, ground in small batches, a tea blend picked to stand up rather than disappear. We brought it to a farmers market to see if anyone else felt the same way. They did.</p>",
-        "signature": "— [Draft: founder name]",
-        "caption": "Mid-pour at Cedar Mills, where most of this started",
-        "link_label": "Read our story",
-        "link_url": "/pages/our-story",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 72,
-        "padding-block-end": 72,
-        "portrait": "shopify://shop_images/DSC03034.jpg"
-      }
-    },
     "find_us": {
       "type": "find-us",
       "blocks": {
@@ -1019,7 +650,7 @@
         "body": "No storefront yet — we pour in person. Come find the kettle.",
         "link_label": "All the places you can find us",
         "link_url": "/pages/visit-us",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-2",
         "section_width": "page-width",
         "padding-block-start": 72,
         "padding-block-end": 72
@@ -1052,13 +683,11 @@
   "order": [
     "hero_main",
     "intro",
-    "value_props",
     "shop_teaser",
     "ingredients",
     "wave",
     "review_quote",
     "wave_out",
-    "founder_note",
     "find_us",
     "gallery"
   ]

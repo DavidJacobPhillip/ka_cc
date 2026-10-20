@@ -57,9 +57,13 @@
 </div>
 
 {% stylesheet %}
+  /* Centred to match the rest of the homepage - the ingredient spotlight and
+     the product teaser both centre their heads, and this section reading
+     left-aligned made it look like it came from a different template. */
   .find-us__head {
     max-width: 44ch;
-    margin-block-end: 2.75rem;
+    margin: 0 auto 2.75rem;
+    text-align: center;
   }
 
   .find-us__eyebrow {
@@ -84,11 +88,14 @@
     opacity: 0.8;
   }
 
+  /* Capped and centred so the pair sits under the centred head rather than
+     stretching the full page width. */
   .find-us__list {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
-    margin: 0;
+    max-width: 54rem;
+    margin: 0 auto;
     padding: 0;
     list-style: none;
   }
@@ -100,31 +107,42 @@
     }
   }
 
-  /* Card rather than a plain list: these are the one thing on the page someone
-     might want to act on immediately, so they get an edge and a hover. */
+  /* A soft warm fill and the hairline-plus-shadow used by the timeline photos
+     and the product teaser, rather than the outlined rectangles these used to
+     be - they were the only bordered boxes on the page. */
   .find-us__market {
     padding: 1.75rem;
-    border: 1px solid var(--color-border, currentColor);
-    border-radius: 0.5rem;
-    transition: border-color 0.15s ease, transform 0.15s ease;
+    border-radius: 0.75rem;
+    text-align: center;
+    /* White rather than var(--color-background): the section sits on the cream
+       scheme, so the variable would resolve to the same cream and the card
+       would disappear. On a white scheme the hairline and shadow still read,
+       the same way the timeline photos do. */
+    background: #fff;
+    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.06), 0 0.5rem 1.5rem rgb(43 22 8 / 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   .find-us__market:hover {
-    border-color: var(--color-primary, currentColor);
     transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.08), 0 0.875rem 2rem rgb(43 22 8 / 0.12);
   }
 
   .find-us__market-name {
     font-family: var(--font-heading--family);
-    font-size: 1.25rem;
+    font-size: 1.1875rem;
     line-height: 1.3;
-    margin: 0 0 0.6rem;
+    margin: 0 0 0.5rem;
   }
 
+  /* The most useful line in the section - when to turn up. The heading font
+     only ships at weight 400, so it's thickened with a stroke rather than a
+     font-weight that would silently do nothing. */
   .find-us__when {
-    margin: 0 0 0.6rem;
-    font-size: 0.9375rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.0625rem;
     color: var(--color-primary, currentColor);
+    -webkit-text-stroke: 0.015em currentColor;
   }
 
   .find-us__detail {
@@ -136,18 +154,20 @@
 
   .find-us__map,
   .find-us__cta {
-    display: inline-block;
     font-size: 0.9375rem;
     color: var(--color-primary, currentColor);
     text-underline-offset: 0.3em;
   }
 
   .find-us__map {
+    display: inline-block;
     margin-block-start: 1rem;
   }
 
   .find-us__cta {
-    margin-block-start: 2rem;
+    display: block;
+    width: fit-content;
+    margin: 2.5rem auto 0;
   }
 {% endstylesheet %}
 
