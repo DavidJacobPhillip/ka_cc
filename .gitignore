@@ -17,6 +17,16 @@ Thumbs.db
 .vscode/
 *.swp
 
+# Agent skills installed by `npx skills add`. These are local dev tooling, not
+# theme files, and this repo is GitHub-synced straight into the ka_cc/redesign
+# theme - anything committed here lands on the store. A Shopify theme only
+# accepts a fixed set of top-level directories, so these would be junk at best
+# and a sync error at worst. .shopifyignore doesn't help: the GitHub
+# integration ignores it and syncs whatever is committed.
+.agents/
+.claude/
+skills-lock.json
+
 # Camera originals for the site photography (~92MB of full-size JPEG/HEIC).
 # The web-sized copies that the theme actually serves are committed in
 # assets/ as kcc-*.jpg; keeping the masters out stops the repo ballooning.

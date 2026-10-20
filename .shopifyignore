@@ -1,6 +1,9 @@
 # Build tooling, not theme files - must not be pushed to the store.
 scripts/
 .env.example
+.agents/
+.claude/
+skills-lock.json
 
 # Camera originals for the site photography (~92MB). The web-sized copies
 # live in assets/ as kcc-*.jpg; these are the masters to re-crop from and
