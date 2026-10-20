@@ -9,3 +9,4 @@ skills-lock.json
 # live in assets/ as kcc-*.jpg; these are the masters to re-crop from and
 # must never be pushed to the store.
 KCC Website Photos/
+.taste-skill/

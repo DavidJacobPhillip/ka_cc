@@ -17,7 +17,7 @@
           "settings": {
             "media_type": "image",
             "image_position": "cover",
-            "image": "shopify://shop_images/DSC03473.jpg"
+            "image": "shopify://shop_images/DSC03202.jpg"
           },
           "blocks": {}
         },
@@ -34,7 +34,7 @@
               "type": "text",
               "name": "Caption",
               "settings": {
-                "text": "<p>Our Story</p>",
+                "text": "<p>Our story</p>",
                 "type_preset": "h6"
               },
               "blocks": {}
@@ -43,7 +43,7 @@
               "type": "text",
               "name": "Heading",
               "settings": {
-                "text": "<h1>We started with a folding table</h1>",
+                "text": "<h1>I didn't grow up drinking chai</h1>",
                 "type_preset": "h2"
               },
               "blocks": {}
@@ -52,9 +52,9 @@
               "type": "text",
               "name": "Body",
               "settings": {
-                "text": "<p>[Draft — confirm founding year/details] Ka Chai began at Portland farmers markets — a kettle, a folding table, and people who kept coming back for more. No storefront, no funding round to start, just chai that people wanted a second cup of.</p>",
+                "text": "<p>My parents are from Tamil Nadu, the southernmost state in India. We drink filter coffee. Where I grew up, chai was spoken about as a North Indian thing — someone else's drink.</p><p>What I did grow up with was the complaint. Everyone around me agreed that the chai in American coffee shops was nothing like the real thing. I knew it. It just never occurred to me that it was mine to fix.</p>",
                 "type_preset": "rte",
-                "max_width": "narrow"
+                "max_width": "normal"
               },
               "blocks": {}
             }
@@ -166,10 +166,185 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "spark": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover",
+            "image": "shopify://shop_images/DSC03034.jpg"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>The spark</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>Then a friend said the thing that stuck</h2>",
+                "type_preset": "h2"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>He'd grown up in Mumbai and was doing his master's here. One afternoon he said: <em>“Man, I'm craving chai, and there's nowhere I can get it.”</em></p><p>That was the call to action. What I still didn't have was the reason. I loved that chai was ours — but that on its own isn't a reason to build a company.</p>",
+                "type_preset": "rte",
+                "max_width": "normal"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "caption",
+            "heading",
+            "body"
+          ]
+        }
+      },
+      "block_order": [
+        "media",
+        "content"
+      ],
+      "name": "The spark",
+      "settings": {
+        "media_position": "right",
+        "media_width": "medium",
+        "media_height": "70svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "india": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image_position": "cover",
+            "image": "shopify://shop_images/DSC03473.jpg"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 20
+          },
+          "blocks": {
+            "caption": {
+              "type": "text",
+              "name": "Caption",
+              "settings": {
+                "text": "<p>Portland · Tamil Nadu</p>",
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            },
+            "heading": {
+              "type": "text",
+              "name": "Heading",
+              "settings": {
+                "text": "<h2>The chai was never the point</h2>",
+                "type_preset": "h2"
+              },
+              "blocks": {}
+            },
+            "body": {
+              "type": "text",
+              "name": "Body",
+              "settings": {
+                "text": "<p>After graduating I spent several months in India, and the way people drink chai there was impossible to miss. Not sit-down cafés — roadside stalls, gallons of it on the boil all day, for anyone walking past.</p><p>The chaiwalas were holding something together. They knew their regulars by name. None of it was transactional.</p><p>American coffee culture doesn't ask anything of the person serving you, or of the person being served. I think that's part of why this country is as lonely as it is. So the chai isn't the end goal — it's the reason to stand still for a minute and talk to someone.</p>",
+                "type_preset": "rte",
+                "max_width": "normal"
+              },
+              "blocks": {}
+            },
+            "signature": {
+              "type": "text",
+              "name": "Signature",
+              "settings": {
+                "text": "<p>— Santosh Ramesh, founder</p>",
+                "type_preset": "rte",
+                "max_width": "normal"
+              }
+            }
+          },
+          "block_order": [
+            "caption",
+            "heading",
+            "body",
+            "signature"
+          ]
+        }
+      },
+      "block_order": [
+        "media",
+        "content"
+      ],
+      "name": "What I found in India",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "70svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "why_ka": {
+      "type": "why-ka",
+      "settings": {
+        "heading": "Why it's called Ka",
+        "body": "<p>India's languages differ about as much as Chinese does from Korean. Naming the company after any one of them would have meant leaving everyone else out. Calling it “Indian” or “desi” felt like saying nothing at all.</p><p>But all of them teach the alphabet the same way. The vowels come first, then the consonants — <em>ka, kha, ga, gha</em> — and every script starts that list with the same sound.</p><p>So the company is named after the one letter they share.</p>",
+        "glyph_alt": "The letter ka, written in thirteen Indian scripts",
+        "caption": "“Ka”, in thirteen Indian scripts. The same sound, and almost nothing in common.",
+        "closing": "An Indian company, built for America. All of it.",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 80,
+        "padding-block-end": 80
+      }
     }
   },
   "order": [
     "opening",
+    "spark",
+    "india",
+    "why_ka",
     "provenance_story"
   ]
 }

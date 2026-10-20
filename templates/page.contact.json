@@ -176,9 +176,9 @@
           "type": "route",
           "settings": {
             "label": "Email",
-            "detail": "[Draft: add the address you want public]",
-            "link_label": "hello@[draft].com",
-            "link_url": "mailto:hello@example.com"
+            "detail": "The quickest way to reach us. We're small, so give us a day or two — faster if you catch us at a market.",
+            "link_label": "yum@ka-cc.com",
+            "link_url": "mailto:yum@ka-cc.com"
           }
         },
         "r2": {
@@ -186,8 +186,8 @@
           "settings": {
             "label": "Catering & events",
             "detail": "Weddings, offices, pop-ups — tell us roughly how many people and when, and we'll come back with options.",
-            "link_label": "",
-            "link_url": ""
+            "link_label": "yum@ka-cc.com",
+            "link_url": "mailto:yum@ka-cc.com"
           }
         },
         "r3": {
@@ -204,16 +204,36 @@
           "settings": {
             "label": "Instagram",
             "detail": "Where the day-to-day lives.",
-            "link_label": "[Draft: @handle]",
-            "link_url": "#"
+            "link_label": "@ka_chaicoffee",
+            "link_url": "https://www.instagram.com/ka_chaicoffee/"
+          }
+        },
+        "r5": {
+          "type": "route",
+          "settings": {
+            "label": "Phone",
+            "detail": "Call or text, especially for catering.",
+            "link_label": "971-344-6299",
+            "link_url": "tel:+19713446299"
+          }
+        },
+        "r6": {
+          "type": "route",
+          "settings": {
+            "label": "LinkedIn",
+            "detail": "Company news and the longer-term plan.",
+            "link_label": "Ka Chai & Coffee",
+            "link_url": "https://www.linkedin.com/company/ka-cc"
           }
         }
       },
       "block_order": [
         "r1",
+        "r5",
         "r2",
         "r3",
-        "r4"
+        "r4",
+        "r6"
       ],
       "settings": {
         "heading": "Other ways to reach us",

@@ -32,3 +32,4 @@ skills-lock.json
 # assets/ as kcc-*.jpg; keeping the masters out stops the repo ballooning.
 # They stay on disk so photos can be re-cropped or re-exported later.
 KCC Website Photos/
+.taste-skill/

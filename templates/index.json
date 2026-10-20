@@ -678,6 +678,20 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "why_ka": {
+      "type": "why-ka",
+      "settings": {
+        "heading": "Every Indian language begins with the same letter",
+        "body": "<p>India's languages differ about as much as Chinese does from Korean. Naming a chai company after any one of them would have meant leaving everyone else out.</p><p>But all of them teach the alphabet the same way. The vowels come first, then the consonants — <em>ka, kha, ga, gha</em> — and every script starts that list with the same sound.</p><p>So we named the company after the one letter they share. It is the ring around the cup in our logo, and the letters running down the side of this page.</p>",
+        "glyph_alt": "The letter ka, written in thirteen Indian scripts",
+        "caption": "“Ka”, in thirteen Indian scripts. The same sound, and almost nothing in common.",
+        "closing": "An Indian company, built for America. All of it.",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 80,
+        "padding-block-end": 80
+      }
     }
   },
   "order": [
@@ -688,6 +702,7 @@
     "wave",
     "review_quote",
     "wave_out",
+    "why_ka",
     "find_us",
     "gallery"
   ]
