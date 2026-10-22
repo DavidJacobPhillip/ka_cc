@@ -915,17 +915,22 @@
   }
 
   .ingredient-spotlight__buttons {
+    /* Held in a custom property because the mobile rule below has to do
+       arithmetic with the same gap to work out a button's width. */
+    --kcc-ing-button-gap: 1.25rem;
+
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 1.25rem;
+    gap: var(--kcc-ing-button-gap);
   }
 
   .ingredient-spotlight__button {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 0 0 auto;
     width: 4rem;
     height: 4rem;
     padding: 0;
@@ -934,16 +939,52 @@
     background: none;
     color: var(--color-primary, currentColor);
     cursor: pointer;
-    /* width/height (not transform: scale) so growing on hover actually
-       reflows the flex row and pushes neighboring buttons apart, per
-       Santosh's request, rather than just visually overlapping them. */
-    transition: width 0.15s ease, height 0.15s ease, border-width 0.15s ease;
+    /* Hover grows the button with a transform, not with width/height.
+
+       Animating the box was the earlier behaviour and it made the whole
+       section flinch: a wider button reflowed the flex row, so its neighbours
+       slid sideways, and a taller row pushed the disclaimer underneath it
+       further down the page. A transform is painted rather than laid out, so
+       the button grows and nothing else on the page moves. */
+    transition: transform 0.18s ease, border-width 0.18s ease, border-color 0.18s ease;
   }
 
   .ingredient-spotlight__button:hover {
-    width: 4.5rem;
-    height: 4.5rem;
+    transform: scale(1.09);
     border-width: 1.5px;
+  }
+
+  /* Keep the hover feedback, drop the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    .ingredient-spotlight__button {
+      transition: none;
+    }
+  }
+
+  /* Nine buttons on a phone: pin the row to exactly five so they break 5 + 4,
+     both rows centred, instead of filling the width and stranding the last
+     two on a row of their own. The basis is a fifth of the row once its four
+     gaps are taken out, so five fill a line exactly and a sixth can never
+     join them - at any phone width, without a breakpoint per device. */
+  @media screen and (max-width: 749px) {
+    .ingredient-spotlight__buttons {
+      /* Fluid, because the row is pinned to five: every pixel taken out of the
+         gaps goes straight into the buttons. The marquee rail eats ~57px of a
+         phone's width, so on a 320px screen a flat 0.75rem gap left 37px
+         buttons - under the 44px a thumb needs. */
+      --kcc-ing-button-gap: clamp(0.4rem, 2.6vw, 0.75rem);
+      /* Five buttons at their desktop size; past this the row would stretch
+         and the icons would grow with it. */
+      max-width: 23rem;
+      margin-inline: auto;
+    }
+
+    .ingredient-spotlight__button {
+      flex: 0 0 calc((100% - 4 * var(--kcc-ing-button-gap)) / 5);
+      width: auto;
+      height: auto;
+      aspect-ratio: 1;
+    }
   }
 
   /* Selected: the ring and the drawing both go to the dark ink, so the active
