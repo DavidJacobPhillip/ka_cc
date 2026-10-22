@@ -660,6 +660,11 @@
      theme's near-black foreground. */
   .ingredient-spotlight {
     --kcc-ingredient-ink: #5c2f16;
+    /* The locked tertiary from the brand palette (PROJECT_CONTEXT "Color -
+       LOCKED"), not a sampled approximation. Green is already how this theme
+       says "selected": settings_data.json uses the same value for
+       selected_variant_text_color on the product pages. */
+    --kcc-ingredient-selected: #2e6417;
   }
 
   /* The spice-field watermark across the full-bleed background element. Drawn
@@ -987,13 +992,19 @@
     }
   }
 
-  /* Selected: the ring and the drawing both go to the dark ink, so the active
-     spice reads as the same colour as the big illustration it's showing while
-     the other eight stay in the lighter terracotta. */
+  /* Selected: the ring and the drawing both go to the brand green while the
+     other eight stay in terracotta.
+
+     This used to be the dark ink, chosen to match the big illustration the
+     button was showing. Matching it made the selected state a tonal shift -
+     terracotta to brown - which is a weak thing to carry the only "you are
+     here" in the row. Green is a different hue rather than a darker one, so
+     the selected spice is legible at a glance, and it's the colour the rest
+     of the theme already selects with. */
   .ingredient-spotlight__button.is-active {
     border-width: 2px;
-    border-color: var(--kcc-ingredient-ink);
-    color: var(--kcc-ingredient-ink);
+    border-color: var(--kcc-ingredient-selected);
+    color: var(--kcc-ingredient-selected);
   }
 
   .ingredient-spotlight__icon {
