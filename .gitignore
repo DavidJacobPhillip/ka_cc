@@ -33,3 +33,11 @@ skills-lock.json
 # They stay on disk so photos can be re-cropped or re-exported later.
 KCC Website Photos/
 .taste-skill/
+
+# Master artwork for the ingredient-section backdrop (4.3MB Affinity export).
+# assets/ingredient-scatter.svg is the committed, theme-sized derivative;
+# regenerate it with scripts/build-ingredient-scatter.py when the drawing
+# changes. Same reasoning as the photo masters above - and here it matters
+# twice over, since a stray 4.3MB file at the theme root is not a directory
+# Shopify accepts.
+KCC All.svg

@@ -10,3 +10,7 @@ skills-lock.json
 # must never be pushed to the store.
 KCC Website Photos/
 .taste-skill/
+
+# Master artwork for the ingredient backdrop. The theme serves the flattened
+# derivative assets/ingredient-scatter.svg instead.
+KCC All.svg

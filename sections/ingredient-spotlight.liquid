@@ -21,18 +21,28 @@
 %}
 
 {%- comment -%}
-  The spice-pattern watermark rides on the theme's own section-background
-  element rather than on a pseudo-element of the content div. That element is
-  already exactly viewport-wide and absolutely positioned, so the pattern gets
-  its full-bleed for free; doing it with a 100vw pseudo-element instead added
-  9px of horizontal overflow on mobile, because 100vw counts the scrollbar.
+  The spice-field backdrop rides on the theme's own section-background element
+  rather than on a pseudo-element of the content div. That element is already
+  exactly viewport-wide and absolutely positioned, so the artwork gets its
+  full-bleed for free; doing it with a 100vw pseudo-element instead added 9px
+  of horizontal overflow on mobile, because 100vw counts the scrollbar.
+
+  The art is Santosh's "KCC All" drawing - one scattered composition, not a
+  tile - so it's sized to cover rather than repeated. ingredient-scatter.svg is
+  that file flattened out of its Affinity export: every nested matrix baked
+  into the point data and the contours simplified to the resolution a 9%-opacity
+  watermark can actually show, which took it from 4.3MB to 567KB. It keeps one
+  <g class="kcc-scatter__item"> per icon, each tagged with its own centre and
+  radius, which is what the drift/collision script below moves.
 
   The URL has to be handed to the CSS from here: {% stylesheet %} is static and
   never sees Liquid, so asset_url can't be written inside it.
 {%- endcomment -%}
 <div
+  id="ingredient-scatter-{{ section.id }}"
   class="section-background color-{{ section.settings.color_scheme }} ingredient-spotlight__bg"
-  style="--kcc-ingredient-pattern: url('{{ 'ingredient-pattern.svg' | asset_url }}');"
+  style="--kcc-ingredient-scatter: url('{{ 'ingredient-scatter.svg' | asset_url }}');"
+  data-scatter-src="{{ 'ingredient-scatter.svg' | asset_url }}"
 ></div>
 <div
   id="ingredient-spotlight-{{ section.id }}"
@@ -299,6 +309,350 @@
   })();
 </script>
 
+<script>
+  (() => {
+    /*
+      The spice field drifts.
+
+      Every icon in the backdrop art is its own <g class="kcc-scatter__item">,
+      tagged by the build with the centre and radius of its own ink. This gives
+      each one a velocity and lets them knock into each other - the brief was
+      "slowly bumping into each other randomly... not all at the same time,
+      natural yet slightly chaotic", so this is a real (if tiny) collision
+      solver rather than 135 looping keyframe animations, which is what makes
+      the chaos look unplanned: a shove propagates through whatever happens to
+      be nearby, and nothing repeats on a cycle.
+
+      Three things do the "not all at once" work:
+        - heavy damping, so a shoved icon coasts to a stop within a few seconds
+          and goes to sleep (skipped entirely until something wakes it);
+        - shoves arriving on a jittered interval, aimed at whichever sampled
+          icon is most at rest, so the busy part of the field keeps moving;
+        - the occasional double shove, because evenly spaced events read as
+          mechanical.
+
+      Progressive enhancement: the CSS background-image is what renders on
+      load and stays if the fetch fails, if there's no JS, or if the visitor
+      asks for reduced motion. The inlined SVG carries the same viewBox and
+      preserveAspectRatio="xMidYMid slice" as the CSS cover sizing, so it
+      lands on the identical crop and the swap can't be seen.
+    */
+    const bg = document.getElementById('ingredient-scatter-{{ section.id }}');
+    if (!bg) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduceMotion.matches) return;
+
+    const src = bg.getAttribute('data-scatter-src');
+    if (!src) return;
+
+    /*
+      All of this is in the artwork's own user units - the viewBox is
+      2560x1440 - so the motion scales with the drawing instead of with the
+      viewport, and an icon travels the same distance relative to its
+      neighbours on a phone as on a 27" display.
+    */
+    const STEP = 1 / 60;
+    /*
+      Spring and damping together make a lightly underdamped oscillator: a
+      shoved icon swings out, drifts back, overshoots a little and settles,
+      over about five seconds. SPRING sets how far a given shove carries
+      (excursion is roughly velocity / sqrt(SPRING)), DAMP how long it takes
+      to die out. They were tuned against a 60-second headless run: the field
+      sits at ~20% awake with a peak excursion just under the leash.
+    */
+    const SPRING = 0.0006;
+    const DAMP = 0.9925;
+    const RESTITUTION = 0.92;
+    const MAX_SPIN = 4.5;      // degrees
+    const SPIN_SPRING = 0.0025;
+    const SPIN_DAMP = 0.99;
+    const SLEEP_V = 0.004;
+    const SLEEP_D = 0.3;
+    // Leash, in artwork units, scaled to the icon's own size: a fennel seed
+    // travelling as far as a cinnamon stick would be moving further than its
+    // own width and read as flying rather than nudged.
+    const LEASH_MIN = 12;
+    const LEASH_MAX = 34;
+
+    let items = [];
+    let pairs = [];
+    let raf = 0;
+    let last = 0;
+    let carry = 0;
+    let nextShove = 0;
+    let loaded = false;
+
+    const rand = (lo, hi) => lo + Math.random() * (hi - lo);
+
+    const shove = (it, scale) => {
+      const a = Math.random() * Math.PI * 2;
+      // Velocity scales with the leash so every icon covers a similar
+      // fraction of its own allowance, whatever its size.
+      const v = rand(0.3, 0.72) * (it.leash / 24) * (scale || 1);
+      it.vx += Math.cos(a) * v;
+      it.vy += Math.sin(a) * v;
+      it.va += rand(-0.16, 0.16);
+      it.asleep = false;
+    };
+
+    const build = (svg) => {
+      const nodes = svg.querySelectorAll('.kcc-scatter__item');
+      items = Array.from(nodes).map((el) => {
+        const r = parseFloat(el.getAttribute('data-r')) || 40;
+        /*
+          Mass from the ink's footprint, so a cinnamon stick shrugs off a
+          fennel seed instead of the two trading equal momentum. Clamped at
+          both ends: raw r spans 17 to 554 here (the big ginger root's bbox
+          swallows half a quadrant), and a literal r^2 would make that root
+          immovable, which reads as a bug rather than as weight.
+        */
+        const m = Math.pow(Math.min(Math.max(r, 24), 200), 1.5);
+        return {
+          el,
+          cx: parseFloat(el.getAttribute('data-cx')) || 0,
+          cy: parseFloat(el.getAttribute('data-cy')) || 0,
+          r,
+          inv: 1 / m,
+          leash: Math.min(Math.max(r * 0.5, LEASH_MIN), LEASH_MAX),
+          ox: 0, oy: 0, vx: 0, vy: 0,
+          ang: 0, va: 0,
+          asleep: true,
+          dirty: false,
+        };
+      });
+
+      pairs = [];
+      for (let i = 0; i < items.length; i++) {
+        for (let j = i + 1; j < items.length; j++) {
+          const a = items[i];
+          const b = items[j];
+          const d0 = Math.hypot(a.cx - b.cx, a.cy - b.cy);
+          const contact = a.r + b.r;
+          /*
+            Clusters in the drawing deliberately overlap - the pile of coffee
+            beans, the ginger root sitting over its neighbours. If the resting
+            distance were just a.r + b.r those pairs would start inside each
+            other and the solver would blow Santosh's composition apart on the
+            first frame. So a pair's rest distance is capped at how far apart
+            it was actually drawn: it only pushes back once the two are closer
+            than the artist put them.
+          */
+          const rest = Math.min(contact, d0 * 0.9);
+          // Only pairs that could ever touch, given how far each can drift.
+          if (d0 < contact + a.leash + b.leash + 4) pairs.push({ a, b, rest });
+        }
+      }
+
+      // Arrive mid-drift rather than from a dead stop.
+      for (let k = 0; k < 7; k++) shove(items[(Math.random() * items.length) | 0], 0.8);
+      nextShove = rand(0.2, 0.7);
+    };
+
+    const collide = () => {
+      for (let k = 0; k < pairs.length; k++) {
+        const { a, b, rest } = pairs[k];
+        if (a.asleep && b.asleep) continue;
+        const dx = (b.cx + b.ox) - (a.cx + a.ox);
+        const dy = (b.cy + b.oy) - (a.cy + a.oy);
+        const d = Math.hypot(dx, dy);
+        if (d >= rest || d < 1e-4) continue;
+
+        const nx = dx / d;
+        const ny = dy / d;
+        const invSum = a.inv + b.inv;
+
+        // Ease them apart instead of snapping - a hard positional correction
+        // on overlapping art pops visibly at this scale.
+        const push = (rest - d) * 0.12;
+        a.ox -= nx * push * (a.inv / invSum);
+        a.oy -= ny * push * (a.inv / invSum);
+        b.ox += nx * push * (b.inv / invSum);
+        b.oy += ny * push * (b.inv / invSum);
+
+        const rvx = b.vx - a.vx;
+        const rvy = b.vy - a.vy;
+        const vn = rvx * nx + rvy * ny;
+        if (vn < 0) {
+          const imp = (-(1 + RESTITUTION) * vn) / invSum;
+          a.vx -= nx * imp * a.inv;
+          a.vy -= ny * imp * a.inv;
+          b.vx += nx * imp * b.inv;
+          b.vy += ny * imp * b.inv;
+          // Glancing hits spin things; head-on ones don't.
+          const vt = rvx * -ny + rvy * nx;
+          a.va -= vt * 0.5 * a.inv * 220;
+          b.va += vt * 0.5 * b.inv * 220;
+        }
+        a.asleep = false;
+        b.asleep = false;
+      }
+    };
+
+    const integrate = () => {
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (it.asleep) continue;
+
+        it.vx = (it.vx - it.ox * SPRING) * DAMP;
+        it.vy = (it.vy - it.oy * SPRING) * DAMP;
+        it.ox += it.vx;
+        it.oy += it.vy;
+
+        const d = Math.hypot(it.ox, it.oy);
+        if (d > it.leash) {
+          // Bounce off its own leash, so a run of shoves in one direction
+          // can't walk an icon out of the composition.
+          const s = it.leash / d;
+          it.ox *= s;
+          it.oy *= s;
+          const nx = it.ox / it.leash;
+          const ny = it.oy / it.leash;
+          const vn = it.vx * nx + it.vy * ny;
+          if (vn > 0) {
+            it.vx -= 1.6 * vn * nx;
+            it.vy -= 1.6 * vn * ny;
+          }
+        }
+
+        it.va = (it.va - it.ang * SPIN_SPRING) * SPIN_DAMP;
+        it.ang += it.va;
+        if (it.ang > MAX_SPIN) { it.ang = MAX_SPIN; it.va = 0; }
+        if (it.ang < -MAX_SPIN) { it.ang = -MAX_SPIN; it.va = 0; }
+
+        it.dirty = true;
+        if (
+          Math.abs(it.vx) < SLEEP_V && Math.abs(it.vy) < SLEEP_V &&
+          Math.abs(it.va) < SLEEP_V && d < SLEEP_D && Math.abs(it.ang) < 0.08
+        ) {
+          // Settle exactly back onto the drawn position, so a field at rest
+          // is pixel-identical to the static background it replaced.
+          it.ox = it.oy = it.vx = it.vy = it.ang = it.va = 0;
+          it.asleep = true;
+        }
+      }
+    };
+
+    const draw = () => {
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (!it.dirty) continue;
+        it.dirty = false;
+        if (it.asleep) {
+          it.el.removeAttribute('transform');
+        } else {
+          it.el.setAttribute(
+            'transform',
+            'translate(' + it.ox.toFixed(2) + ',' + it.oy.toFixed(2) + ') rotate(' +
+              it.ang.toFixed(2) + ',' + it.cx + ',' + it.cy + ')'
+          );
+        }
+      }
+    };
+
+    const tick = (now) => {
+      raf = requestAnimationFrame(tick);
+      // A tab that was backgrounded comes back with a huge gap; don't
+      // simulate it, just carry on from here.
+      const dt = last ? Math.min((now - last) / 1000, 0.1) : STEP;
+      last = now;
+
+      nextShove -= dt;
+      if (nextShove <= 0) {
+        nextShove = rand(0.25, 1.05);
+        /*
+          Aim at whatever is most at rest. Sampling a handful and taking the
+          stillest keeps the action moving around the field instead of
+          re-poking the cluster that's already busy, which is what "not all of
+          them at the same time" actually needs.
+        */
+        let pick = null;
+        for (let k = 0; k < 6; k++) {
+          const c = items[(Math.random() * items.length) | 0];
+          if (!pick || c.vx * c.vx + c.vy * c.vy < pick.vx * pick.vx + pick.vy * pick.vy) pick = c;
+        }
+        if (pick) shove(pick);
+        // Bursts and lulls; evenly spaced shoves read as a machine.
+        if (Math.random() < 0.22) shove(items[(Math.random() * items.length) | 0], 0.7);
+      }
+
+      carry = Math.min(carry + dt, 0.25);
+      while (carry >= STEP) {
+        collide();
+        integrate();
+        carry -= STEP;
+      }
+      draw();
+    };
+
+    const play = () => {
+      if (raf) return;
+      last = 0;
+      carry = 0;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const pause = () => {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    const load = async () => {
+      if (loaded) return;
+      loaded = true;
+      let markup;
+      try {
+        const res = await fetch(src);
+        if (!res.ok) return;
+        markup = await res.text();
+      } catch {
+        return;
+      }
+      const holder = document.createElement('div');
+      holder.innerHTML = markup;
+      const svg = holder.querySelector('svg');
+      if (!svg) return;
+      svg.setAttribute('class', 'ingredient-spotlight__scatter');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      bg.appendChild(svg);
+      bg.classList.add('is-scattered');
+      build(svg);
+    };
+
+    // Nothing is fetched or simulated until the section is near the viewport,
+    // and it stops again once it's scrolled past.
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.some((e) => e.isIntersecting);
+        if (visible) {
+          load().then(() => {
+            if (items.length) play();
+          });
+        } else {
+          pause();
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    io.observe(bg);
+
+    reduceMotion.addEventListener('change', (e) => {
+      if (e.matches) {
+        pause();
+        items.forEach((it) => {
+          it.ox = it.oy = it.vx = it.vy = it.ang = it.va = 0;
+          it.asleep = true;
+          it.el.removeAttribute('transform');
+        });
+      } else if (items.length) {
+        play();
+      }
+    });
+  })();
+</script>
+
 {% stylesheet %}
   /* One ink colour for the whole section - the illustrations carry it baked in
      (an <img> can't inherit currentColor), so the name, benefits, disclaimer
@@ -308,10 +662,16 @@
     --kcc-ingredient-ink: #5c2f16;
   }
 
-  /* The spice-pattern watermark, tiled across the full-bleed background
-     element. Drawn on a pseudo-element so it layers over the colour scheme's
-     own background rather than replacing it, and so it can carry its own
-     opacity without fading the section's content. */
+  /* The spice-field watermark across the full-bleed background element. Drawn
+     on a pseudo-element so it layers over the colour scheme's own background
+     rather than replacing it, and so it can carry its own opacity without
+     fading the section's content.
+
+     One composition scaled to cover, not a tile: no-repeat plus cover, which
+     is the background-image equivalent of the preserveAspectRatio="xMidYMid
+     slice" baked into the SVG - so the static layer here and the inlined
+     animated copy below crop to the identical frame and the swap is
+     invisible. */
   .ingredient-spotlight__bg {
     position: relative;
     overflow: hidden;
@@ -321,10 +681,26 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: var(--kcc-ingredient-pattern);
-    background-repeat: repeat;
-    background-size: 26rem auto;
-    opacity: 0.07;
+    background-image: var(--kcc-ingredient-scatter);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: var(--kcc-scatter-opacity, 0.09);
+    pointer-events: none;
+  }
+
+  /* Once the live copy is inlined, the static one underneath is redundant
+     ink - two stacked at 9% would read as 17%. */
+  .ingredient-spotlight__bg.is-scattered::after {
+    display: none;
+  }
+
+  .ingredient-spotlight__scatter {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: var(--kcc-scatter-opacity, 0.09);
     pointer-events: none;
   }
 
