@@ -25,6 +25,18 @@
 {% endcomment %}
 
 {% stylesheet %}
+
+  /* This section stands its own background down.
+
+     The ingredient section above bleeds its spice backdrop downwards so the
+     artwork runs under this wave rather than stopping on a straight line
+     above it. That bleed sits behind this section, and this section's
+     background - later in the DOM at the same z-index - would paint straight
+     over it. Only the area above the curve is affected: the wave's own fill
+     is opaque, so the band below it is untouched. */
+  #MainContent > div.shopify-section:has(.wave-divider--reviews) .section-background {
+    background-color: transparent;
+  }
   .shopify-section:has(.wave-divider--reviews) + .shopify-section .section-content-wrapper > *:first-child {
     line-height: 1.25;
     text-wrap: balance;

@@ -799,37 +799,40 @@
     position: relative;
     overflow: hidden;
     /*
-      Dissolve the artwork into the page at the top and bottom.
+      The backdrop bleeds below the section instead of stopping at it.
 
-      The backdrop is the section's background element, which base.css pins to
-      inset:0 of the section - so without this it ends on a dead straight line
-      exactly at the section boundary, slicing whatever icons happen to be
-      sitting there in half. A scatter of whole objects makes that read as a
-      rendering fault rather than a crop, and it's most obvious underneath,
-      where the wave divider's transparent top leaves a band of white between
-      the cut and the curve.
+      base.css pins .section-background to inset:0 of the section, so the
+      artwork used to end on a dead straight line at the section's bottom edge
+      with whatever icons sat there sliced in half. Fading that edge out was
+      the first attempt and it was worse - it hollowed out the bottom of the
+      section. The field now simply keeps going, far enough to clear the wave
+      divider below, so the curve is what cuts it. An edge the artist drew,
+      instead of an edge the box happened to fall on.
 
-      Declared here but applied to the two artwork layers below rather than to
-      this element, because this element is also what paints the colour
-      scheme's background. Masking it would fade that colour out at the same
-      edges and let the page show through in a gradient band - invisible while
-      the scheme is pure white, and a bug the moment it isn't.
+      Over-bleeding is safe: everything past the wave is covered by the quote
+      section's own opaque background. Under-bleeding is not - it would leave
+      a sliver of white in the troughs of the curve - so both values sit
+      comfortably above the divider's height.
 
-      Fixed pixels, and short. Percentages were the first attempt and they
-      were wrong: 14% of a 793px section is 111px, which started the fade
-      above the disclaimer and left a drift of empty white between the
-      artwork and the wave - a worse read than the hard line it replaced,
-      because now the backdrop looked like it had run out. The job here is
-      only to break the straight edge, not to clear a margin around it, and
-      the distance that takes doesn't scale with how tall the section is.
+      reviews-block-styles.liquid is the other half of this: the wave section's
+      own background has to stand down, or it paints over the bleed.
     */
-    --kcc-scatter-fade: linear-gradient(
-      to bottom,
-      transparent 0,
-      #000 44px,
-      #000 calc(100% - 44px),
-      transparent 100%
-    );
+    --kcc-scatter-bleed: 84px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ingredient-spotlight__bg {
+      --kcc-scatter-bleed: 136px;
+    }
+  }
+
+  /*
+    The id prefix is load-bearing. base.css pins this element with
+    ".shopify-section:not(.header-section) .section-background", which is three
+    classes; a bare .ingredient-spotlight__bg is one and loses.
+  */
+  #MainContent .ingredient-spotlight__bg {
+    inset-block-end: calc(var(--kcc-scatter-bleed) * -1);
   }
 
   .ingredient-spotlight__bg::after {
@@ -842,8 +845,6 @@
     background-size: cover;
     opacity: var(--kcc-scatter-opacity, 0.09);
     pointer-events: none;
-    -webkit-mask-image: var(--kcc-scatter-fade);
-    mask-image: var(--kcc-scatter-fade);
   }
 
   /* Once the live copy is inlined, the static one underneath is redundant
@@ -859,8 +860,6 @@
     height: 100%;
     opacity: var(--kcc-scatter-opacity, 0.09);
     pointer-events: none;
-    -webkit-mask-image: var(--kcc-scatter-fade);
-    mask-image: var(--kcc-scatter-fade);
   }
 
   .ingredient-spotlight__inner {
