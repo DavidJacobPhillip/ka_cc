@@ -815,15 +815,19 @@
       edges and let the page show through in a gradient band - invisible while
       the scheme is pure white, and a bug the moment it isn't.
 
-      Percentages rather than pixels: this section is ~700px on a desktop and
-      well over twice that on a phone, and a fixed fade would be a wash at one
-      end and a hairline at the other.
+      Fixed pixels, and short. Percentages were the first attempt and they
+      were wrong: 14% of a 793px section is 111px, which started the fade
+      above the disclaimer and left a drift of empty white between the
+      artwork and the wave - a worse read than the hard line it replaced,
+      because now the backdrop looked like it had run out. The job here is
+      only to break the straight edge, not to clear a margin around it, and
+      the distance that takes doesn't scale with how tall the section is.
     */
     --kcc-scatter-fade: linear-gradient(
       to bottom,
-      transparent 0%,
-      #000 9%,
-      #000 86%,
+      transparent 0,
+      #000 44px,
+      #000 calc(100% - 44px),
       transparent 100%
     );
   }
