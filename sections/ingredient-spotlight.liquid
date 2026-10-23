@@ -312,24 +312,28 @@
 <script>
   (() => {
     /*
-      The spice field drifts.
+      The spice field parts around the pointer.
 
       Every icon in the backdrop art is its own <g class="kcc-scatter__item">,
-      tagged by the build with the centre and radius of its own ink. This gives
-      each one a velocity and lets them knock into each other - the brief was
-      "slowly bumping into each other randomly... not all at the same time,
-      natural yet slightly chaotic", so this is a real (if tiny) collision
-      solver rather than 135 looping keyframe animations, which is what makes
-      the chaos look unplanned: a shove propagates through whatever happens to
-      be nearby, and nothing repeats on a cycle.
+      tagged by the build with the centre and radius of its own ink. Moving the
+      cursor through the field nudges whatever it passes near out of the way;
+      each icon springs back to where it was drawn once the cursor has gone.
 
-      Three things do the "not all at once" work:
-        - heavy damping, so a shoved icon coasts to a stop within a few seconds
-          and goes to sleep (skipped entirely until something wakes it);
-        - shoves arriving on a jittered interval, aimed at whichever sampled
-          icon is most at rest, so the busy part of the field keeps moving;
-        - the occasional double shove, because evenly spaced events read as
-          mechanical.
+      The field is at rest until the pointer touches it - the loop stops
+      entirely when nothing is moving and a pointer move restarts it - so this
+      costs nothing on a page nobody is interacting with.
+
+      Two details are what stop it feeling like a cursor-shaped hole:
+        - the push is measured against the segment the pointer travelled since
+          the last frame, not its current position, so a fast flick still
+          displaces everything it crossed instead of skipping over it;
+        - a fraction of the push goes along the direction of travel rather than
+          straight away from the cursor, so the field parts and trails behind
+          the stroke rather than bulging outwards from a point.
+
+      Icons still collide with each other, so a nudged icon hands some of the
+      push on to its neighbours and the disturbance spreads a little past the
+      cursor's own reach.
 
       Progressive enhancement: the CSS background-image is what renders on
       load and stays if the fetch fails, if there's no JS, or if the visitor
@@ -354,19 +358,23 @@
     */
     const STEP = 1 / 60;
     /*
-      Spring and damping together make a lightly underdamped oscillator: a
-      shoved icon swings out, drifts back, overshoots a little and settles,
-      over about five seconds. SPRING sets how far a given shove carries
-      (excursion is roughly velocity / sqrt(SPRING)), DAMP how long it takes
-      to die out. They were tuned against a 60-second headless run: the field
-      sits at ~20% awake with a peak excursion just under the leash.
+      Spring and damping make a lightly underdamped oscillator: a pushed icon
+      swings out, comes back, overshoots a little and settles. SPRING sets how
+      far a given push carries (excursion is roughly velocity / sqrt(SPRING)),
+      DAMP how fast it dies out.
+
+      Both are far stiffer than the version this replaces. That one was tuned
+      for a field under constant random disturbance, where a four-second
+      wallow never showed; driven by a cursor it read as broken, because the
+      icons were still drifting home long after the pointer had gone. Measured
+      settle is about 2.5s now, with one small overshoot.
     */
-    const SPRING = 0.0006;
-    const DAMP = 0.9925;
+    const SPRING = 0.004;
+    const DAMP = 0.943;
     const RESTITUTION = 0.92;
     const MAX_SPIN = 4.5;      // degrees
-    const SPIN_SPRING = 0.0025;
-    const SPIN_DAMP = 0.99;
+    const SPIN_SPRING = 0.012;
+    const SPIN_DAMP = 0.95;
     const SLEEP_V = 0.004;
     const SLEEP_D = 0.3;
     // Leash, in artwork units, scaled to the icon's own size: a fennel seed
@@ -374,29 +382,107 @@
     // own width and read as flying rather than nudged.
     const LEASH_MIN = 12;
     const LEASH_MAX = 34;
+    /*
+      Pointer forces, also in artwork units. REACH is how far from the cursor
+      an icon has to be before it ignores it - 200 units is about 110px on a
+      desktop-width section. The push is deliberately small: at full speed,
+      directly under the cursor, a mid-sized icon swings about 20 units, which
+      is ~11px on screen. Anything more and the backdrop stops being a backdrop.
+    */
+    const REACH = 200;
+    const SPEED_REF = 60;      // units/frame that counts as a brisk flick
+    const PUSH_MIN = 0.26;     // a slow drag still parts the field
+    const PUSH_SPEED = 1;      // ...and a fast one parts it properly
+    const SWEEP = 0.45;        // share of the push that follows the stroke
+    const SWEEP_SPIN = 0.05;
 
     let items = [];
     let pairs = [];
     let raf = 0;
     let last = 0;
     let carry = 0;
-    let nextShove = 0;
     let loaded = false;
+    let visible = false;
+    let svgEl = null;
 
-    const rand = (lo, hi) => lo + Math.random() * (hi - lo);
+    /*
+      Pointer position in the artwork's own coordinates. getScreenCTM is what
+      does the mapping, because it already accounts for the slice crop and the
+      page's scroll offset - working it out from the element's rect would mean
+      redoing that arithmetic and getting it wrong on one axis. It's cached and
+      dropped on scroll/resize rather than read per event, since reading it
+      forces layout.
+    */
+    const pointer = { x: 0, y: 0, prevX: 0, prevY: 0, fresh: false, seen: false };
+    let ctm = null;
+    const dropCTM = () => { ctm = null; };
 
-    const shove = (it, scale) => {
-      const a = Math.random() * Math.PI * 2;
-      // Velocity scales with the leash so every icon covers a similar
-      // fraction of its own allowance, whatever its size.
-      const v = rand(0.3, 0.72) * (it.leash / 24) * (scale || 1);
-      it.vx += Math.cos(a) * v;
-      it.vy += Math.sin(a) * v;
-      it.va += rand(-0.16, 0.16);
-      it.asleep = false;
+    const toArt = (clientX, clientY) => {
+      if (!svgEl) return null;
+      if (!ctm) {
+        const m = svgEl.getScreenCTM();
+        if (!m) return null;
+        ctm = m.inverse();
+      }
+      return new DOMPoint(clientX, clientY).matrixTransform(ctm);
+    };
+
+    /*
+      Push everything near the segment the pointer covered since the last
+      frame. Distance is to the segment, not to its end point: at 2000px/s the
+      cursor can clear an icon's whole reach between two frames, and measuring
+      against the end point alone would let it slip through untouched.
+    */
+    const sweep = () => {
+      const ax = pointer.prevX;
+      const ay = pointer.prevY;
+      const dx = pointer.x - ax;
+      const dy = pointer.y - ay;
+      const seg = Math.hypot(dx, dy);
+      // A jump this big is a scroll or a tab switch, not a stroke.
+      if (seg > 700) return;
+      const speed = Math.min(seg / SPEED_REF, 1);
+
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        const px = it.cx + it.ox;
+        const py = it.cy + it.oy;
+
+        let t = 0;
+        if (seg > 1e-3) {
+          t = ((px - ax) * dx + (py - ay) * dy) / (seg * seg);
+          t = t < 0 ? 0 : t > 1 ? 1 : t;
+        }
+        let nx = px - (ax + dx * t);
+        let ny = py - (ay + dy * t);
+        let d = Math.hypot(nx, ny);
+        if (d > REACH) continue;
+        if (d < 1e-3) {
+          // Dead centre: pick a direction rather than dividing by zero.
+          const a = Math.random() * Math.PI * 2;
+          nx = Math.cos(a);
+          ny = Math.sin(a);
+          d = 1;
+        }
+
+        const falloff = 1 - d / REACH;
+        const f = falloff * falloff * (PUSH_MIN + PUSH_SPEED * speed) * (it.leash / 24);
+        it.vx += (nx / d) * f;
+        it.vy += (ny / d) * f;
+
+        if (seg > 1e-3) {
+          it.vx += (dx / seg) * f * SWEEP;
+          it.vy += (dy / seg) * f * SWEEP;
+          // Which side of the stroke it sits on decides which way it turns.
+          it.va += ((nx * dy - ny * dx) / (d * seg)) * f * SWEEP_SPIN;
+        }
+        it.asleep = false;
+      }
     };
 
     const build = (svg) => {
+      // What the pointer mapping measures against.
+      svgEl = svg;
       const nodes = svg.querySelectorAll('.kcc-scatter__item');
       items = Array.from(nodes).map((el) => {
         const r = parseFloat(el.getAttribute('data-r')) || 40;
@@ -444,9 +530,7 @@
         }
       }
 
-      // Arrive mid-drift rather than from a dead stop.
-      for (let k = 0; k < 7; k++) shove(items[(Math.random() * items.length) | 0], 0.8);
-      nextShove = rand(0.2, 0.7);
+      // Starts at rest. Nothing moves until a pointer crosses the field.
     };
 
     const collide = () => {
@@ -551,29 +635,16 @@
     };
 
     const tick = (now) => {
-      raf = requestAnimationFrame(tick);
       // A tab that was backgrounded comes back with a huge gap; don't
       // simulate it, just carry on from here.
       const dt = last ? Math.min((now - last) / 1000, 0.1) : STEP;
       last = now;
 
-      nextShove -= dt;
-      if (nextShove <= 0) {
-        nextShove = rand(0.25, 1.05);
-        /*
-          Aim at whatever is most at rest. Sampling a handful and taking the
-          stillest keeps the action moving around the field instead of
-          re-poking the cluster that's already busy, which is what "not all of
-          them at the same time" actually needs.
-        */
-        let pick = null;
-        for (let k = 0; k < 6; k++) {
-          const c = items[(Math.random() * items.length) | 0];
-          if (!pick || c.vx * c.vx + c.vy * c.vy < pick.vx * pick.vx + pick.vy * pick.vy) pick = c;
-        }
-        if (pick) shove(pick);
-        // Bursts and lulls; evenly spaced shoves read as a machine.
-        if (Math.random() < 0.22) shove(items[(Math.random() * items.length) | 0], 0.7);
+      if (pointer.fresh) {
+        sweep();
+        pointer.fresh = false;
+        pointer.prevX = pointer.x;
+        pointer.prevY = pointer.y;
       }
 
       carry = Math.min(carry + dt, 0.25);
@@ -583,16 +654,55 @@
         carry -= STEP;
       }
       draw();
+
+      // Stop dead once the field has settled. The next pointer move starts it
+      // again; until then this section costs nothing per frame.
+      let awake = 0;
+      for (let i = 0; i < items.length; i++) {
+        if (!items[i].asleep) awake++;
+      }
+      if (awake) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        raf = 0;
+        last = 0;
+        carry = 0;
+      }
     };
 
-    const play = () => {
-      if (raf) return;
+    const wake = () => {
+      if (raf || !visible || !items.length) return;
       last = 0;
       carry = 0;
       raf = requestAnimationFrame(tick);
     };
 
+    const onPointerMove = (e) => {
+      if (!visible || !items.length) return;
+      const p = toArt(e.clientX, e.clientY);
+      if (!p) return;
+      pointer.x = p.x;
+      pointer.y = p.y;
+      // The first sample after arriving has no stroke behind it, so treat it
+      // as a standing start rather than a sweep from wherever it was last.
+      if (!pointer.seen) {
+        pointer.prevX = p.x;
+        pointer.prevY = p.y;
+        pointer.seen = true;
+      }
+      pointer.fresh = true;
+      wake();
+    };
+
+    const play = () => {
+      visible = true;
+      dropCTM();
+      wake();
+    };
+
     const pause = () => {
+      visible = false;
+      pointer.seen = false;
       if (!raf) return;
       cancelAnimationFrame(raf);
       raf = 0;
@@ -625,8 +735,10 @@
     // and it stops again once it's scrolled past.
     const io = new IntersectionObserver(
       (entries) => {
-        const visible = entries.some((e) => e.isIntersecting);
-        if (visible) {
+        // Not named `visible`: that's the module-level flag play()/pause()
+        // own, and shadowing it here is a trap for the next edit.
+        const onScreen = entries.some((e) => e.isIntersecting);
+        if (onScreen) {
           load().then(() => {
             if (items.length) play();
           });
@@ -638,6 +750,12 @@
     );
     io.observe(bg);
 
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    // Both move the artwork under the cursor without a pointer event firing,
+    // which would leave the cached mapping pointing at the wrong place.
+    window.addEventListener('scroll', dropCTM, { passive: true });
+    window.addEventListener('resize', dropCTM, { passive: true });
+
     reduceMotion.addEventListener('change', (e) => {
       if (e.matches) {
         pause();
@@ -647,7 +765,7 @@
           it.el.removeAttribute('transform');
         });
       } else if (items.length) {
-        play();
+        visible = true;
       }
     });
   })();
