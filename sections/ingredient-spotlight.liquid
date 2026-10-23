@@ -798,6 +798,34 @@
   .ingredient-spotlight__bg {
     position: relative;
     overflow: hidden;
+    /*
+      Dissolve the artwork into the page at the top and bottom.
+
+      The backdrop is the section's background element, which base.css pins to
+      inset:0 of the section - so without this it ends on a dead straight line
+      exactly at the section boundary, slicing whatever icons happen to be
+      sitting there in half. A scatter of whole objects makes that read as a
+      rendering fault rather than a crop, and it's most obvious underneath,
+      where the wave divider's transparent top leaves a band of white between
+      the cut and the curve.
+
+      Declared here but applied to the two artwork layers below rather than to
+      this element, because this element is also what paints the colour
+      scheme's background. Masking it would fade that colour out at the same
+      edges and let the page show through in a gradient band - invisible while
+      the scheme is pure white, and a bug the moment it isn't.
+
+      Percentages rather than pixels: this section is ~700px on a desktop and
+      well over twice that on a phone, and a fixed fade would be a wash at one
+      end and a hairline at the other.
+    */
+    --kcc-scatter-fade: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 9%,
+      #000 86%,
+      transparent 100%
+    );
   }
 
   .ingredient-spotlight__bg::after {
@@ -810,6 +838,8 @@
     background-size: cover;
     opacity: var(--kcc-scatter-opacity, 0.09);
     pointer-events: none;
+    -webkit-mask-image: var(--kcc-scatter-fade);
+    mask-image: var(--kcc-scatter-fade);
   }
 
   /* Once the live copy is inlined, the static one underneath is redundant
@@ -825,6 +855,8 @@
     height: 100%;
     opacity: var(--kcc-scatter-opacity, 0.09);
     pointer-events: none;
+    -webkit-mask-image: var(--kcc-scatter-fade);
+    mask-image: var(--kcc-scatter-fade);
   }
 
   .ingredient-spotlight__inner {
