@@ -28,7 +28,7 @@
           "type": "text",
           "name": "Subhead",
           "settings": {
-            "text": "<p>Five steps. No special equipment. Mostly just don't walk away from the stove.</p>",
+            "text": "<p>Seven steps, two ways. No special equipment. Mostly just don't walk away from the stove.</p>",
             "width": "100%",
             "max_width": "narrow",
             "alignment": "left",
@@ -38,7 +38,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["heading", "subhead"],
+      "block_order": [
+        "heading",
+        "subhead"
+      ],
       "name": "Intro",
       "settings": {
         "content_direction": "column",
@@ -52,145 +55,43 @@
       }
     },
     "steps": {
-      "type": "section",
+      "type": "chai-recipe",
       "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Heading",
+        "dairy": {
+          "type": "method",
           "settings": {
-            "text": "<h3>The method</h3>",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "h4",
-            "padding-block-end": 8
-          },
-          "blocks": {}
+            "label": "With dairy",
+            "note": "Makes one cup.",
+            "steps": "<ol><li>Get two pots and a measuring cup. In one pot pour 2 ounces of water, and in the other pour 6 ounces of milk.</li><li>Mash up 2.5 grams of fresh ginger (optional) with a mortar and pestle if you have one — a blender works too — and add it to the water.</li><li>Put the water and ginger on the stove over a simmer. Wait for it to start bubbling, then add ½ tsp of the chai powder and stir regularly.</li><li>Let the chai spices boil for a few minutes, then add 1 teaspoon of black tea powder. Keep stirring on simmer-medium heat until the tea-water thickens significantly — the longer you brew, the stronger the flavor.</li><li>On the side, heat the pot of milk, stirring frequently, until it boils up — turn off the heat before it boils over.</li><li>Dump the chai water into the milk, and let the final mixture boil up one more time over medium heat.</li><li>Strain, and ready to serve!</li></ol>"
+          }
         },
-        "accordion": {
-          "type": "accordion",
-          "name": "Steps",
+        "vegan": {
+          "type": "method",
           "settings": {
-            "icon": "caret",
-            "dividers": true,
-            "type_preset": "h5",
-            "inherit_color_scheme": true,
-            "color_scheme": ""
-          },
-          "blocks": {
-            "step_1": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "Step 1 — Boil",
-                "icon": "fire",
-                "open_by_default": true
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>[Draft — confirm ratios] Bring water to a boil with the masala chai spices. Let them do their thing for a few minutes before anything else goes in.</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": ["text"]
-            },
-            "step_2": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "Step 2 — Add the tea",
-                "icon": "leaf"
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>[Draft] Add the Assam + Kericho black tea leaves. Simmer — don't scorch.</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": ["text"]
-            },
-            "step_3": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "Step 3 — Add milk",
-                "icon": "dairy"
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>[Draft] Add milk and bring it back to a gentle boil. Watch it — chai has a well-documented habit of boiling over the second you look away.</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": ["text"]
-            },
-            "step_4": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "Step 4 — Strain",
-                "icon": "serving_dish"
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>[Draft] Strain into cups. Compost the spent leaves and spices like someone who has their life together.</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": ["text"]
-            },
-            "step_5": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "Step 5 — Sweeten and serve",
-                "icon": "heart"
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>[Draft] Sweeten to taste, or don't — we won't tell anyone. Drink it too hot, like it's meant to be.</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": ["text"]
-            }
-          },
-          "block_order": ["step_1", "step_2", "step_3", "step_4", "step_5"]
+            "label": "Vegan",
+            "note": "Makes one cup.",
+            "steps": "<ol><li>Get two pots and a measuring cup. In one pot pour 2 ounces of water, and in the other pour 6 ounces of milk.</li><li>Mash up 2.5 grams of fresh ginger (optional) with a mortar and pestle if you have one — a blender works too — and add it to the water.</li><li>Put the water and ginger on the stove over a simmer. Wait for it to start bubbling, then add ½ tsp of the chai powder and stir regularly.</li><li>Let the chai spices boil for a few minutes, then add 1 teaspoon of black tea powder. Keep stirring on simmer-medium heat until the tea-water thickens significantly — the longer you brew, the stronger the flavor.</li><li>After boiling the tea leaves for 1–2 minutes, add 6 ounces of the milk of your choice to the pot. We recommend a barista oat milk — they hold up better to heat.</li><li>Bring the chai to high heat and let the tea infuse into the milk over 2–3 minutes.</li><li>Strain, and ready to serve!</li></ol>"
+          }
         }
       },
-      "block_order": ["heading", "accordion"],
-      "name": "Steps",
+      "block_order": [
+        "dairy",
+        "vegan"
+      ],
+      "name": "The method",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "gap": 16,
-        "section_width": "page-width",
+        "heading": "The method",
+        "lede": "<p>Both start the same way and part company at step five. Pick the one you want and read straight down.</p>",
+        "footnote": "<p>Make three servings in one go — the flavor balances better in a bigger pot.</p><p>Plenty of our customers brew extra and keep it in the fridge, reheating as they go.</p>",
         "color_scheme": "scheme-1",
+        "section_width": "page-width",
         "padding-block-start": 24,
         "padding-block-end": 64
       }
     }
   },
-  "order": ["intro", "steps"]
+  "order": [
+    "intro",
+    "steps"
+  ]
 }

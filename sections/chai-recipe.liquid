@@ -1,0 +1,209 @@
+{% comment %}
+  The brew method, written out in full.
+
+  This replaces an accordion. Santosh's note was that it shouldn't be
+  drop-downs people have to click on, and he's right for more than taste: a
+  recipe is read standing at a stove with one hand on a pot, and anything that
+  hides step 5 until you tap it is the wrong shape for that. Everything here is
+  on the page at once.
+
+  The two methods sit side by side on a wide screen rather than one after the
+  other. They share their first four steps and diverge at the fifth, so setting
+  them in parallel columns shows you where the fork is instead of making you
+  hold four paragraphs in your head and scroll back to compare. On a phone
+  there's no room for that, so they stack and each reads straight through.
+
+  Steps come from one richtext field per method, as an ordered list - the
+  numerals are drawn by a CSS counter rather than typed into the copy, so
+  inserting a step in the theme editor renumbers the rest for free.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} chai-recipe spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  {%- if section.settings.heading != blank or section.settings.lede != blank -%}
+    <div class="chai-recipe__head">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="chai-recipe__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.lede != blank -%}
+        <div class="chai-recipe__lede rte">{{ section.settings.lede }}</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="chai-recipe__methods">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'method' -%}
+        <article class="chai-recipe__method" {{ block.shopify_attributes }}>
+          {%- if block.settings.label != blank -%}
+            <h3 class="chai-recipe__label">{{ block.settings.label }}</h3>
+          {%- endif -%}
+          {%- if block.settings.note != blank -%}
+            <p class="chai-recipe__note">{{ block.settings.note }}</p>
+          {%- endif -%}
+          {%- if block.settings.steps != blank -%}
+            <div class="chai-recipe__steps">{{ block.settings.steps }}</div>
+          {%- endif -%}
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.footnote != blank -%}
+    <div class="chai-recipe__footnote rte">{{ section.settings.footnote }}</div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .chai-recipe {
+    --chai-recipe-rule: color-mix(in srgb, var(--color-foreground) 14%, transparent);
+  }
+
+  .chai-recipe__head {
+    max-width: 38rem;
+    margin-block-end: 3rem;
+  }
+
+  .chai-recipe__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+    text-wrap: balance;
+  }
+
+  .chai-recipe__lede p {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    opacity: 0.85;
+  }
+
+  /* One column on a phone, the two methods in parallel from tablet up. */
+  .chai-recipe__methods {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.5rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chai-recipe__methods {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4rem;
+    }
+  }
+
+  /* The label sits on a rule so each method reads as its own column of text
+     even where the two sit side by side with only a gap between them. */
+  .chai-recipe__label {
+    font-family: var(--font-heading--family);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 0;
+    padding-block-end: 0.75rem;
+    border-block-end: 1px solid var(--chai-recipe-rule);
+    color: var(--color-primary, currentColor);
+  }
+
+  .chai-recipe__note {
+    margin: 0.9rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+
+  .chai-recipe__steps ol {
+    list-style: none;
+    counter-reset: chai-step;
+    margin: 1.75rem 0 0;
+    padding: 0;
+  }
+
+  /* Hanging numerals: the text block keeps a straight left edge and the
+     numbers sit out in the margin, so the column reads as prose with an index
+     beside it rather than as a form. */
+  .chai-recipe__steps li {
+    counter-increment: chai-step;
+    position: relative;
+    margin: 0;
+    padding: 1.1rem 0 1.1rem 3.25rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .chai-recipe__steps li + li {
+    border-block-start: 1px solid var(--chai-recipe-rule);
+  }
+
+  .chai-recipe__steps li::before {
+    content: counter(chai-step, decimal-leading-zero);
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 1.1rem;
+    /* Tabular so 01 and 10 occupy the same width and the left edge stays true. */
+    font-variant-numeric: tabular-nums;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    color: var(--color-primary, currentColor);
+    opacity: 0.75;
+  }
+
+  .chai-recipe__footnote {
+    max-width: 38rem;
+    margin-block-start: 3.5rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--chai-recipe-rule);
+  }
+
+  .chai-recipe__footnote p {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    opacity: 0.85;
+  }
+
+  .chai-recipe__footnote p:last-child {
+    margin-block-end: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Chai recipe",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The method" },
+    { "type": "richtext", "id": "lede", "label": "Intro" },
+    { "type": "richtext", "id": "footnote", "label": "Closing note" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full width" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "method",
+      "name": "Method",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "With dairy" },
+        { "type": "text", "id": "note", "label": "Note under the label" },
+        { "type": "richtext", "id": "steps", "label": "Steps", "info": "Use a numbered list. The numerals are drawn by CSS, so don't type them in." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Chai recipe", "blocks": [{ "type": "method" }, { "type": "method" }] }]
+}
+{% endschema %}

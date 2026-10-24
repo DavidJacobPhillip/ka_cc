@@ -174,7 +174,7 @@
         "card_1": {
           "type": "product",
           "settings": {
-            "image": "shopify://shop_images/IMG_6117.heic",
+            "image": "shopify://shop_images/kcc-chai-masala-jar.jpg",
             "title": "Chai Masala + Tea",
             "body": "Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.",
             "link_label": "Shop",
@@ -184,7 +184,7 @@
         "card_2": {
           "type": "product",
           "settings": {
-            "image": "shopify://shop_images/DSC03202.jpg",
+            "image": "shopify://shop_images/kcc-filter-coffee-pouch.jpg",
             "title": "Indian Filter Coffee",
             "body": "Carefully roasted arabica & robusta beans blended with chicory root. Coffee like no other.",
             "link_label": "Shop",
@@ -616,46 +616,6 @@
         "image_height": 350
       }
     },
-    "find_us": {
-      "type": "find-us",
-      "blocks": {
-        "m1": {
-          "type": "market",
-          "settings": {
-            "name": "Cedar Mills Farmers Market",
-            "when": "Saturdays, 9 AM – 2 PM",
-            "detail": "Brewed and served fresh every Saturday. [Draft — confirm the stall location within the market.]",
-            "link_label": "Directions",
-            "link_url": ""
-          }
-        },
-        "m2": {
-          "type": "market",
-          "settings": {
-            "name": "PSU Farmers Market",
-            "when": "[Draft: confirm day & time]",
-            "detail": "[Draft — confirm whether this is a regular spot or seasonal.] Portland State University, downtown.",
-            "link_label": "Directions",
-            "link_url": ""
-          }
-        }
-      },
-      "block_order": [
-        "m1",
-        "m2"
-      ],
-      "settings": {
-        "eyebrow": "Find us",
-        "heading": "We're at the market this weekend",
-        "body": "No storefront yet — we pour in person. Come find the kettle.",
-        "link_label": "All the places you can find us",
-        "link_url": "/pages/visit-us",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 72,
-        "padding-block-end": 72
-      }
-    },
     "wave_out": {
       "type": "section",
       "blocks": {
@@ -683,7 +643,8 @@
       "type": "why-ka",
       "settings": {
         "heading": "Every Indian language begins with the same letter",
-        "body": "<p>India's languages differ about as much as Chinese does from Korean. Naming a chai company after any one of them would have meant leaving everyone else out.</p><p>But all of them teach the alphabet the same way. The vowels come first, then the consonants — <em>ka, kha, ga, gha</em> — and every script starts that list with the same sound.</p><p>So we named the company after the one letter they share. It is the ring around the cup in our logo, and the letters running down the side of this page.</p>",
+        "body": "<p>India's languages aren't dialects of one another — many come from entirely different families. Naming a chai company after any one of them would have meant leaving everyone else out.</p><p>But all of them teach the alphabet the same way. The vowels come first, then the consonants — <em>ka, kha, ga, gha</em> — and every script starts that list with the same sound.</p><p>So we named the company after the one letter they share. It is the ring around the cup in our logo, and the letters running down the side of this page.</p>",
+        "show_glyphs": false,
         "glyph_alt": "The letter ka, written in thirteen Indian scripts",
         "caption": "“Ka”, in thirteen Indian scripts. The same sound, and almost nothing in common.",
         "closing": "An Indian company, built for America. All of it.",
@@ -703,7 +664,6 @@
     "review_quote",
     "wave_out",
     "why_ka",
-    "find_us",
     "gallery"
   ]
 }

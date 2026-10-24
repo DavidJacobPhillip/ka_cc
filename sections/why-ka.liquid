@@ -40,15 +40,22 @@
   {%- comment -%}
     The glyph grid sits outside __inner so it can use the section's full width.
     Inside the text column it left a void to the right of every paragraph.
+
+    Behind a setting because the homepage currently runs without it - Santosh
+    is working on something to put in its place - while Our Story still shows
+    the full specimen sheet. The caption is inside the same condition: on its
+    own it describes letters that aren't there.
   {%- endcomment -%}
-  <div class="why-ka__glyphs" role="img" aria-label="{{ section.settings.glyph_alt | escape }}">
+  {%- if section.settings.show_glyphs -%}
+    <div class="why-ka__glyphs" role="img" aria-label="{{ section.settings.glyph_alt | escape }}">
       {%- for i in (0..12) -%}
         <span class="why-ka__glyph">{%- render 'ka-rail-icon', index: i -%}</span>
       {%- endfor -%}
     </div>
 
-  {%- if section.settings.caption != blank -%}
-    <p class="why-ka__caption">{{ section.settings.caption }}</p>
+    {%- if section.settings.caption != blank -%}
+      <p class="why-ka__caption">{{ section.settings.caption }}</p>
+    {%- endif -%}
   {%- endif -%}
 
   {%- if section.settings.closing != blank -%}
@@ -145,6 +152,7 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Every Indian language begins with the same letter" },
     { "type": "richtext", "id": "body", "label": "Body" },
+    { "type": "checkbox", "id": "show_glyphs", "label": "Show the letterform specimen sheet", "info": "The thirteen scripts and their caption, under the text.", "default": true },
     { "type": "text", "id": "glyph_alt", "label": "Glyph grid description", "default": "The letter ka, written in thirteen Indian scripts" },
     { "type": "text", "id": "caption", "label": "Caption under the letters" },
     { "type": "text", "id": "closing", "label": "Closing line" },
