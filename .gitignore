@@ -41,3 +41,9 @@ KCC Website Photos/
 # twice over, since a stray 4.3MB file at the theme root is not a directory
 # Shopify accepts.
 KCC All.svg
+
+# Master artwork for the nine ingredient drawings (12.5MB Affinity export).
+# snippets/ingredient-icon-sprite.liquid holds the committed, theme-sized
+# derivative. Same reasoning as KCC All.svg above: at the theme root this
+# would be both a sync error and 12MB of dead weight on the store.
+KCC Website Aromatics.svg

@@ -209,17 +209,6 @@
     "ingredients": {
       "type": "ingredient-spotlight",
       "blocks": {
-        "spice_ginger": {
-          "type": "spice",
-          "name": "Ginger",
-          "settings": {
-            "name": "Ginger",
-            "benefit_1": "aids digestion",
-            "benefit_2": "reduces inflammation",
-            "benefit_3": "used in Ayurvedic medicine for 5,000+ years",
-            "icon_fallback": "carrot"
-          }
-        },
         "spice_cardamom": {
           "type": "spice",
           "name": "Cardamom",
@@ -266,9 +255,9 @@
         },
         "spice_fennel": {
           "type": "spice",
-          "name": "Fennel",
+          "name": "Carom seeds",
           "settings": {
-            "name": "Fennel",
+            "name": "Carom seeds",
             "benefit_1": "soothes the stomach",
             "benefit_2": "freshens breath",
             "benefit_3": "rich in fiber",
@@ -286,39 +275,52 @@
             "icon_fallback": "snowflake"
           }
         },
-        "spice_coffee": {
+        "spice_ginger": {
           "type": "spice",
-          "name": "Coffee bean",
+          "name": "Ginger",
           "settings": {
-            "name": "Coffee bean",
-            "benefit_1": "natural energy boost",
-            "benefit_2": "rich in antioxidants",
-            "benefit_3": "sourced from small farms",
-            "icon_fallback": "recycle"
+            "name": "Ginger",
+            "benefit_1": "aids digestion",
+            "benefit_2": "reduces inflammation",
+            "benefit_3": "used in Ayurvedic medicine for 5,000+ years",
+            "icon_fallback": "carrot"
           }
         },
         "spice_tea": {
           "type": "spice",
-          "name": "Tea leaf",
+          "name": "Black tea",
           "settings": {
-            "name": "Tea leaf",
+            "name": "Black tea",
             "benefit_1": "full of antioxidants",
             "benefit_2": "supports focus",
             "benefit_3": "hand-picked & sun-dried",
-            "icon_fallback": "dairy"
+            "icon_fallback": "dairy",
+            "note": "<p>Two leaves, not one: Assam in India and Kericho in Kenya.</p>"
+          }
+        },
+        "spice_coffee": {
+          "type": "spice",
+          "name": "Coffee",
+          "settings": {
+            "name": "Coffee",
+            "benefit_1": "natural energy boost",
+            "benefit_2": "rich in antioxidants",
+            "benefit_3": "sourced from small farms",
+            "icon_fallback": "recycle",
+            "note": "<p>Not an ingredient in the chai. These beans are for the South Indian filter coffee alone — sourced directly from growers in India.</p>"
           }
         }
       },
       "block_order": [
-        "spice_ginger",
         "spice_cardamom",
         "spice_cinnamon",
         "spice_cloves",
         "spice_pepper",
         "spice_fennel",
         "spice_star_anise",
-        "spice_coffee",
-        "spice_tea"
+        "spice_ginger",
+        "spice_tea",
+        "spice_coffee"
       ],
       "name": "Ingredients",
       "settings": {
