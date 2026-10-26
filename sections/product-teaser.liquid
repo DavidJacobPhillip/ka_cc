@@ -163,6 +163,10 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: clamp(1.25rem, 3vw, 2rem);
+    /* Explicit, because `.section` sizes its children by content and the
+       cards are inline-size containers - their max-content contribution is
+       zero, so the row would shrink to the bare 16rem track minimums. */
+    width: 100%;
     max-width: var(--pt-max, 54rem);
     margin: 0 auto;
     padding: 0;
@@ -187,6 +191,8 @@
        scheme, so the variable would resolve to the same cream and the card
        would disappear against it. */
     background: #fff;
+    /* So the title can be sized off the card rather than the viewport. */
+    container-type: inline-size;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
@@ -202,17 +208,45 @@
     flex-direction: column;
     flex: 1;
     gap: 1.25rem;
-    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    padding: clamp(0.875rem, 5cqi, 1.5rem);
     text-align: center;
   }
 
   .product-teaser__title {
     font-family: var(--font-heading--family);
-    font-size: clamp(1.5rem, 2.6vw, 2.125rem);
-    line-height: 1.1;
+    /* Measured off the artwork: the name is 11.7% of the card's width there,
+       which is why it reads as a nameplate rather than a caption. Sized in
+       cqi so it stays that proportion on a phone as well as a laptop. */
+    font-size: clamp(1.5rem, 11.5cqi, 3rem);
+    line-height: 1.05;
     margin: 0;
     color: var(--pt-accent);
     text-wrap: balance;
+  }
+
+  /* Hollow, like the packaging artwork. Same font - Noto Serif Display Extra
+     Condensed, already loaded in layout/theme.liquid - with the fill dropped
+     and the contour stroked instead, the way the nav thickens on hover.
+
+     The stroke is centred on the outline, so it eats into the stem rather
+     than growing the word: the metrics stay the filled font's and nothing
+     reflows. 0.038em is the artwork's ratio, and em keeps it true at every
+     size. Guarded, because without text-stroke the transparent fill would
+     leave the title invisible rather than merely solid. */
+  @supports (-webkit-text-stroke: 1px currentColor) {
+    .product-teaser__title {
+      color: transparent;
+      -webkit-text-stroke: 0.038em var(--pt-accent);
+    }
+  }
+
+  /* Windows high-contrast throws the stroke away but keeps the fill, so the
+     fill has to come back. */
+  @media (forced-colors: active) {
+    .product-teaser__title {
+      color: CanvasText;
+      -webkit-text-stroke-width: 0;
+    }
   }
 
   .product-teaser__media {
