@@ -1,24 +1,19 @@
 {% comment %}
   The two product cards that sit just under the hero.
 
-  This replaces a stack of generic group/image/text/button blocks. That setup
-  had three problems that couldn't be fixed from the theme editor:
+  Styled after the packaging-card artwork: an outlined card in the brand
+  terracotta, the product name across the top in the heading serif, the photo
+  inset below it, and a solid call-to-action bar flush to the bottom edge.
 
-  1. The image block only offers square, 16/9 or natural. It was set to square,
-     so two landscape photos (4:3 and 3:2) were being centre-cropped by 25% and
-     33% to force them into squares. Here the ratio is a real setting and
-     defaults to 4:3, which is the chai photo's native ratio and only trims the
-     sides of the coffee one.
-  2. The cards stretched to the full page width, which made each one over 40%
-     of a laptop viewport and pushed the section to 821px tall - the tallest
-     thing on the page after the hero. The row is capped and centred instead.
-  3. The call to action was a full-bleed solid bar reading "add to cart", which
-     can't add anything to a cart - it's a link, and the store has no products
-     yet. It's a text link by default now, and `cta_style` flips it back to a
-     button once there's something to buy.
+  Two things worth knowing before editing:
 
-  Title sits below the image, which is the way round every other card on this
-  site reads.
+  1. The image ratio is a real setting and defaults to 4:3, which is the chai
+     photo's native ratio and only trims the sides of the coffee one. Leaving
+     it on a shared ratio is what keeps both cards' bars on one baseline.
+  2. The bar is a link by default, because the store has no products yet and a
+     bar reading "add to cart" that adds nothing is a lie. Pick a product in
+     the block and it becomes a real add-to-cart form instead - no other
+     change needed.
 {% endcomment %}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -56,33 +51,34 @@
     {%- for block in section.blocks -%}
       {%- if block.type == 'product' -%}
         <li class="product-teaser__card" {{ block.shopify_attributes }}>
-          {%- if block.settings.image != blank -%}
-            {%- comment -%}
-              `adapt` leaves --pt-ratio unset so the image keeps its own shape.
-              Every other option pins both cards to the same ratio so their
-              captions sit on a shared baseline.
-            {%- endcomment -%}
-            <div
-              class="product-teaser__media"
-              {% if ratio %}style="--pt-ratio: {{ ratio }};"{% endif %}
-            >
-              <img
-                class="product-teaser__image"
-                src="{{ block.settings.image | image_url: width: 900 }}"
-                srcset="{{ block.settings.image | image_url: width: 440 }} 440w, {{ block.settings.image | image_url: width: 660 }} 660w, {{ block.settings.image | image_url: width: 900 }} 900w"
-                sizes="(min-width: 750px) 26rem, 90vw"
-                alt="{{ block.settings.image.alt | escape }}"
-                width="{{ block.settings.image.width }}"
-                height="{{ block.settings.image.height }}"
-                loading="lazy"
-              >
-            </div>
-          {%- endif -%}
-
-          <div class="product-teaser__body">
+          <div class="product-teaser__inner">
             {%- if block.settings.title != blank -%}
               <h3 class="product-teaser__title">{{ block.settings.title | escape }}</h3>
             {%- endif -%}
+
+            {%- if block.settings.image != blank -%}
+              {%- comment -%}
+                `adapt` leaves --pt-ratio unset so the image keeps its own shape.
+                Every other option pins both cards to the same ratio so their
+                captions sit on a shared baseline.
+              {%- endcomment -%}
+              <div
+                class="product-teaser__media"
+                {% if ratio %}style="--pt-ratio: {{ ratio }};"{% endif %}
+              >
+                <img
+                  class="product-teaser__image"
+                  src="{{ block.settings.image | image_url: width: 900 }}"
+                  srcset="{{ block.settings.image | image_url: width: 440 }} 440w, {{ block.settings.image | image_url: width: 660 }} 660w, {{ block.settings.image | image_url: width: 900 }} 900w"
+                  sizes="(min-width: 750px) 26rem, 90vw"
+                  alt="{{ block.settings.image.alt | escape }}"
+                  width="{{ block.settings.image.width }}"
+                  height="{{ block.settings.image.height }}"
+                  loading="lazy"
+                >
+              </div>
+            {%- endif -%}
+
             {%- if block.settings.body != blank -%}
               {%- comment -%}
                 Escaped because these are plain-text settings, and the coffee
@@ -90,7 +86,31 @@
               {%- endcomment -%}
               <p class="product-teaser__line">{{ block.settings.body | escape }}</p>
             {%- endif -%}
-            {%- if block.settings.link_label != blank -%}
+          </div>
+
+          {%- if block.settings.link_label != blank -%}
+            {%- assign card_product = block.settings.product -%}
+            {%- if card_product != blank and card_product.available -%}
+              {%- comment -%}
+                A plain POST to /cart/add, so the bar works without JavaScript.
+                It lands on the cart page rather than opening the drawer.
+              {%- endcomment -%}
+              <form method="post" action="{{ routes.cart_add_url }}" class="product-teaser__cta-form">
+                <input type="hidden" name="form_type" value="product">
+                <input type="hidden" name="utf8" value="✓">
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{ card_product.selected_or_first_available_variant.id }}"
+                >
+                <button
+                  type="submit"
+                  class="product-teaser__cta product-teaser__cta--{{ section.settings.cta_style }}"
+                >
+                  {{- block.settings.link_label -}}
+                </button>
+              </form>
+            {%- else -%}
               <a
                 class="product-teaser__cta product-teaser__cta--{{ section.settings.cta_style }}"
                 href="{{ block.settings.link_url | default: '/collections/all' }}"
@@ -98,7 +118,7 @@
                 {{- block.settings.link_label -}}
               </a>
             {%- endif -%}
-          </div>
+          {%- endif -%}
         </li>
       {%- endif -%}
     {%- endfor -%}
@@ -106,6 +126,15 @@
 </div>
 
 {% stylesheet %}
+  .product-teaser {
+    /* The card frame, the title and the bar are all one terracotta. Pulled
+       from the scheme so a scheme swap carries the whole card with it. */
+    --pt-accent: var(--color-primary, #cd643f);
+    --pt-accent-deep: var(--color-primary-hover, #a45032);
+    --pt-ink: #4a2a18;
+    --pt-radius: 1.5rem;
+  }
+
   .product-teaser__head {
     text-align: center;
     margin-block-end: 2.5rem;
@@ -116,7 +145,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-primary, currentColor);
+    color: var(--pt-accent);
   }
 
   .product-teaser__heading {
@@ -146,30 +175,49 @@
     }
   }
 
-  /* A soft warm fill and the same hairline-plus-shadow the timeline photos
-     use, rather than the lone outlined rectangle this section used to be. */
+  /* Outlined rather than shadowed at rest: the frame is the look. `overflow`
+     is what crops the bar into the two bottom corners. */
   .product-teaser__card {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem 1rem 1.5rem;
-    border-radius: 0.75rem;
+    border: 2px solid var(--pt-accent);
+    border-radius: var(--pt-radius);
+    overflow: hidden;
     /* White rather than var(--color-background): the section sits on the cream
        scheme, so the variable would resolve to the same cream and the card
        would disappear against it. */
     background: #fff;
-    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.06), 0 0.5rem 1.5rem rgb(43 22 8 / 0.08);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
   .product-teaser__card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.08), 0 0.875rem 2rem rgb(43 22 8 / 0.12);
+    box-shadow: 0 0.75rem 1.75rem rgb(43 22 8 / 0.12);
+  }
+
+  /* `flex: 1` so a one-line description doesn't leave that card's bar riding
+     higher than its neighbour's. */
+  .product-teaser__inner {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    text-align: center;
+  }
+
+  .product-teaser__title {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+    line-height: 1.1;
+    margin: 0;
+    color: var(--pt-accent);
+    text-wrap: balance;
   }
 
   .product-teaser__media {
     aspect-ratio: var(--pt-ratio, auto);
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     overflow: hidden;
   }
 
@@ -180,50 +228,70 @@
     object-fit: cover;
   }
 
-  .product-teaser__body {
-    display: flex;
-    flex-direction: column;
-    /* Pushes the link to the bottom edge so both cards' links line up even
-       when one description runs a line longer. */
-    flex: 1;
-    gap: 0.5rem;
-    padding-inline: 0.5rem;
-    text-align: center;
-  }
-
-  .product-teaser__title {
-    font-family: var(--font-heading--family);
-    font-size: 1.375rem;
-    line-height: 1.25;
-    margin: 0;
-  }
-
   .product-teaser__line {
     margin: 0;
+    /* Keeps the description hugging the photo while the gap it would have
+       taken goes under it, above the bar. */
+    margin-block-end: auto;
     font-size: 0.9375rem;
     line-height: 1.6;
-    opacity: 0.8;
+    color: var(--pt-ink);
   }
 
+  .product-teaser__cta-form {
+    margin: 0;
+    display: flex;
+  }
+
+  /* The solid bar, flush to the card's three lower edges. */
   .product-teaser__cta {
-    margin-block-start: auto;
-    padding-block-start: 0.75rem;
-    font-size: 0.9375rem;
-    color: var(--color-primary, currentColor);
-    text-underline-offset: 0.3em;
+    display: block;
+    width: 100%;
+    border: 0;
+    padding: 0.875rem 1rem;
+    background: var(--pt-accent);
+    color: #fff;
+    font-family: var(--font-body--family);
+    font-size: clamp(1rem, 1.6vw, 1.1875rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
   }
 
-  /* The button form, for once there are products to sell. */
-  .product-teaser__cta--button {
-    margin-inline: auto;
-    padding: 0.75rem 1.75rem;
-    border-radius: 2rem;
-    background: var(--color-primary, currentColor);
-    color: var(--color-background, #fff);
-    text-decoration: none;
-    font-size: 0.875rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .product-teaser__cta:hover,
+  .product-teaser__cta:focus-visible {
+    background: var(--pt-accent-deep);
+    color: #fff;
+  }
+
+  /* The quieter form, for a card that shouldn't shout. */
+  .product-teaser__cta--link {
+    background: transparent;
+    color: var(--pt-accent);
+    padding-block: 0 clamp(1.25rem, 2.5vw, 1.75rem);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-underline-offset: 0.3em;
+    text-decoration: underline;
+  }
+
+  .product-teaser__cta--link:hover,
+  .product-teaser__cta--link:focus-visible {
+    background: transparent;
+    color: var(--pt-accent-deep);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-teaser__card {
+      transition: none;
+    }
+
+    .product-teaser__card:hover {
+      transform: none;
+    }
   }
 {% endstylesheet %}
 
@@ -251,10 +319,10 @@
       "id": "cta_style",
       "label": "Call to action",
       "options": [
-        { "value": "link", "label": "Text link" },
-        { "value": "button", "label": "Button" }
+        { "value": "bar", "label": "Solid bar" },
+        { "value": "link", "label": "Text link" }
       ],
-      "default": "link"
+      "default": "bar"
     },
     { "type": "range", "id": "max_width", "label": "Row width", "min": 36, "max": 80, "step": 2, "unit": "rem", "default": 54 },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
@@ -280,8 +348,14 @@
         { "type": "image_picker", "id": "image", "label": "Photo" },
         { "type": "text", "id": "title", "label": "Title" },
         { "type": "textarea", "id": "body", "label": "Description" },
-        { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop" },
-        { "type": "url", "id": "link_url", "label": "Link" }
+        { "type": "text", "id": "link_label", "label": "Button label", "default": "add to cart" },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Set this and the button really adds to the cart. Leave it empty and it links to the collection below instead."
+        },
+        { "type": "url", "id": "link_url", "label": "Link", "info": "Used only while no product is chosen." }
       ]
     }
   ],
@@ -289,8 +363,8 @@
     {
       "name": "Product teaser",
       "blocks": [
-        { "type": "product", "settings": { "title": "Chai Masala + Tea", "link_label": "Shop" } },
-        { "type": "product", "settings": { "title": "Indian Filter Coffee", "link_label": "Shop" } }
+        { "type": "product", "settings": { "title": "Chai Masala + Tea", "link_label": "add to cart" } },
+        { "type": "product", "settings": { "title": "Indian Filter Coffee", "link_label": "add to cart" } }
       ]
     }
   ]

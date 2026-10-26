@@ -177,7 +177,7 @@
             "image": "shopify://shop_images/kcc-chai-masala-jar.jpg",
             "title": "Chai Masala + Tea",
             "body": "Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.",
-            "link_label": "Shop",
+            "link_label": "add to cart",
             "link_url": "shopify://collections/all"
           }
         },
@@ -187,7 +187,7 @@
             "image": "shopify://shop_images/kcc-filter-coffee-pouch.jpg",
             "title": "Indian Filter Coffee",
             "body": "Carefully roasted arabica & robusta beans blended with chicory root. Coffee like no other.",
-            "link_label": "Shop",
+            "link_label": "add to cart",
             "link_url": "shopify://collections/all"
           }
         }
@@ -198,7 +198,7 @@
       ],
       "settings": {
         "image_ratio": "four-three",
-        "cta_style": "link",
+        "cta_style": "bar",
         "max_width": 54,
         "color_scheme": "scheme-2",
         "section_width": "page-width",
