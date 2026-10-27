@@ -636,7 +636,7 @@
       "settings": {
         "content_direction": "column",
         "section_width": "full-width",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 0
       }
@@ -650,10 +650,12 @@
         "glyph_alt": "The letter ka, written in thirteen Indian scripts",
         "caption": "“Ka”, in thirteen Indian scripts. The same sound, and almost nothing in common.",
         "closing": "An Indian company, built for America. All of it.",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-5",
         "section_width": "page-width",
         "padding-block-start": 80,
-        "padding-block-end": 80
+        "padding-block-end": 80,
+        "show_pattern": true,
+        "pattern_opacity": 12
       }
     }
   },
@@ -664,8 +666,8 @@
     "ingredients",
     "wave",
     "review_quote",
-    "wave_out",
     "why_ka",
+    "wave_out",
     "gallery"
   ]
 }

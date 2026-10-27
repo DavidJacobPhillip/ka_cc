@@ -22,7 +22,25 @@
   small but readable rather than vanishing.
 {% endcomment %}
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- comment -%}
+  The letterform backdrop rides on the theme's own section-background element,
+  which is already exactly viewport-wide and absolutely positioned, so the
+  artwork gets its full bleed for free.
+
+  It ships as an alpha mask rather than a picture - see
+  scripts/build-ka-pattern.py - so the glyphs are painted with the colour
+  scheme's own foreground rather than a colour baked into a PNG. One file
+  works on the dark band this sits in and on the cream Our Story page.
+
+  The URL has to be handed to the CSS from here: {% stylesheet %} is static
+  and never sees Liquid, so asset_url can't be written inside it.
+{%- endcomment -%}
+<div
+  class="section-background color-{{ section.settings.color_scheme }} why-ka__bg{% if section.settings.show_pattern %} why-ka__bg--pattern{% endif %}"
+  {%- if section.settings.show_pattern %}
+    style="--ka-pattern: url('{{ 'ka-pattern.png' | asset_url }}'); --ka-pattern-opacity: {{ section.settings.pattern_opacity | divided_by: 100.0 }};"
+  {%- endif %}
+></div>
 <div
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} why-ka spacing-style"
   style="{%- render 'spacing-style', settings: section.settings %}"
@@ -64,6 +82,60 @@
 </div>
 
 {% stylesheet %}
+  .why-ka__bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* The mask is what makes this a texture rather than a picture: the PNG
+     carries only an alpha channel, and the colour under it is the scheme's
+     own foreground, so the glyphs come out cream on the dark band and brown
+     on a light one without a second file.
+
+     `cover` rather than a tile. The artwork is one composition, not a
+     repeating unit - its edges cut through letterforms, so repeating it would
+     draw a seam straight down the section. One copy, cropped. */
+  .why-ka__bg--pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-foreground, currentColor);
+    -webkit-mask-image: var(--ka-pattern);
+    mask-image: var(--ka-pattern);
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    opacity: var(--ka-pattern-opacity, 0.12);
+    pointer-events: none;
+  }
+
+  /* The field eases in at the top rather than starting on a straight line.
+
+     This section sits inside a longer dark band - the quote above it is the
+     same colour - so a texture that switches on partway down the band reads
+     as a rendering fault rather than as a change of surface. The bottom edge
+     needs nothing: the wave divider cuts it, and that's an edge somebody
+     drew.
+
+     A scrim in the scheme's own background colour, not a mask, so it needs no
+     mask-composite. It has to be ::after to paint over the pattern's ::before. */
+  .why-ka__bg--pattern::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: var(--ka-pattern-fade, 7rem);
+    background: linear-gradient(
+      to bottom,
+      var(--color-background, transparent),
+      rgb(0 0 0 / 0) 100%
+    );
+    pointer-events: none;
+  }
+
   /* Sized to the prose itself, so the text column has no orphan space beside
      it. The glyph grid is a sibling and uses the section's full width. */
   .why-ka__inner {
@@ -156,6 +228,23 @@
     { "type": "text", "id": "glyph_alt", "label": "Glyph grid description", "default": "The letter ka, written in thirteen Indian scripts" },
     { "type": "text", "id": "caption", "label": "Caption under the letters" },
     { "type": "text", "id": "closing", "label": "Closing line" },
+    {
+      "type": "checkbox",
+      "id": "show_pattern",
+      "label": "Letterform backdrop",
+      "info": "The field of ka glyphs behind the section. Reads best on a dark colour scheme.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "pattern_opacity",
+      "label": "Backdrop strength",
+      "min": 2,
+      "max": 40,
+      "step": 1,
+      "unit": "%",
+      "default": 12
+    },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
     {
       "type": "select",

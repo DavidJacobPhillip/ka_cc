@@ -47,3 +47,8 @@ KCC All.svg
 # derivative. Same reasoning as KCC All.svg above: at the theme root this
 # would be both a sync error and 12MB of dead weight on the store.
 KCC Website Aromatics.svg
+
+# Master for the why-ka letterform backdrop (5.4MB, cream on black).
+# assets/ka-pattern.png is the committed alpha-mask derivative; rebuild it
+# with scripts/build-ka-pattern.py. Same reasoning as the artwork above.
+KCC Ka Pattern.png
