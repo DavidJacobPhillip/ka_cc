@@ -1004,11 +1004,14 @@
 
   @media screen and (min-width: 750px) {
     .ingredient-spotlight__panel {
-      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
       align-items: center;
       justify-items: stretch;
       gap: 2.5rem;
-      min-height: 22rem;
+      /* No min-height any more: it existed to stop the row jumping between
+         spices whose drawings had different aspect ratios, and all nine now
+         share one viewBox. Leaving it in just padded the row on mid-size
+         screens, where the drawing is narrower than its height cap. */
     }
   }
 
@@ -1027,7 +1030,9 @@
   .ingredient-spotlight__name {
     margin: 0;
     text-align: center;
-    color: var(--kcc-ingredient-ink);
+    /* Green, as in the artwork - and the same green the selected button ring
+       goes, so the name and the tile you pressed read as one thing. */
+    color: var(--kcc-ingredient-selected);
     font-size: clamp(2.25rem, 5.6vw, 3.75rem);
     line-height: 1.05;
   }
@@ -1103,8 +1108,8 @@
      cap is just a ceiling on how much of the column the art may take. */
   .ingredient-spotlight__placeholder {
     width: 100%;
-    max-width: 34rem;
-    max-height: 20rem;
+    max-width: 46rem;
+    max-height: 30rem;
     height: auto;
     object-fit: contain;
     margin-inline: auto;
@@ -1113,8 +1118,8 @@
 
   @media screen and (max-width: 749px) {
     .ingredient-spotlight__placeholder {
-      max-width: 20rem;
-      max-height: 14rem;
+      max-width: 26rem;
+      max-height: 19rem;
     }
   }
 
@@ -1123,8 +1128,8 @@
      doesn't shift the panel. */
   .ingredient-spotlight__drawing {
     width: 100%;
-    max-width: 34rem;
-    max-height: 20rem;
+    max-width: 46rem;
+    max-height: 30rem;
     height: auto;
     margin-inline: auto;
     display: block;
@@ -1132,8 +1137,8 @@
 
   @media screen and (max-width: 749px) {
     .ingredient-spotlight__drawing {
-      max-width: 20rem;
-      max-height: 14rem;
+      max-width: 26rem;
+      max-height: 19rem;
     }
   }
 
@@ -1308,7 +1313,10 @@
        box, so they share a left edge too. */
     align-self: center;
     max-width: 52rem;
-    margin-block-start: 1.5rem;
+    /* Pushed well clear of the button row. It's a legal footnote, not part of
+       the section's argument, and the distance is what buys the drawing above
+       it room to be large. */
+    margin-block-start: 4.5rem;
     color: var(--kcc-ingredient-ink);
     font-size: 1.0625rem;
     line-height: 1.65;
