@@ -112,32 +112,6 @@
     pointer-events: none;
   }
 
-  /* The field eases in at both ends rather than starting and stopping on a
-     straight line.
-
-     The section's neighbours are its own background colour, so a texture that
-     switches on at the section boundary reads as a rendering fault rather than
-     as a change of surface - and the artwork is cropped, so the bottom edge
-     would otherwise cut through letterforms mid-stroke. Where a wave divider
-     sits against the section it does the cutting itself and the scrim under it
-     costs nothing.
-
-     A scrim in the scheme's own background colour, not a mask, so it needs no
-     mask-composite. It has to be ::after to paint over the pattern's ::before. */
-  .why-ka__bg--pattern::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      var(--color-background, transparent),
-      rgb(0 0 0 / 0) var(--ka-pattern-fade, 7rem),
-      rgb(0 0 0 / 0) calc(100% - var(--ka-pattern-fade, 7rem)),
-      var(--color-background, transparent)
-    );
-    pointer-events: none;
-  }
-
   /* Sized to the prose itself, so the text column has no orphan space beside
      it. The glyph grid is a sibling and uses the section's full width. */
   .why-ka__inner {
@@ -234,7 +208,7 @@
       "type": "checkbox",
       "id": "show_pattern",
       "label": "Letterform backdrop",
-      "info": "The field of ka glyphs behind the section. Reads best on a dark colour scheme.",
+      "info": "The field of ka glyphs behind the section, painted in the scheme's own text colour.",
       "default": false
     },
     {
