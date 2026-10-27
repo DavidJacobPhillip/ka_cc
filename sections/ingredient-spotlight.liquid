@@ -1004,10 +1004,10 @@
 
   @media screen and (min-width: 750px) {
     .ingredient-spotlight__panel {
-      grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
       align-items: center;
       justify-items: stretch;
-      gap: 2.5rem;
+      gap: 2rem;
       /* No min-height any more: it existed to stop the row jumping between
          spices whose drawings had different aspect ratios, and all nine now
          share one viewBox. Leaving it in just padded the row on mid-size
@@ -1041,7 +1041,7 @@
      coffee never goes near the chai. Set apart from the list above by a rule
      and a smaller size, so it reads as a footnote rather than a fourth bullet. */
   .ingredient-spotlight__note {
-    max-width: 30rem;
+    max-width: 30rem; /* the column caps it on desktop; this is for mobile */
     margin-block-start: 0.35rem;
     padding-block-start: 0.85rem;
     border-block-start: 1px solid color-mix(in srgb, var(--kcc-ingredient-ink) 22%, transparent);
@@ -1081,6 +1081,18 @@
       text-align: start;
     }
 
+    /* Ragged-right text, but sitting against the drawing rather than against
+       the page edge. justify-self shrink-wraps the block and pushes it to the
+       end of its column; align-items: flex-start above keeps every line
+       sharing one left edge inside it. */
+    .ingredient-spotlight__text {
+      justify-self: end;
+      /* One width for all nine, not shrink-to-fit. Shrink-to-fit put the two
+         spices that carry a note - coffee and tea - at a different left edge
+         from the seven that don't, and the edge moved as you clicked. */
+      width: min(100%, 19rem);
+    }
+
     .ingredient-spotlight__note {
       text-align: start;
     }
@@ -1108,8 +1120,8 @@
      cap is just a ceiling on how much of the column the art may take. */
   .ingredient-spotlight__placeholder {
     width: 100%;
-    max-width: 46rem;
-    max-height: 30rem;
+    max-width: 52rem;
+    max-height: 38rem;
     height: auto;
     object-fit: contain;
     margin-inline: auto;
@@ -1128,8 +1140,8 @@
      doesn't shift the panel. */
   .ingredient-spotlight__drawing {
     width: 100%;
-    max-width: 46rem;
-    max-height: 30rem;
+    max-width: 52rem;
+    max-height: 38rem;
     height: auto;
     margin-inline: auto;
     display: block;
@@ -1313,10 +1325,9 @@
        box, so they share a left edge too. */
     align-self: center;
     max-width: 52rem;
-    /* Pushed well clear of the button row. It's a legal footnote, not part of
-       the section's argument, and the distance is what buys the drawing above
-       it room to be large. */
-    margin-block-start: 4.5rem;
+    /* Close under the button row. The space this section has goes to the
+       drawing, not to a gap above a legal footnote. */
+    margin-block-start: 1.75rem;
     color: var(--kcc-ingredient-ink);
     font-size: 1.0625rem;
     line-height: 1.65;
