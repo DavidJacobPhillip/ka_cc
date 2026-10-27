@@ -84,7 +84,22 @@
 {% stylesheet %}
   .why-ka__bg {
     position: relative;
-    overflow: hidden;
+  }
+
+  /* A wave divider is its own section, and the part of it below the curve is
+     flat background - so a field that starts at this section's own top edge
+     leaves a bare strip between the trough of the wave and the first glyph,
+     which reads as a gap rather than as a margin. The field rises by the
+     wave's height and is covered by its solid fill, so it starts at the curve
+     itself. The rise is the wave's own svg height; see snippets/wave-divider. */
+  #MainContent > div.shopify-section:has(.wave-divider) + div.shopify-section .why-ka__bg--pattern {
+    --ka-pattern-rise: 72px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #MainContent > div.shopify-section:has(.wave-divider) + div.shopify-section .why-ka__bg--pattern {
+      --ka-pattern-rise: 124px;
+    }
   }
 
   /* The mask is what makes this a texture rather than a picture: the PNG
@@ -99,6 +114,7 @@
     content: '';
     position: absolute;
     inset: 0;
+    top: calc(-1 * var(--ka-pattern-rise, 0px));
     background-color: var(--color-foreground, currentColor);
     -webkit-mask-image: var(--ka-pattern);
     mask-image: var(--ka-pattern);

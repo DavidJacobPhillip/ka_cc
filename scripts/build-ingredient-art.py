@@ -34,7 +34,7 @@ import xml.etree.ElementTree as ET
 
 SRC = "KCC Website Aromatics.svg"
 NS = "{http://www.w3.org/2000/svg}"
-INK = "#5c2f16"
+INK = "#754B2A"
 # The drawings are ~1700 units wide and show at roughly 600px, so one unit is
 # about a third of a pixel; 1dp is a tenth of that and saves a fifth of the file.
 PREC = 1

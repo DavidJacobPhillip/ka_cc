@@ -64,6 +64,10 @@
 {% stylesheet %}
   .wave-divider {
     position: relative;
+    /* Above the section below it: a backdrop in that section may reach up
+       behind the wave so its texture starts at the curve rather than at the
+       section boundary, and the wave has to stay the thing you see. */
+    z-index: 1;
     line-height: 0;
     margin-block-end: -1px;
   }

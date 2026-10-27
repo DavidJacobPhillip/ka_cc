@@ -188,7 +188,7 @@ for icon in icons:
     groups.append(((x0+x1)/2, (y0+y1)/2, 0.42*math.hypot(x1-x0, y1-y0), ds))
 
 parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440" '
-         'preserveAspectRatio="xMidYMid slice" fill="#5c2f16" '
+         'preserveAspectRatio="xMidYMid slice" fill="#754B2A" '
          'style="fill-rule:evenodd;clip-rule:evenodd">']
 for cx, cy, r, ds in groups:
     parts.append(f'<g class="kcc-scatter__item" data-cx="{cx:.0f}" data-cy="{cy:.0f}" data-r="{r:.0f}">'
