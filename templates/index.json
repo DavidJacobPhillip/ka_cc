@@ -655,7 +655,8 @@
         "padding-block-start": 80,
         "padding-block-end": 80,
         "show_pattern": true,
-        "pattern_opacity": 15
+        "pattern_opacity": 100,
+        "pattern_color": "#f7ebe7"
       }
     }
   },

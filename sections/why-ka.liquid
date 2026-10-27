@@ -28,9 +28,13 @@
   artwork gets its full bleed for free.
 
   It ships as an alpha mask rather than a picture - see
-  scripts/build-ka-pattern.py - so the glyphs are painted with the colour
-  scheme's own foreground rather than a colour baked into a PNG. One file
-  works on the dark band this sits in and on the cream Our Story page.
+  scripts/build-ka-pattern.py - so the glyphs take whatever colour is set
+  under them rather than one baked into a PNG. One file serves a blush field
+  on white here and a cream one on a dark band, with no second asset.
+
+  The colour is its own setting rather than the scheme's foreground: a
+  backdrop is a flat colour of its own, and reaching it by fading the text
+  colour down gives a grey of that hue, never the blush this wants.
 
   The URL has to be handed to the CSS from here: {% stylesheet %} is static
   and never sees Liquid, so asset_url can't be written inside it.
@@ -38,7 +42,7 @@
 <div
   class="section-background color-{{ section.settings.color_scheme }} why-ka__bg{% if section.settings.show_pattern %} why-ka__bg--pattern{% endif %}"
   {%- if section.settings.show_pattern %}
-    style="--ka-pattern: url('{{ 'ka-pattern.png' | asset_url }}'); --ka-pattern-opacity: {{ section.settings.pattern_opacity | divided_by: 100.0 }};"
+    style="--ka-pattern: url('{{ 'ka-pattern.png' | asset_url }}'); --ka-pattern-opacity: {{ section.settings.pattern_opacity | divided_by: 100.0 }};{% if section.settings.pattern_color != blank %} --ka-pattern-ink: {{ section.settings.pattern_color }};{% endif %}"
   {%- endif %}
 ></div>
 <div
@@ -115,7 +119,7 @@
     position: absolute;
     inset: 0;
     top: calc(-1 * var(--ka-pattern-rise, 0px));
-    background-color: var(--color-foreground, currentColor);
+    background-color: var(--ka-pattern-ink, var(--color-foreground, currentColor));
     -webkit-mask-image: var(--ka-pattern);
     mask-image: var(--ka-pattern);
     -webkit-mask-size: cover;
@@ -228,14 +232,21 @@
       "default": false
     },
     {
+      "type": "color",
+      "id": "pattern_color",
+      "label": "Backdrop colour",
+      "info": "The colour the letterforms are drawn in. Left empty, they take the scheme's text colour.",
+      "default": "#f7ebe7"
+    },
+    {
       "type": "range",
       "id": "pattern_opacity",
       "label": "Backdrop strength",
-      "min": 2,
-      "max": 40,
-      "step": 1,
+      "min": 10,
+      "max": 100,
+      "step": 5,
       "unit": "%",
-      "default": 12
+      "default": 100
     },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
     {
