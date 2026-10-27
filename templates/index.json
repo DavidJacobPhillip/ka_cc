@@ -339,7 +339,7 @@
           "type": "custom-liquid",
           "name": "Wave divider",
           "settings": {
-            "custom_liquid": "{% render 'wave-divider', fill: '#2b1608', text: 'Reviews ·', repeat: 16, name: 'reviews' %}{% render 'reviews-block-styles' %}"
+            "custom_liquid": "{% render 'wave-divider', fill: '#754B2A', text: 'Reviews ·', text_color: '#f9ebe6', repeat: 16, name: 'reviews' %}{% render 'reviews-block-styles' %}"
           },
           "blocks": {}
         }
@@ -625,7 +625,7 @@
           "type": "custom-liquid",
           "name": "Wave divider (closing)",
           "settings": {
-            "custom_liquid": "{% render 'wave-divider', fill: '#2b1608', flip: true %}"
+            "custom_liquid": "{% render 'wave-divider', fill: '#754B2A', flip: true %}"
           },
           "blocks": {}
         }
@@ -655,7 +655,7 @@
         "padding-block-start": 80,
         "padding-block-end": 80,
         "show_pattern": true,
-        "pattern_opacity": 12
+        "pattern_opacity": 15
       }
     }
   },
