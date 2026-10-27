@@ -41,8 +41,10 @@
 <div
   id="ingredient-scatter-{{ section.id }}"
   class="section-background color-{{ section.settings.color_scheme }} ingredient-spotlight__bg"
-  style="--kcc-ingredient-scatter: url('{{ 'ingredient-scatter.svg' | asset_url }}');"
-  data-scatter-src="{{ 'ingredient-scatter.svg' | asset_url }}"
+  {%- if section.settings.show_backdrop %}
+    style="--kcc-ingredient-scatter: url('{{ 'ingredient-scatter.svg' | asset_url }}');"
+    data-scatter-src="{{ 'ingredient-scatter.svg' | asset_url }}"
+  {%- endif %}
 ></div>
 <div
   id="ingredient-spotlight-{{ section.id }}"
@@ -376,6 +378,7 @@
   })();
 </script>
 
+{%- if section.settings.show_backdrop -%}
 <script>
   (() => {
     /*
@@ -837,6 +840,7 @@
     });
   })();
 </script>
+{%- endif -%}
 
 {% stylesheet %}
   /* One ink colour for the whole section - the illustrations carry it baked in
@@ -1033,8 +1037,12 @@
     /* Green, as in the artwork - and the same green the selected button ring
        goes, so the name and the tile you pressed read as one thing. */
     color: var(--kcc-ingredient-selected);
-    font-size: clamp(2.25rem, 5.6vw, 3.75rem);
-    line-height: 1.05;
+    /* 4.5rem is the ceiling, not a taste call: "Black pepper", the longest of
+       the nine, measures 500px at a 100px font, and the text block is 23rem.
+       Any larger and two of the nine wrap to a second line while the other
+       seven don't, which moves the name every time you click. */
+    font-size: clamp(2.25rem, 5.6vw, 4.5rem);
+    line-height: 1.02;
   }
 
   /* For the things that aren't benefits - where a leaf was grown, or that the
@@ -1085,12 +1093,25 @@
        the page edge. justify-self shrink-wraps the block and pushes it to the
        end of its column; align-items: flex-start above keeps every line
        sharing one left edge inside it. */
+    /* The drawing more than doubled in height on desktop and the text didn't
+       follow, which is what the empty left column was. A phone stacks them, so
+       it never had the problem and doesn't want 24px benefit lines. */
+    .ingredient-spotlight__benefits {
+      font-size: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .ingredient-spotlight__note {
+      font-size: 1.0625rem;
+    }
+
     .ingredient-spotlight__text {
+      gap: 1rem;
       justify-self: end;
       /* One width for all nine, not shrink-to-fit. Shrink-to-fit put the two
          spices that carry a note - coffee and tea - at a different left edge
          from the seven that don't, and the edge moved as you clicked. */
-      width: min(100%, 19rem);
+      width: min(100%, 23rem);
     }
 
     .ingredient-spotlight__note {
@@ -1359,6 +1380,13 @@
       "id": "disclaimer",
       "label": "Disclaimer",
       "default": "<p>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, cure, treat, or prevent any disease.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_backdrop",
+      "label": "Spice-field backdrop",
+      "info": "The scattered line-art field behind the section, which parts around the cursor. Off by default: it is drawn at the same scale as the illustrations in front of it, so the two compete.",
+      "default": false
     },
     {
       "type": "color_scheme",
