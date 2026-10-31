@@ -99,15 +99,35 @@
           fetchpriority: fetch_priority_poster
       }}
     {%- endif -%}
+    {%- comment -%}
+      The clip is held back until a script decides it is worth fetching.
+
+      As written by video_tag it is an autoplaying source, and a phone
+      downloads the whole 11MB of it before anything else on the page has
+      finished - on this homepage that was 18.9MB on a 390px screen. The
+      poster above is already rendered and already responsive, so a phone
+      gets a still of the same pour and loses nothing but the motion.
+
+      assets/hero-video-load.js promotes data-src to src on a wide screen,
+      when the visitor has not asked for reduced motion or data saving.
+    {%- endcomment -%}
+    {%- capture hero_video_1 -%}
+      {{
+        section.settings.video_1
+        | video_tag:
+          poster: nil,
+          autoplay: true,
+          loop: true,
+          controls: false,
+          muted: true,
+          class: 'hero__video'
+      }}
+    {%- endcapture -%}
     {{
-      section.settings.video_1
-      | video_tag:
-        poster: nil,
-        autoplay: true,
-        loop: true,
-        controls: false,
-        muted: true,
-        class: 'hero__video'
+      hero_video_1
+      | replace: '<source src=', '<source data-kcc-src='
+      | replace: 'autoplay="autoplay"', ''
+      | replace: 'preload="metadata"', 'preload="none" data-kcc-video'
     }}
   {%- endif -%}
 
@@ -142,15 +162,35 @@
           sizes: sizes
       }}
     {%- endif -%}
+    {%- comment -%}
+      The clip is held back until a script decides it is worth fetching.
+
+      As written by video_tag it is an autoplaying source, and a phone
+      downloads the whole 11MB of it before anything else on the page has
+      finished - on this homepage that was 18.9MB on a 390px screen. The
+      poster above is already rendered and already responsive, so a phone
+      gets a still of the same pour and loses nothing but the motion.
+
+      assets/hero-video-load.js promotes data-src to src on a wide screen,
+      when the visitor has not asked for reduced motion or data saving.
+    {%- endcomment -%}
+    {%- capture hero_video_2 -%}
+      {{
+        section.settings.video_2
+        | video_tag:
+          poster: nil,
+          autoplay: true,
+          loop: true,
+          controls: false,
+          muted: true,
+          class: 'hero__video'
+      }}
+    {%- endcapture -%}
     {{
-      section.settings.video_2
-      | video_tag:
-        poster: nil,
-        autoplay: true,
-        loop: true,
-        controls: false,
-        muted: true,
-        class: 'hero__video'
+      hero_video_2
+      | replace: '<source src=', '<source data-kcc-src='
+      | replace: 'autoplay="autoplay"', ''
+      | replace: 'preload="metadata"', 'preload="none" data-kcc-video'
     }}
   {%- endif -%}
 

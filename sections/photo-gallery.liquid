@@ -78,7 +78,7 @@
                           {{ block.settings.image | image_url: width: 1000 }} 1000w,
                           {{ block.settings.image | image_url: width: 1400 }} 1400w
                         "
-                        sizes="(min-width: 750px) 34vw, 70vw"
+                        sizes="(min-width: 750px) 34vw, 52vw"
                         alt="{{ block.settings.image.alt | escape }}"
                         width="{{ block.settings.image.width }}"
                         height="{{ block.settings.image.height }}"
@@ -425,7 +425,10 @@
   .photo-gallery__caption {
     margin-block-start: 0.75rem;
     color: var(--pg-caption-color);
-    font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
+    /* 13px was the floor here and a phone is where these are actually read;
+       the strip's captions are jokes, and a joke you have to squint at is
+       not one. */
+    font-size: clamp(0.9375rem, 1.1vw, 1rem);
     line-height: 1.35;
     text-align: center;
     /* The item has an explicit width, so a caption wider than its photo

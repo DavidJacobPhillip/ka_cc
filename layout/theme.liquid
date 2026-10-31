@@ -5,10 +5,15 @@
 >
   <head>
 
+    {%- comment -%}
+      WOFF2 for the display face: the same file at 136KB instead of 202KB,
+      which on a phone is 66KB off the render-blocking path of every page.
+      The WOFF stays as the fallback for anything that cannot read WOFF2.
+    {%- endcomment -%}
     <link rel="preload"
-      href="{{ 'NotoCondensed.woff' | asset_url }}"
+      href="{{ 'NotoCondensed.woff2' | asset_url }}"
       as="font"
-      type="font/woff"
+      type="font/woff2"
       crossorigin>
 
     {%- render 'stylesheets' -%}
@@ -44,7 +49,9 @@
     <style>
       @font-face {
         font-family: 'Noto Serif Display Extra Condensed';
-        src: url('{{ 'NotoCondensed.woff' | asset_url }}') format('woff');
+        src:
+          url('{{ 'NotoCondensed.woff2' | asset_url }}') format('woff2'),
+          url('{{ 'NotoCondensed.woff' | asset_url }}') format('woff');
         font-weight: 400;
         font-style: normal;
         font-display: swap;
@@ -86,6 +93,64 @@
       --kcc-body: clamp(1.0625rem, 1.35vw, 1.1875rem);
       --kcc-small: 0.9375rem;
     }
+
+    /* On a phone the small step comes up to 16px. 15px is a comfortable
+       secondary size on a desktop at arm's length and a squint on a phone,
+       and captions, hints and contact details are real reading matter. */
+    @media screen and (max-width: 749px) {
+      :root {
+        --kcc-small: 1rem;
+      }
+    }
+
+    /* Touch targets. Apple asks for 44px, Android for 48dp; the theme's
+       navigation drawer items were 38px and its header icons 28px, which is
+       a thumb missing a link and hitting the one under it.
+
+       The icons keep their drawn size - only the area that answers a tap
+       grows - so nothing in the header looks different. */
+    @media (pointer: coarse), (max-width: 749px) {
+      .menu-drawer__menu-item {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+      }
+
+      /* The drawer's child links were set in tracked capitals while the same
+         links on the desktop menu are sentence case (main-menu's own labels
+         are lowercase). One site, one voice: the phone gets the labels as
+         they are written. */
+      .menu-drawer__menu-item--child,
+      .menu-drawer__menu-item--child .menu-drawer__menu-item-text {
+        text-transform: none;
+        letter-spacing: normal;
+      }
+
+      .header-actions__action,
+      .header-actions__action.button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .contact-details__link,
+      .market-schedule__link,
+      .footer-utilities__text a,
+      a.footer-utilities__text,
+      .social-icons__icon-wrapper a,
+      .email-signup__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+      }
+
+      .social-icons__icon-wrapper a {
+        min-width: 44px;
+      }
+    }
   </style>
   <style>
     @media (prefers-reduced-motion: no-preference) {
@@ -116,6 +181,7 @@
     }
   </style>
   <script defer src="{{ 'kcc-reveal.js' | asset_url }}"></script>
+  <script defer src="{{ 'hero-video-load.js' | asset_url }}"></script>
   {% include 'pagefly-app-header' %}</head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">

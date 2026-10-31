@@ -267,7 +267,9 @@
     /* Keeps the description hugging the photo while the gap it would have
        taken goes under it, above the bar. */
     margin-block-end: auto;
-    font-size: 0.9375rem;
+    /* 15px on a phone is where this description was, and it is the only
+       sentence that says what is in the jar. */
+    font-size: clamp(1rem, 1.2vw, 1.0625rem);
     line-height: 1.6;
     color: var(--pt-ink);
   }
