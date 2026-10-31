@@ -29,9 +29,11 @@
   asset_url cannot be written inside it.
 {%- endcomment -%}
 <div
+  id="product-teaser-bg-{{ section.id }}"
   class="section-background color-{{ section.settings.color_scheme }}{% if section.settings.show_backdrop %} product-teaser__bg{% endif %}"
   {%- if section.settings.show_backdrop %}
     style="--pt-scatter: url('{{ 'ingredient-scatter.svg' | asset_url }}'); --pt-scatter-opacity: {{ section.settings.backdrop_opacity | divided_by: 100.0 }};"
+    data-scatter-src="{{ 'ingredient-scatter.svg' | asset_url }}"
   {%- endif %}
 ></div>
 <div
@@ -142,6 +144,174 @@
   </ul>
 </div>
 
+{%- if section.settings.show_backdrop and section.settings.backdrop_motion -%}
+<script>
+  (() => {
+    /*
+      The spice field never sits quite still.
+
+      Every icon in the backdrop art is its own <g class="kcc-scatter__item">,
+      tagged by the build with the centre and radius of its own ink, so the
+      field can be taken apart and each piece given its own slow wander. The
+      section below this one drives the same artwork from the pointer; this
+      one is on its own clock, so it moves whether or not anybody is pointing
+      at it, which is the point - it is the ground, not a control.
+
+      It is not a simulation. Each item gets one CSS animation with its own
+      amplitude, period and phase written in as custom properties, and the
+      compositor runs the rest. Nothing is recalculated per frame and there is
+      no requestAnimationFrame loop at all.
+
+      Three things keep it from reading as a wobble:
+        - amplitude is scaled to each icon's own ink, so a carom seed travels
+          a seed's worth and a cinnamon stick a stick's worth, in the
+          artwork's units rather than the screen's;
+        - every period and phase is different, so the field never pulses
+          together - the giveaway that something is animated rather than
+          alive;
+        - it is slow enough (7-15s a cycle) to be caught out of the corner of
+          the eye rather than watched.
+
+      Progressive enhancement: the CSS background-image is what renders on
+      load and is what stays if the fetch fails, if there is no JS, or if the
+      visitor asks for reduced motion. The inlined SVG carries the same
+      viewBox and preserveAspectRatio="xMidYMid slice" as the CSS cover
+      sizing, so it lands on the identical crop and the swap cannot be seen.
+
+      Desktop only, deliberately. On a phone the field is tiled rather than
+      covered (an inlined SVG cannot tile), the stacked cards leave almost
+      none of it showing, and a 566KB fetch is not worth that sliver.
+    */
+    const bg = document.getElementById('product-teaser-bg-{{ section.id }}');
+    if (!bg || bg.dataset.kccReady) return;
+
+    const src = bg.getAttribute('data-scatter-src');
+    if (!src) return;
+
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const wide = window.matchMedia('(min-width: 750px)');
+    const net = navigator.connection;
+    if (net && (net.saveData || /(^|-)2g$/.test(net.effectiveType || ''))) return;
+
+    /*
+      Two motions at once, on two clocks: a long wander that carries an icon
+      somewhere and back, and a short shiver on top of it. One alone is not
+      enough - the wander by itself is too slow to read as movement at this
+      strength, and the shiver by itself is a twitch in place.
+
+      Each icon therefore gets a second <g> slipped inside it, so the two can
+      animate the `transform` shorthand on two separate elements. The obvious
+      alternative is one element with two animations on the newer `translate`
+      and `rotate` properties, which compose without any extra DOM - and it
+      works, and it is four times slower. Measured on this page, 135 icons at
+      1440px wide: `transform` holds a 16.7ms median frame, the separate
+      properties give 80ms. Chrome accelerates transform on an SVG group and
+      does not accelerate those. Don't "simplify" this back.
+
+      Distances are in the artwork's own user units - the viewBox is 2560x1440
+      - so an icon travels the same distance relative to its neighbours at
+      every width.
+    */
+    const AMP_MIN = 6;         // units
+    const AMP_MAX = 17;
+    const AMP_OF_INK = 0.075;  // share of an icon's own radius
+    const WANDER_MIN = 7;      // seconds
+    const WANDER_MAX = 15;
+    const SPIN_MIN = 0.55;     // degrees, either way of rest
+    const SPIN_MAX = 1.7;
+    const SHIVER_MIN = 2.4;    // seconds
+    const SHIVER_MAX = 5;
+
+    const between = (a, b) => a + Math.random() * (b - a);
+
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    const dress = (svg) => {
+      const items = svg.querySelectorAll('.kcc-scatter__item');
+      if (!items.length) return false;
+      items.forEach((el) => {
+        const r = parseFloat(el.dataset.r);
+        // Scaled to the icon's own ink: a carom seed travels a seed's worth
+        // and a cinnamon stick a stick's worth. A flat amplitude makes the
+        // small ink look like it is flying and the big ink look stuck.
+        const amp = Math.min(AMP_MAX, Math.max(AMP_MIN, (r || 80) * AMP_OF_INK));
+        const angle = Math.random() * Math.PI * 2;
+        const wander = between(WANDER_MIN, WANDER_MAX);
+        const shiver = between(SHIVER_MIN, SHIVER_MAX);
+        const spin = between(SPIN_MIN, SPIN_MAX) * (Math.random() < 0.5 ? -1 : 1);
+
+        const inner = document.createElementNS(SVG_NS, 'g');
+        inner.setAttribute('class', 'kcc-scatter__shiver');
+        while (el.firstChild) inner.appendChild(el.firstChild);
+        el.appendChild(inner);
+
+        el.style.setProperty('--jx', (Math.cos(angle) * amp).toFixed(2) + 'px');
+        el.style.setProperty('--jy', (Math.sin(angle) * amp).toFixed(2) + 'px');
+        el.style.animationDuration = wander.toFixed(2) + 's';
+        // Negative, so every icon starts mid-cycle. Without it the whole
+        // field sets off from rest together on the first frame.
+        el.style.animationDelay = (-Math.random() * wander).toFixed(2) + 's';
+
+        inner.style.setProperty('--jr', spin.toFixed(2) + 'deg');
+        inner.style.animationDuration = shiver.toFixed(2) + 's';
+        inner.style.animationDelay = (-Math.random() * shiver).toFixed(2) + 's';
+      });
+      return true;
+    };
+
+    let loaded = false;
+    const load = async () => {
+      if (loaded) return;
+      loaded = true;
+      let markup;
+      try {
+        const res = await fetch(src);
+        if (!res.ok) return;
+        markup = await res.text();
+      } catch {
+        return;
+      }
+      const holder = document.createElement('div');
+      holder.innerHTML = markup;
+      const svg = holder.querySelector('svg');
+      if (!svg || !dress(svg)) return;
+      svg.setAttribute('class', 'product-teaser__scatter');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      bg.appendChild(svg);
+      bg.classList.add('is-scattered');
+    };
+
+    // Nothing is fetched until the band is near the viewport, and the
+    // animations are parked (animation-play-state) the moment it leaves, so a
+    // visitor three sections further down is not paying for this.
+    const io = new IntersectionObserver(
+      (entries) => {
+        const onScreen = entries.some((e) => e.isIntersecting);
+        if (onScreen && motion.matches && wide.matches) {
+          load().then(() => bg.classList.add('is-live'));
+        } else {
+          bg.classList.remove('is-live');
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    io.observe(bg);
+
+    // A window dragged wider, or a visitor who turns motion off mid-visit, is
+    // a new answer to the same question.
+    const recheck = () => {
+      if (motion.matches && wide.matches) return;
+      bg.classList.remove('is-live');
+    };
+    motion.addEventListener?.('change', recheck);
+    wide.addEventListener?.('change', recheck);
+
+    bg.dataset.kccReady = 'true';
+  })();
+</script>
+{%- endif -%}
+
 {% stylesheet %}
   .product-teaser {
     /* The card frame, the title and the bar are all one terracotta. Pulled
@@ -177,6 +347,89 @@
     background-size: cover;
     opacity: var(--pt-scatter-opacity, 0.1);
     pointer-events: none;
+  }
+
+  /* The inlined copy, once the script has it. Same viewBox and the same
+     xMidYMid slice as the CSS `cover` above, so it lands on the identical
+     crop and the swap is invisible. */
+  .product-teaser__scatter {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: var(--pt-scatter-opacity, 0.1);
+    pointer-events: none;
+  }
+
+  /* Two layers of the same ink at 13% would read as 24%. */
+  .product-teaser__bg.is-scattered::after {
+    display: none;
+  }
+
+  /* fill-box so each icon turns about its own centre rather than about the
+     corner of a 2560x1440 viewBox, which would swing it across the band. */
+  .product-teaser__scatter .kcc-scatter__item,
+  .product-teaser__scatter .kcc-scatter__shiver {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-play-state: paused;
+  }
+
+  .product-teaser__scatter .kcc-scatter__item {
+    animation-name: kcc-pt-wander;
+  }
+
+  .product-teaser__scatter .kcc-scatter__shiver {
+    animation-name: kcc-pt-shiver;
+  }
+
+  .product-teaser__bg.is-live .kcc-scatter__item,
+  .product-teaser__bg.is-live .kcc-scatter__shiver {
+    animation-play-state: running;
+  }
+
+  /* Four stops rather than two: a there-and-back is a pendulum, and a field
+     of pendulums reads as a mechanism. The uneven offsets and the asymmetric
+     scalings give each icon a path that doesn't retrace itself. */
+  @keyframes kcc-pt-wander {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+
+    22% {
+      transform: translate(var(--jx, 0px), var(--jy, 0px));
+    }
+
+    48% {
+      transform: translate(calc(var(--jx, 0px) * -0.72), calc(var(--jy, 0px) * 0.48));
+    }
+
+    73% {
+      transform: translate(calc(var(--jx, 0px) * 0.42), calc(var(--jy, 0px) * -0.8));
+    }
+  }
+
+  /* The fast one is allowed to be a pendulum: a shiver is oscillation, and
+     with 135 different periods and phases over it nothing reads as in step. */
+  @keyframes kcc-pt-shiver {
+    0%,
+    100% {
+      transform: rotate(calc(var(--jr, 0deg) * -1));
+    }
+
+    50% {
+      transform: rotate(var(--jr, 0deg));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-teaser__scatter .kcc-scatter__item,
+    .product-teaser__scatter .kcc-scatter__shiver {
+      animation: none;
+    }
   }
 
   /* On a phone the cards stack, so the band is tall and narrow and `cover`
@@ -428,6 +681,13 @@
       "default": true
     },
     { "type": "range", "id": "backdrop_opacity", "label": "Backdrop strength", "min": 4, "max": 30, "step": 1, "unit": "%", "default": 13 },
+    {
+      "type": "checkbox",
+      "id": "backdrop_motion",
+      "label": "Let the field drift",
+      "info": "Each spice wanders slowly on its own clock. Desktop only, and off for anyone who asks for reduced motion.",
+      "default": true
+    },
     {
       "type": "select",
       "id": "section_width",

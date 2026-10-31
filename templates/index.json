@@ -205,7 +205,8 @@
         "padding-block-start": 72,
         "padding-block-end": 88,
         "show_backdrop": true,
-        "backdrop_opacity": 13
+        "backdrop_opacity": 13,
+        "backdrop_motion": true
       }
     },
     "ingredients": {
