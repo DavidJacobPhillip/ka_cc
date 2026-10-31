@@ -8,139 +8,89 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "header": {
-      "type": "page-header",
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "eyebrow": "Cafe",
         "heading": "A cafe is coming",
-        "body": "<p>Not yet — but it's the plan. [Draft — confirm timing, neighbourhood, or whether to say anything specific at all.]</p><p>Until then the kettle is at the farmers market every Saturday, which is the best place to find us.</p>",
+        "lede": "<p>Not yet — but it is the plan, and it is the reason the stall exists. A room where the pot is always on and you are not expected to leave with it.</p>",
+        "image": "shopify://shop_images/DSC03548.jpg",
+        "image_alt": "A regular customer holding a cup of chai at the market",
+        "caption": "The regulars came first. The room comes after.",
         "link_label": "Where to find us now",
-        "link_url": "/pages/visit-us",
-        "alignment": "center",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 104,
-        "padding-block-end": 72
-      }
-    },
-    "markets": {
-      "type": "find-us",
-      "blocks": {
-        "m1": {
-          "type": "market",
-          "settings": {
-            "name": "Cedar Mills Farmers Market",
-            "when": "Saturdays, 9 AM – 2 PM",
-            "detail": "Brewed and served fresh every Saturday.",
-            "link_label": "Directions",
-            "link_url": ""
-          }
-        },
-        "m2": {
-          "type": "market",
-          "settings": {
-            "name": "PSU Farmers Market",
-            "when": "[Draft: confirm day & time]",
-            "detail": "Portland State University, downtown.",
-            "link_label": "Directions",
-            "link_url": ""
-          }
-        }
-      },
-      "block_order": [
-        "m1",
-        "m2"
-      ],
-      "settings": {
-        "eyebrow": "In the meantime",
-        "heading": "Find the kettle",
-        "body": "",
-        "link_label": "All the places you can find us",
-        "link_url": "/pages/visit-us",
-        "color_scheme": "scheme-1",
-        "section_width": "page-width",
-        "padding-block-start": 64,
+        "link": "/pages/visit-us",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
         "padding-block-end": 88
       }
     },
+    "why": {
+      "type": "story-chapter",
+      "settings": {
+        "heading": "What the room is for",
+        "body": "<p>Roadside chai stalls in India are not cafes. Nobody sits for an hour with a laptop. People stand, drink a small glass, say something to the person next to them, and go.</p><p>That is the thing worth building here: somewhere the transaction is the smallest part of the visit. The chai is the reason to stand still for a minute.</p>",
+        "image": "shopify://shop_images/DSC03276.jpg",
+        "image_alt": "Chai poured into a row of cups lined up on the counter",
+        "caption": "A row of cups, poured in one pass.",
+        "media_side": "end",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 96,
+        "padding-block-end": 96
+      }
+    },
     "meanwhile": {
-      "type": "media-with-content",
+      "type": "pair-notes",
       "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
+        "now": {
+          "type": "note",
           "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/IMG_4910.heic"
-          },
-          "blocks": {}
+            "name": "Until then",
+            "text": "<p>The canopy at the farmers market is the room. Saturdays at Cedar Mills, nine in the morning, rain included.</p>"
+          }
         },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+        "home": {
+          "type": "note",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>In the meantime</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>Find us under the canopy</h2>",
-                "type_preset": "h2"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>The cafe is still coming. Until it opens, the stall is where we are every Saturday - same chai, same people, just with more weather involved.</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body"
-          ]
+            "name": "Or at home",
+            "text": "<p>The same blend we pour at the stall goes out by post. The brew guide has the method we use, scaled to your pot.</p>"
+          }
         }
       },
       "block_order": [
-        "media",
-        "content"
+        "now",
+        "home"
       ],
-      "name": "Photo",
       "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "60svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "heading": "In the meantime",
+        "lede": "<p>Two ways to get a cup while the room is still an idea.</p>",
+        "image": "shopify://shop_images/DSC03170.jpg",
+        "image_alt": "Chai poured from a steel pot into a waiting cup",
+        "caption": "However it reaches you, this is the last step.",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 96,
+        "padding-block-end": 96
+      }
+    },
+    "close": {
+      "type": "closing-note",
+      "settings": {
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "Come find the canopy",
+        "body": "<p>The markets are where everything gets decided — what we blend next, what the room should feel like. Come tell us what it is missing.</p>",
+        "link_label": "Where to find us",
+        "link": "/pages/visit-us",
+        "image": "shopify://shop_images/DSC03494.jpg",
+        "image_alt": "Three friends with cups of chai walking through the market",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "header",
+    "hero",
+    "why",
     "meanwhile",
-    "markets"
+    "close"
   ]
 }

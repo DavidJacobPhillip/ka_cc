@@ -8,176 +8,116 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "location": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/IMG_4983.heic"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Visit</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h1>Come say hi</h1>",
-                "type_preset": "h2"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>We don't have a storefront (yet) — find us in person at the farmers markets below. [Draft — confirm whether a fixed pickup point/address should also be listed here.]</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body"
-          ]
-        }
-      },
-      "block_order": [
-        "media",
-        "content"
-      ],
-      "name": "Location",
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "60svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "heading": "A kettle and a canopy",
+        "lede": "<p>No storefront yet. We pour at the farmers markets around Portland, made on the spot in a pot — which is why there is steam in every photograph on this site.</p>",
+        "image": "shopify://shop_images/DSC03110.jpg",
+        "image_alt": "Customers gathered at the Ka Chai stall under its canopy",
+        "caption": "Saturday morning, under the canopy at Cedar Mills.",
+        "link_label": "Shop the chai",
+        "link": "/collections/all",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
+        "padding-block-end": 88
       }
     },
     "markets": {
-      "type": "section",
+      "type": "market-schedule",
       "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Heading",
+        "cedar": {
+          "type": "market",
           "settings": {
-            "text": "<h3>Farmers market schedule</h3>",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "h4",
-            "padding-block-end": 8
-          },
-          "blocks": {}
+            "name": "Cedar Mills Farmers Market",
+            "when": "Saturdays, 9 AM – 2 PM",
+            "weekday": "6",
+            "open_hour": "9",
+            "close_hour": "14",
+            "detail": "Brewed and served fresh, every Saturday of the season.",
+            "link_label": "Directions",
+            "link_url": "https://www.google.com/maps/search/Cedar+Mills+Farmers+Market+Portland+Oregon"
+          }
         },
-        "accordion": {
-          "type": "accordion",
-          "name": "Markets",
+        "psu": {
+          "type": "market",
           "settings": {
-            "icon": "caret",
-            "dividers": true,
-            "type_preset": "h5",
-            "inherit_color_scheme": true,
-            "color_scheme": ""
-          },
-          "blocks": {
-            "market_1": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "Cedar Mills Farmers Market — Saturdays, 9 AM to 2 PM",
-                "icon": "map_pin",
-                "open_by_default": true
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>Brewed & served fresh every Saturday. [Draft — confirm exact address for the map/directions link.]</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "text"
-              ]
-            },
-            "market_2": {
-              "type": "_accordion-row",
-              "settings": {
-                "heading": "PSU Farmers Market — [Draft: confirm day/time]",
-                "icon": "map_pin"
-              },
-              "blocks": {
-                "text": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>[Draft — confirm this is a regular vendor spot, not a one-off] Portland State University farmers market.</p>",
-                    "type_preset": "rte",
-                    "width": "100%"
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "text"
-              ]
-            }
-          },
-          "block_order": [
-            "market_1",
-            "market_2"
-          ]
+            "name": "PSU Farmers Market",
+            "when": "Some weekends — check before you come",
+            "weekday": "",
+            "open_hour": "",
+            "close_hour": "",
+            "detail": "Portland State University, downtown. We are there on and off through the season rather than every week.",
+            "link_label": "Directions",
+            "link_url": "https://www.google.com/maps/search/Portland+Farmers+Market+PSU"
+          }
         }
       },
       "block_order": [
-        "heading",
-        "accordion"
+        "cedar",
+        "psu"
       ],
-      "name": "Markets",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "gap": 16,
-        "section_width": "page-width",
+        "fallback_answer": "Saturday mornings, from 9.",
+        "lede": "<p>Cedar Mills is the one to plan around: we are there every Saturday the market runs.</p>",
+        "note": "<p>Markets move with the season and the weather. If you are making a trip of it, we post any change the night before.</p>",
         "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 64
+        "padding-block-start": 96,
+        "padding-block-end": 96,
+        "fallback_where": "Cedar Mills Farmers Market",
+        "image": "shopify://shop_images/DSC03615.jpg",
+        "image_alt": "Chai poured from a jug into a steel urn at the stall",
+        "caption": "Filling the urn before the first customers arrive."
+      }
+    },
+    "cafe_note": {
+      "type": "field-statement",
+      "settings": {
+        "heading": "And one day, a room",
+        "statement": "<p>A cafe is the plan. Until there is one, the canopy is the room — same chai, same people, more weather.</p>",
+        "attribution": "",
+        "band_color": "#2e6417",
+        "color_scheme": "scheme-4",
+        "padding-block-start": 112,
+        "padding-block-end": 112
+      }
+    },
+    "close": {
+      "type": "closing-note",
+      "settings": {
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "Can't make Saturday?",
+        "body": "<p>The spice blend and the tea go out by post, ground the same week they are mixed. Brew it at home and you are most of the way there.</p>",
+        "link_label": "Shop the chai",
+        "link": "/collections/all",
+        "image": "shopify://shop_images/DSC03486.jpg",
+        "image_alt": "A customer holding a cup of chai in both hands",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 96
+      }
+    },
+    "morning": {
+      "type": "story-chapter",
+      "settings": {
+        "heading": "What a Saturday looks like",
+        "body": "<p>The pot goes on before the stalls open. By nine there is a queue, and by noon the whole thing smells of cardamom from three tables away.</p><p>If you have never had chai made like this — boiled with the milk rather than poured over it — ask for a small one and drink it standing up. That is the way it is meant to arrive.</p>",
+        "image": "shopify://shop_images/DSC03066.jpg",
+        "image_alt": "A spoon held over a row of small sample cups",
+        "caption": "Samples first. Nobody buys a cup of something they have never tasted.",
+        "media_side": "start",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "location",
-    "markets"
+    "hero",
+    "markets",
+    "morning",
+    "cafe_note",
+    "close"
   ]
 }

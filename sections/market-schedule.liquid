@@ -1,0 +1,312 @@
+{% comment %}
+  Where the kettle is, answered before anything else on the page.
+
+  The page's job is one fact - can I get a cup, and when - so the page says it
+  in the largest type on the screen and works it out for the day you are
+  reading it on: today, tomorrow, or the number of days until the next market.
+
+  The markup ships with the plain answer written out ("Saturday mornings, from
+  9"), so the page is correct with no script at all; the script only replaces
+  that line with the sharper version. Each market carries its own day and
+  hours as data, so there is no second copy of the schedule to drift.
+
+  Times are Portland's. A visitor reading this in another timezone is being
+  told when the stall is open, not what their own clock says, which is why the
+  comparison is made in local calendar days rather than in UTC.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} market-schedule spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+  id="markets-{{ section.id }}"
+>
+  <div class="market-schedule__lead">
+    <h2 class="market-schedule__answer" data-kcc-answer data-kcc-rise>
+      {{- section.settings.fallback_answer -}}
+    </h2>
+
+    <p class="market-schedule__where" data-kcc-where data-kcc-rise>{{ section.settings.fallback_where }}</p>
+
+    {%- if section.settings.lede != blank -%}
+      <div class="market-schedule__lede rte" data-kcc-rise>{{ section.settings.lede }}</div>
+    {%- endif -%}
+  </div>
+
+  <ul class="market-schedule__list">
+    {%- for block in section.blocks -%}
+      <li class="market-schedule__market" data-kcc-rise {{ block.shopify_attributes }}>
+        <h3 class="market-schedule__name">{{ block.settings.name }}</h3>
+        <p
+          class="market-schedule__when"
+          data-kcc-market
+          data-kcc-weekday="{{ block.settings.weekday }}"
+          data-kcc-open="{{ block.settings.open_hour }}"
+          data-kcc-close="{{ block.settings.close_hour }}"
+          data-kcc-when="{{ block.settings.when | escape }}"
+        >
+          {{- block.settings.when -}}
+        </p>
+        {%- if block.settings.detail != blank -%}
+          <p class="market-schedule__detail">{{ block.settings.detail }}</p>
+        {%- endif -%}
+        {%- if block.settings.link_url != blank -%}
+          <a class="market-schedule__link" href="{{ block.settings.link_url }}">
+            {{ block.settings.link_label | default: 'Directions' }}
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  {%- if section.settings.image != blank -%}
+    <figure class="market-schedule__figure force-full-width" data-kcc-rise>
+      {{
+        section.settings.image
+        | image_url: width: 2200
+        | image_tag:
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2200',
+          alt: section.settings.image_alt,
+          class: 'market-schedule__image'
+      }}
+      {%- if section.settings.caption != blank -%}
+        <figcaption class="market-schedule__caption">{{ section.settings.caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- endif -%}
+
+  {%- if section.settings.note != blank -%}
+    <div class="market-schedule__note rte" data-kcc-rise>{{ section.settings.note }}</div>
+  {%- endif -%}
+</div>
+
+<script>
+  (() => {
+    const root = document.getElementById('markets-{{ section.id }}');
+    if (!root || root.dataset.kccReady) return;
+    root.dataset.kccReady = 'true';
+
+    const answer = root.querySelector('[data-kcc-answer]');
+    const markets = Array.from(root.querySelectorAll('[data-kcc-market]'));
+    if (!answer || !markets.length) return;
+
+    const now = new Date();
+    const today = now.getDay();
+    const hour = now.getHours() + now.getMinutes() / 60;
+
+    const soonest = markets
+      .map((el) => {
+        const weekday = parseInt(el.dataset.kccWeekday, 10);
+        const open = parseFloat(el.dataset.kccOpen);
+        const close = parseFloat(el.dataset.kccClose);
+        if (Number.isNaN(weekday) || Number.isNaN(open) || Number.isNaN(close)) return null;
+        let days = (weekday - today + 7) % 7;
+        // Today, but the stall has already packed up: that is next week's one.
+        if (days === 0 && hour >= close) days = 7;
+        return { el, days, open, close, openNow: days === 0 && hour >= open && hour < close };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.days - b.days)[0];
+
+    if (!soonest) return;
+
+    const clock = (value) => {
+      const whole = Math.floor(value);
+      const minutes = Math.round((value - whole) * 60);
+      const suffix = whole >= 12 ? 'PM' : 'AM';
+      const twelve = whole % 12 === 0 ? 12 : whole % 12;
+      return twelve + (minutes ? ':' + String(minutes).padStart(2, '0') : '') + ' ' + suffix;
+    };
+
+    const name = soonest.el.parentElement.querySelector('.market-schedule__name');
+    const where = name ? name.textContent.trim() : '';
+
+    let line;
+    let distance = '';
+    if (soonest.openNow) {
+      line = 'On right now.';
+      distance = 'Until ' + clock(soonest.close) + ' today';
+    } else if (soonest.days === 0) {
+      line = 'Today, from ' + clock(soonest.open) + '.';
+    } else if (soonest.days === 1) {
+      line = 'Tomorrow, from ' + clock(soonest.open) + '.';
+    } else {
+      const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][
+        parseInt(soonest.el.dataset.kccWeekday, 10)
+      ];
+      line = weekday + ', from ' + clock(soonest.open) + '.';
+      distance = soonest.days + ' days away';
+    }
+
+    answer.textContent = line;
+
+    const whereLine = root.querySelector('[data-kcc-where]');
+    if (whereLine && where) {
+      whereLine.textContent = distance ? where + ' — ' + distance.toLowerCase() : where;
+    }
+  })();
+</script>
+
+{% stylesheet %}
+  .market-schedule__lead {
+    max-width: 46rem;
+  }
+
+  /* The one fact the page exists to deliver, at the size of a headline because
+     that is what it is. */
+  .market-schedule__answer {
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-display);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .market-schedule__where {
+    margin: 1rem 0 0;
+    font-size: var(--kcc-h3);
+    font-family: var(--font-heading--family);
+    line-height: 1.2;
+    color: var(--color-primary-hover, #a45032);
+  }
+
+  .market-schedule__lede p {
+    margin: 1.5rem 0 0;
+    font-size: var(--kcc-body);
+    line-height: 1.6;
+    max-width: 34rem;
+  }
+
+  .market-schedule__list {
+    list-style: none;
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+
+  .market-schedule__name {
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-h3);
+    line-height: 1.05;
+    margin: 0 0 0.5rem;
+  }
+
+  .market-schedule__when {
+    margin: 0;
+    font-size: var(--kcc-body);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .market-schedule__detail {
+    margin: 0.375rem 0 0;
+    font-size: var(--kcc-body);
+    line-height: 1.55;
+    opacity: 0.85;
+    max-width: 28rem;
+  }
+
+  .market-schedule__link {
+    display: inline-block;
+    margin-block-start: 0.625rem;
+    color: var(--color-primary-hover, #a45032);
+    font-size: var(--kcc-body);
+    font-weight: 700;
+  }
+
+  .market-schedule__figure {
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  }
+
+  .market-schedule__image {
+    width: 100%;
+    height: clamp(13rem, 30vw, 24rem);
+    object-fit: cover;
+    display: block;
+  }
+
+  .market-schedule__caption {
+    margin: 0.875rem 0 0;
+    padding-inline: var(--page-margin, 1.25rem);
+    font-size: var(--kcc-small);
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  .market-schedule__note {
+    margin-block-start: clamp(2rem, 4vw, 3rem);
+    max-width: 34rem;
+  }
+
+  .market-schedule__note p {
+    margin: 0 0 0.75rem;
+    font-size: var(--kcc-small);
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+
+  @media screen and (min-width: 750px) {
+    .market-schedule__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Market schedule",
+  "settings": [
+    { "type": "text", "id": "fallback_answer", "label": "Answer shown without JavaScript", "default": "Saturday mornings, from 9." },
+    { "type": "text", "id": "fallback_where", "label": "Market line shown without JavaScript", "default": "Cedar Mills Farmers Market" },
+    { "type": "image_picker", "id": "image", "label": "Photograph under the list" },
+    { "type": "text", "id": "image_alt", "label": "Photograph description" },
+    { "type": "text", "id": "caption", "label": "Caption" },
+    { "type": "richtext", "id": "lede", "label": "Opening sentence" },
+    { "type": "richtext", "id": "note", "label": "Note under the list" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    {
+      "type": "market",
+      "name": "Market",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Market" },
+        { "type": "text", "id": "when", "label": "When (written out)" },
+        {
+          "type": "select",
+          "id": "weekday",
+          "label": "Day",
+          "info": "Used to work out the next one. Leave as none if the day isn't settled.",
+          "options": [
+            { "value": "", "label": "None" },
+            { "value": "0", "label": "Sunday" },
+            { "value": "1", "label": "Monday" },
+            { "value": "2", "label": "Tuesday" },
+            { "value": "3", "label": "Wednesday" },
+            { "value": "4", "label": "Thursday" },
+            { "value": "5", "label": "Friday" },
+            { "value": "6", "label": "Saturday" }
+          ],
+          "default": "6"
+        },
+        { "type": "text", "id": "open_hour", "label": "Opens (24h, e.g. 9)", "default": "9" },
+        { "type": "text", "id": "close_hour", "label": "Closes (24h, e.g. 14)", "default": "14" },
+        { "type": "text", "id": "detail", "label": "Detail" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Directions" },
+        { "type": "url", "id": "link_url", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Market schedule" }]
+}
+{% endschema %}
+
