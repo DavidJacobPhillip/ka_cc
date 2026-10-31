@@ -67,6 +67,42 @@
         font-family: 'Noto Serif Display Extra Condensed', serif;
       }
     </style>
+  {%- comment -%}
+    Section entrances (assets/kcc-reveal.js). The class is set here, inline and
+    before first paint, so the hidden starting state below only ever applies on
+    a page whose scripts are running - without it, a failed script would leave
+    the content invisible instead of merely still.
+  {%- endcomment -%}
+  <script>document.documentElement.classList.add('kcc-reveal');</script>
+  <style>
+    @media (prefers-reduced-motion: no-preference) {
+      .kcc-reveal [data-kcc-rise] {
+        opacity: 0;
+        transform: translateY(1.25rem);
+        transition:
+          opacity 0.55s ease,
+          transform 0.65s cubic-bezier(0.2, 0.7, 0.3, 1);
+        transition-delay: var(--kcc-rise-delay, 0ms);
+        will-change: opacity, transform;
+      }
+
+      .kcc-reveal [data-kcc-rise].is-in {
+        opacity: 1;
+        transform: none;
+        will-change: auto;
+      }
+    }
+  </style>
+  <style>
+    /* The footer's newsletter field drew its underline with a box-shadow.
+       Same line, drawn as a border, so nothing at rest carries a shadow. */
+    .email-signup__input,
+    input[id^='EmailInput-'] {
+      box-shadow: none !important;
+      border-block-end: 1px solid rgb(232 222 213);
+    }
+  </style>
+  <script defer src="{{ 'kcc-reveal.js' | asset_url }}"></script>
   {% include 'pagefly-app-header' %}</head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
@@ -169,9 +205,11 @@
 
       /* Announcement bar: white background (scheme-1) with brown text.
          scheme-1's default foreground is near-black, so the text color
-         needs a direct override to the brand terracotta. */
+         needs a direct override to the brand terracotta - the deeper one,
+         since the flat #cd643f measures 3.8:1 against white and this is
+         running text at 13px. #a45032 measures 5.2:1. */
       .announcement-bar {
-        color: #cd643f;
+        color: #a45032;
       }
 
       /* background-color is no longer transitioned by CSS - it's set as
@@ -420,7 +458,7 @@
                "farmers markets"); the theme's submenu settings force
                uppercase over the top of them. */
             text-transform: none;
-            color: rgb(43 22 8);
+            color: rgb(117 75 42);
             transition: color 0.15s var(--animation-easing, ease);
           }
 

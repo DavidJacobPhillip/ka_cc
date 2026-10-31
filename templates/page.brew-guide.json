@@ -6,92 +6,60 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
-    "intro": {
-      "type": "section",
-      "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "Heading",
-          "settings": {
-            "text": "<h1>How To Brew Chai Without Setting Off The Smoke Alarm</h1>",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "h1"
-          },
-          "blocks": {}
-        },
-        "subhead": {
-          "type": "text",
-          "name": "Subhead",
-          "settings": {
-            "text": "<p>Seven steps, two ways. No special equipment. Mostly just don't walk away from the stove.</p>",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "left",
-            "type_preset": "paragraph",
-            "padding-block-start": 8
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "heading",
-        "subhead"
-      ],
-      "name": "Intro",
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "gap": 8,
-        "section_width": "page-width",
-        "color_scheme": "scheme-1",
-        "padding-block-start": 64,
-        "padding-block-end": 24
+        "heading": "Chai without the smoke alarm",
+        "lede": "<p>Seven steps and one pot of attention. No special equipment — the only real rule is that you don't walk away from the stove.</p>",
+        "image": "shopify://shop_images/DSC03080.jpg",
+        "image_alt": "Chai being poured from a steel jug into a paper cup",
+        "caption": "The last two inches of the pour, at the Cedar Mills market.",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
+        "padding-block-end": 88,
+        "link_label": "Shop the chai masala",
+        "link": "/collections/all"
       }
     },
-    "steps": {
-      "type": "chai-recipe",
-      "blocks": {
-        "dairy": {
-          "type": "method",
-          "settings": {
-            "label": "With dairy",
-            "note": "Makes one cup.",
-            "steps": "<ol><li>Get two pots and a measuring cup. In one pot pour 2 ounces of water, and in the other pour 6 ounces of milk.</li><li>Mash up 2.5 grams of fresh ginger (optional) with a mortar and pestle if you have one — a blender works too — and add it to the water.</li><li>Put the water and ginger on the stove over a simmer. Wait for it to start bubbling, then add ½ tsp of the chai powder and stir regularly.</li><li>Let the chai spices boil for a few minutes, then add 1 teaspoon of black tea powder. Keep stirring on simmer-medium heat until the tea-water thickens significantly — the longer you brew, the stronger the flavor.</li><li>On the side, heat the pot of milk, stirring frequently, until it boils up — turn off the heat before it boils over.</li><li>Dump the chai water into the milk, and let the final mixture boil up one more time over medium heat.</li><li>Strain, and ready to serve!</li></ol>"
-          }
-        },
-        "vegan": {
-          "type": "method",
-          "settings": {
-            "label": "Vegan",
-            "note": "Makes one cup.",
-            "steps": "<ol><li>Get two pots and a measuring cup. In one pot pour 2 ounces of water, and in the other pour 6 ounces of milk.</li><li>Mash up 2.5 grams of fresh ginger (optional) with a mortar and pestle if you have one — a blender works too — and add it to the water.</li><li>Put the water and ginger on the stove over a simmer. Wait for it to start bubbling, then add ½ tsp of the chai powder and stir regularly.</li><li>Let the chai spices boil for a few minutes, then add 1 teaspoon of black tea powder. Keep stirring on simmer-medium heat until the tea-water thickens significantly — the longer you brew, the stronger the flavor.</li><li>After boiling the tea leaves for 1–2 minutes, add 6 ounces of the milk of your choice to the pot. We recommend a barista oat milk — they hold up better to heat.</li><li>Bring the chai to high heat and let the tea infuse into the milk over 2–3 minutes.</li><li>Strain, and ready to serve!</li></ol>"
-          }
-        }
-      },
-      "block_order": [
-        "dairy",
-        "vegan"
-      ],
-      "name": "The method",
+    "method": {
+      "type": "brew-method",
       "settings": {
-        "heading": "The method",
-        "lede": "<p>Both start the same way and part company at step five. Pick the one you want and read straight down.</p>",
-        "footnote": "<p>Make three servings in one go — the flavor balances better in a bigger pot.</p><p>Plenty of our customers brew extra and keep it in the fridge, reheating as they go.</p>",
+        "heading": "Both ways start the same",
+        "lede": "<p>Dairy and oat part company at step five. Tell the page what you're making and the numbers below will do the arithmetic.</p>",
+        "band_image": "shopify://shop_images/DSC03473.jpg",
+        "band_alt": "Steam rising off a tall pot of chai with a ladle resting in it",
+        "band_caption": "Step four, scaled up to a market morning: the tea water thickening before the milk goes in.",
+        "footnote": "<p>Make three servings in one go — the flavour balances better in a fuller pot, and it is no more work.</p><p>Plenty of our customers brew extra and keep it in the fridge, reheating a cup at a time through the week.</p>",
         "color_scheme": "scheme-1",
-        "section_width": "page-width",
+        "padding-block-start": 88,
+        "padding-block-end": 88,
+        "footnote_image": "shopify://shop_images/DSC03494.jpg",
+        "footnote_alt": "Three friends holding cups of chai at the farmers market",
+        "footnote_caption": "A bigger pot, the same recipe: Saturday morning at Cedar Mills."
+      }
+    },
+    "close": {
+      "type": "closing-note",
+      "settings": {
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "Or let us do it",
+        "body": "<p>The spice blend in these steps is the one we grind in small batches and pour at the market every Saturday. Same recipe, same pot, nothing added on the way.</p>",
+        "link_label": "Shop the chai masala",
+        "link": "/collections/all",
+        "image": "shopify://shop_images/DSC03352.jpg",
+        "image_alt": "Chai poured in a long stream from a steel jug",
+        "color_scheme": "scheme-5",
         "padding-block-start": 24,
-        "padding-block-end": 64
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "intro",
-    "steps"
+    "hero",
+    "method",
+    "close"
   ]
 }

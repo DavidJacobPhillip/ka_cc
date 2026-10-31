@@ -1,0 +1,203 @@
+{% comment %}
+  The opening of every page that isn't the homepage.
+
+  One motif carries the set: the ring of thirteen scripts around the cup in the
+  logo returns here as the crop on the photograph. A circle is the only shape
+  on these pages that isn't a rectangle, so it reads as the brand's own rather
+  than as a style, and it gives each page one picture big enough to be the
+  thing you see first - which is what the old page headers (a small label, a
+  heading, two lines of grey text, centred) never had.
+
+  No eyebrow label above the heading. The pages used to open with "Our story",
+  "Cafe", "Catering", "Visit" set in tiny tracked capitals; that information
+  belongs in the heading or nowhere.
+{% endcomment %}
+
+{%- liquid
+  assign hero_image = section.settings.image
+  assign has_image = false
+  if hero_image != blank
+    assign has_image = true
+  endif
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} page-hero spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  {%- comment -%}
+    The inner wrapper is load-bearing: `.section` is the theme's own three
+    column page grid (margin, content, margin) and every direct child is
+    placed in the middle column, so a grid declared on the section element
+    itself collapses both columns of this hero into one.
+  {%- endcomment -%}
+  <div class="page-hero__inner{% if has_image %} page-hero__inner--with-image{% endif %}">
+  <div class="page-hero__text">
+    {%- if section.settings.heading != blank -%}
+      <h1 class="page-hero__heading" data-kcc-rise>{{ section.settings.heading }}</h1>
+    {%- endif -%}
+
+    {%- if section.settings.lede != blank -%}
+      <div class="page-hero__lede rte" data-kcc-rise>{{ section.settings.lede }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.link_label != blank and section.settings.link != blank -%}
+      <a class="page-hero__action" href="{{ section.settings.link }}" data-kcc-rise>
+        {{- section.settings.link_label -}}
+      </a>
+    {%- endif -%}
+  </div>
+
+  {%- if has_image -%}
+    <figure class="page-hero__figure" data-kcc-rise>
+      <div class="page-hero__ring">
+        {{
+          hero_image
+          | image_url: width: 1400
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '(min-width: 750px) 44vw, 78vw',
+            widths: '400, 600, 800, 1100, 1400',
+            alt: section.settings.image_alt,
+            class: 'page-hero__image'
+        }}
+      </div>
+      {%- if section.settings.caption != blank -%}
+        <figcaption class="page-hero__caption">{{ section.settings.caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .page-hero__inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+
+  /* The display size the old pages never reached: their largest type was about
+     3.3vw, where the sites this was drawn from sit near 8vw. Capped at 7.5rem
+     so the longest heading on the site ("How to brew chai without setting off
+     the smoke alarm") still breaks into two lines at 1440. */
+  .page-hero__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(2.75rem, 6.4vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+    color: var(--color-foreground);
+  }
+
+  .page-hero__lede {
+    margin-block-start: clamp(1.25rem, 2.5vw, 2rem);
+    max-width: 32rem;
+  }
+
+  .page-hero__lede p {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    line-height: 1.55;
+  }
+
+  .page-hero__lede p:last-child {
+    margin-block-end: 0;
+  }
+
+  .page-hero__action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-block-start: 1.75rem;
+    padding: 0.75rem 1.5rem;
+    /* The brand's deeper terracotta rather than the flat one: white on
+       #cd643f measures 3.8:1, which fails for a label this size; the hover
+       tone is the same family and measures 5.2:1. */
+    background: var(--color-primary-hover, #a45032);
+    color: #fff;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .page-hero__action:hover {
+    background: var(--color-foreground);
+  }
+
+  .page-hero__action:active {
+    transform: translateY(1px);
+  }
+
+  .page-hero__figure {
+    margin: 0;
+    justify-self: center;
+  }
+
+  /* The motif. A circle, because the logo is a cup inside a ring of thirteen
+     letters - every other picture on the site is square, so this one shape
+     says which company the page belongs to. */
+  .page-hero__ring {
+    aspect-ratio: 1;
+    width: min(78vw, 26rem);
+    border-radius: 50%;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+  }
+
+  .page-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .page-hero__caption {
+    max-width: 22rem;
+    margin: 1rem auto 0;
+    text-align: center;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  @media screen and (min-width: 750px) {
+    .page-hero__inner--with-image {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+      align-items: center;
+    }
+
+    .page-hero__ring {
+      width: min(44vw, 34rem);
+    }
+
+    .page-hero__caption {
+      text-align: start;
+      margin-inline: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page hero",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "lede", "label": "Opening sentence" },
+    { "type": "text", "id": "link_label", "label": "Button label" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    { "type": "image_picker", "id": "image", "label": "Photograph" },
+    { "type": "text", "id": "image_alt", "label": "Photograph description" },
+    { "type": "text", "id": "caption", "label": "Caption under the photograph" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-9" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "presets": [{ "name": "Page hero" }]
+}
+{% endschema %}

@@ -1,0 +1,511 @@
+{% comment %}
+  The chai method, as one recipe rather than two columns of cards.
+
+  Two decisions carry this page.
+
+  The quantities are live. You say how many cups you are making and every
+  number on the page rewrites itself - the recipe is a set of ratios, and a
+  page that can do the arithmetic for you is worth more than a page that makes
+  you do it. The written recipe (one cup) is what the markup ships with, so
+  the page is complete and correct before a line of script runs.
+
+  The two methods are one list, not two. They are identical until step five,
+  and the old page printed both of them side by side in matching boxes, which
+  made the difference invisible and the page look like a template. Here the
+  choice is made once at the top, the shared steps run straight down, and the
+  photograph marks the place where the two part company.
+
+  Ratios, per cup: 2oz water, 6oz milk, 2.5g ginger, 1/2 tsp chai powder,
+  1 tsp black tea powder. They live in data-kcc-per attributes so the script
+  has no recipe of its own to drift from.
+{% endcomment %}
+
+{%- liquid
+  assign band_image = section.settings.band_image
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} brew spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+  data-kcc-brew
+  data-milk="dairy"
+  id="brew-{{ section.id }}"
+>
+  <div class="brew__head">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="brew__heading" data-kcc-rise>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.lede != blank -%}
+      <div class="brew__lede rte" data-kcc-rise>{{ section.settings.lede }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="brew__controls" data-kcc-rise>
+    <fieldset class="brew__field">
+      <legend class="brew__legend">How many cups are you making?</legend>
+      <div class="brew__choices">
+        {%- for count in (1..4) -%}
+          <label class="brew__choice">
+            <input
+              type="radio"
+              name="brew-cups-{{ section.id }}"
+              value="{{ count }}"
+              {% if count == 1 %}checked{% endif %}
+              data-kcc-cups
+            >
+            <span>{{ count }}</span>
+          </label>
+        {%- endfor -%}
+      </div>
+      <p class="brew__hint">Three at once is the sweet spot — the spices balance better in a fuller pot.</p>
+    </fieldset>
+
+    <fieldset class="brew__field">
+      <legend class="brew__legend">What are you pouring in?</legend>
+      <div class="brew__choices brew__choices--wide">
+        <label class="brew__choice">
+          <input type="radio" name="brew-milk-{{ section.id }}" value="dairy" checked data-kcc-milk>
+          <span>Dairy milk</span>
+        </label>
+        <label class="brew__choice">
+          <input type="radio" name="brew-milk-{{ section.id }}" value="vegan" data-kcc-milk>
+          <span>Oat or other</span>
+        </label>
+      </div>
+      <p class="brew__hint">A barista oat milk holds up to the heat better than the rest.</p>
+    </fieldset>
+  </div>
+
+  <ol class="brew__steps">
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      Get two pots and a measuring cup. In one pot pour
+      <b class="brew__qty" data-kcc-per="2" data-kcc-unit="oz">2 ounces</b> of water, and in the other
+      <b class="brew__qty" data-kcc-per="6" data-kcc-unit="oz">6 ounces</b> of milk.
+    </span></li>
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      Mash up <b class="brew__qty" data-kcc-per="2.5" data-kcc-unit="g">2.5 grams</b> of fresh ginger with a mortar
+      and pestle if you have one — a blender works too — and add it to the water. Optional, and worth it in
+      January.
+    </span></li>
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      Put the water and ginger on the stove over a simmer. Wait for it to start bubbling, then add
+      <b class="brew__qty" data-kcc-per="0.5" data-kcc-unit="tsp">½ teaspoon</b> of the chai powder and stir
+      regularly.
+    </span></li>
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      Let the spices boil for a few minutes, then add
+      <b class="brew__qty" data-kcc-per="1" data-kcc-unit="tsp">1 teaspoon</b> of black tea powder. Keep stirring
+      over simmer-to-medium heat until the tea water thickens noticeably — the longer you brew, the stronger it
+      comes out.
+    </span></li>
+  </ol>
+
+  {%- if band_image != blank -%}
+    <figure class="brew__band force-full-width" data-kcc-rise>
+      {{
+        band_image
+        | image_url: width: 2200
+        | image_tag:
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2200',
+          alt: section.settings.band_alt,
+          class: 'brew__band-image'
+      }}
+      {%- if section.settings.band_caption != blank -%}
+        <figcaption class="brew__band-caption">{{ section.settings.band_caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- endif -%}
+
+  <ol class="brew__steps brew__steps--fork" start="5">
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      <span class="brew__path" data-path="dairy">
+        <b class="brew__path-label">With dairy</b>
+        On the side, heat the pot of milk, stirring often, until it climbs the sides — turn the heat off before it
+        goes over.
+      </span>
+      <span class="brew__path" data-path="vegan">
+        <b class="brew__path-label">With oat</b>
+        After the tea leaves have boiled a minute or two, pour
+        <b class="brew__qty" data-kcc-per="6" data-kcc-unit="oz">6 ounces</b> of your milk straight into the same
+        pot.
+      </span>
+    </span></li>
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      <span class="brew__path" data-path="dairy">
+        <b class="brew__path-label">With dairy</b>
+        Tip the chai water into the milk and bring the whole thing up one more time over medium heat.
+      </span>
+      <span class="brew__path" data-path="vegan">
+        <b class="brew__path-label">With oat</b>
+        Turn the heat up and let the tea infuse into the milk for two or three minutes.
+      </span>
+    </span></li>
+    <li class="brew__step" data-kcc-rise><span class="brew__step-body">
+      Strain it, and it's ready. Makes
+      <b class="brew__qty" data-kcc-per="1" data-kcc-unit="cup">1 cup</b>.
+    </span></li>
+  </ol>
+
+  {%- if section.settings.footnote != blank or section.settings.footnote_image != blank -%}
+    <div class="brew__close">
+      {%- if section.settings.footnote != blank -%}
+        <div class="brew__footnote rte" data-kcc-rise>{{ section.settings.footnote }}</div>
+      {%- endif -%}
+      {%- if section.settings.footnote_image != blank -%}
+        <figure class="brew__footnote-figure" data-kcc-rise>
+          {{
+            section.settings.footnote_image
+            | image_url: width: 1200
+            | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 750px) 40vw, 90vw',
+              widths: '400, 600, 900, 1200',
+              alt: section.settings.footnote_alt,
+              class: 'brew__footnote-image'
+          }}
+          {%- if section.settings.footnote_caption != blank -%}
+            <figcaption class="brew__band-caption">{{ section.settings.footnote_caption }}</figcaption>
+          {%- endif -%}
+        </figure>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  (() => {
+    const root = document.getElementById('brew-{{ section.id }}');
+    if (!root || root.dataset.kccBrewReady) return;
+    root.dataset.kccBrewReady = 'true';
+
+    /* Sixteenths of a teaspoon help nobody at a stove: teaspoons are shown to
+       the nearest half, which every set of measuring spoons can actually do. */
+    const FRACTIONS = { 0.5: '½', 0.25: '¼', 0.75: '¾' };
+
+    const amount = (value, unit) => {
+      if (unit === 'tsp') {
+        const half = Math.round(value * 2) / 2;
+        const whole = Math.floor(half);
+        const rest = half - whole;
+        const text = whole === 0 ? FRACTIONS[rest] : whole + (rest ? FRACTIONS[rest] : '');
+        return text + ' teaspoon' + (half > 1 ? 's' : '');
+      }
+      const rounded = Math.round(value * 100) / 100;
+      const text = Number.isInteger(rounded) ? String(rounded) : String(rounded);
+      if (unit === 'oz') return text + ' ounce' + (rounded === 1 ? '' : 's');
+      if (unit === 'g') return text + ' gram' + (rounded === 1 ? '' : 's');
+      if (unit === 'cup') return text + ' cup' + (rounded === 1 ? '' : 's');
+      return text;
+    };
+
+    const quantities = Array.from(root.querySelectorAll('[data-kcc-per]'));
+
+    const render = (cups) => {
+      quantities.forEach((el) => {
+        const per = parseFloat(el.dataset.kccPer);
+        el.textContent = amount(per * cups, el.dataset.kccUnit);
+      });
+    };
+
+    root.querySelectorAll('[data-kcc-cups]').forEach((input) => {
+      input.addEventListener('change', () => render(parseInt(input.value, 10) || 1));
+    });
+
+    root.querySelectorAll('[data-kcc-milk]').forEach((input) => {
+      input.addEventListener('change', () => {
+        root.dataset.milk = input.value;
+      });
+    });
+
+    root.dataset.kccLive = 'true';
+    const checked = root.querySelector('[data-kcc-cups]:checked');
+    render(checked ? parseInt(checked.value, 10) : 1);
+  })();
+</script>
+
+{% stylesheet %}
+  .brew__head {
+    max-width: 40rem;
+  }
+
+  .brew__heading {
+    font-family: var(--font-heading--family);
+    font-size: clamp(2rem, 4.4vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--color-foreground);
+  }
+
+  .brew__lede p {
+    margin: 1rem 0 0;
+    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+    line-height: 1.6;
+    max-width: 34rem;
+  }
+
+  /* The live part. Set as a sentence with its answers beside it rather than as
+     a form: it is a question the page asks, and a bordered panel of inputs in
+     the middle of a recipe would read as software. */
+  .brew__controls {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-block: clamp(2.5rem, 5vw, 3.5rem);
+    padding-block: clamp(1.75rem, 3vw, 2.25rem);
+    background: color-mix(in srgb, var(--color-foreground) 5%, transparent);
+    padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .brew__field {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-inline-size: 0;
+  }
+
+  .brew__legend {
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    line-height: 1.2;
+    padding: 0;
+    margin-block-end: 0.875rem;
+    color: var(--color-foreground);
+  }
+
+  .brew__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .brew__choice {
+    cursor: pointer;
+  }
+
+  .brew__choice input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .brew__choice span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.25rem;
+    min-height: 2.75rem;
+    padding: 0 1.125rem;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  }
+
+  .brew__choices--wide .brew__choice span {
+    min-width: 0;
+  }
+
+  .brew__choice:hover span {
+    background: color-mix(in srgb, var(--color-primary, #cd643f) 16%, var(--color-background));
+  }
+
+  .brew__choice input:checked + span {
+    background: var(--color-primary-hover, #a45032);
+    color: #fff;
+  }
+
+  .brew__choice input:focus-visible + span {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  .brew__choice:active span {
+    transform: translateY(1px);
+  }
+
+  .brew__hint {
+    margin: 0.75rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    opacity: 0.8;
+    max-width: 26rem;
+  }
+
+  /* A real ordered list: the order is the content. The numeral is set in the
+     display face at reading size beside the step, which is what a recipe card
+     does, and is not the decorative 01 / 02 / 03 of a generated page. */
+  .brew__steps {
+    counter-reset: brew-step calc(var(--brew-start, 1) - 1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .brew__steps--fork {
+    --brew-start: 5;
+    margin-block-start: clamp(2rem, 4vw, 3rem);
+  }
+
+  .brew__step {
+    counter-increment: brew-step;
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    font-size: clamp(1.0625rem, 1.35vw, 1.1875rem);
+    line-height: 1.6;
+    max-width: 46rem;
+  }
+
+  .brew__step::before {
+    content: counter(brew-step);
+    font-family: var(--font-heading--family);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 0.9;
+    color: var(--color-primary, #cd643f);
+  }
+
+  .brew__step-body {
+    display: block;
+    min-width: 0;
+  }
+
+  .brew__qty {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Without script both paths are shown, each under its own name - the page is
+     a complete recipe on its own. With script, the choice at the top decides. */
+  .brew__path {
+    display: block;
+  }
+
+  .brew__path + .brew__path {
+    margin-block-start: 0.75rem;
+  }
+
+  .brew__path-label {
+    display: block;
+    font-family: var(--font-heading--family);
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: var(--color-foreground);
+    opacity: 0.75;
+  }
+
+  [data-kcc-live='true'] .brew__path-label {
+    display: none;
+  }
+
+  [data-kcc-live='true'][data-milk='dairy'] .brew__path[data-path='vegan'],
+  [data-kcc-live='true'][data-milk='vegan'] .brew__path[data-path='dairy'] {
+    display: none;
+  }
+
+  /* The fork, as a picture. The band is the moment the two methods separate,
+     so it sits between the shared steps and the ones that differ. */
+  /* The one picture on the page that runs to both edges: it is the moment the
+     two methods separate, so it reads as a break in the recipe rather than as
+     an illustration beside it. force-full-width is the theme's own way out of
+     the page grid's centre column. */
+  .brew__band {
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  }
+
+  .brew__band-caption {
+    padding-inline: var(--page-margin, 1.25rem);
+  }
+
+  .brew__band-image {
+    width: 100%;
+    height: clamp(14rem, 34vw, 26rem);
+    object-fit: cover;
+    display: block;
+  }
+
+  .brew__band-caption {
+    margin: 0.875rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    opacity: 0.75;
+    max-width: 32rem;
+  }
+
+  .brew__close {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: center;
+    margin-block-start: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .brew__footnote {
+    max-width: 36rem;
+  }
+
+  .brew__footnote-figure {
+    margin: 0;
+  }
+
+  .brew__footnote-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .brew__footnote p {
+    margin: 0 0 0.75rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .brew__footnote p:last-child {
+    margin-block-end: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brew__controls {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .brew__step {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+    }
+
+    .brew__close {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brew method",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The method" },
+    { "type": "richtext", "id": "lede", "label": "Opening sentence" },
+    { "type": "image_picker", "id": "band_image", "label": "Photograph between the shared and separate steps" },
+    { "type": "text", "id": "band_alt", "label": "Photograph description" },
+    { "type": "text", "id": "band_caption", "label": "Caption" },
+    { "type": "richtext", "id": "footnote", "label": "Closing note" },
+    { "type": "image_picker", "id": "footnote_image", "label": "Photograph beside the closing note" },
+    { "type": "text", "id": "footnote_alt", "label": "Photograph description" },
+    { "type": "text", "id": "footnote_caption", "label": "Caption" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 80 }
+  ],
+  "presets": [{ "name": "Brew method" }]
+}
+{% endschema %}
