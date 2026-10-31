@@ -8,165 +8,19 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "section": {
-      "type": "section",
-      "blocks": {
-        "group_PnXWxT": {
-          "type": "group",
-          "name": "t:names.group",
-          "settings": {
-            "open_in_new_tab": false,
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 18,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "text_ANq86U": {
-              "type": "text",
-              "settings": {
-                "text": "<h2>{{ closest.page.title }}</h2>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "text_jrgQcg": {
-              "type": "text",
-              "settings": {
-                "text": "<p>{{ closest.page.content }}</p>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_ANq86U",
-            "text_jrgQcg"
-          ]
-        },
-        "contact_form_jWxXkm": {
-          "type": "contact-form",
-          "settings": {
-            "width": "custom",
-            "custom_width": 100,
-            "width_mobile": "custom",
-            "custom_width_mobile": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "scheme-1",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "submit-button": {
-              "type": "contact-form-submit-button",
-              "static": true,
-              "settings": {
-                "label": "Send",
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": []
-        }
-      },
-      "block_order": [
-        "group_PnXWxT",
-        "contact_form_jWxXkm"
-      ],
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 30,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 40,
-        "padding-block-end": 70
+        "heading": "Say something to us",
+        "lede": "<p>Email is quickest. We are a small team, so give us a day or two — faster if you catch us at the market with a cup in your hand.</p>",
+        "image": "shopify://shop_images/DSC03066.jpg",
+        "image_alt": "A spoon held over a row of sample cups at the stall",
+        "caption": "Most conversations with us start like this.",
+        "link_label": "Where to find us",
+        "link": "/pages/visit-us",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
+        "padding-block-end": 88
       }
     },
     "contact_details": {
@@ -238,15 +92,50 @@
       "settings": {
         "heading": "Other ways to reach us",
         "body": "The form goes straight to us. We're a small team, so give us a day or two — faster if you catch us at the market.",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "section_width": "page-width",
-        "padding-block-start": 64,
-        "padding-block-end": 64
+        "padding-block-start": 96,
+        "padding-block-end": 96,
+        "image": "shopify://shop_images/DSC03110.jpg",
+        "image_alt": "Customers talking at the Ka Chai stall",
+        "caption": "Or skip all of it and come to the stall on a Saturday."
+      }
+    },
+    "close": {
+      "type": "closing-note",
+      "settings": {
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "Catering, wholesale, or a question about the blend",
+        "body": "<p>All of it comes to the same inbox. If it is an event, send the date, the rough headcount and the venue and we will come back with what we can do.</p>",
+        "link_label": "Start a catering enquiry",
+        "link": "/pages/catering#quote",
+        "image": "shopify://shop_images/DSC03202.jpg",
+        "image_alt": "A cup of chai handed from one person to another",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 96
+      }
+    },
+    "turn_up": {
+      "type": "story-chapter",
+      "settings": {
+        "heading": "Or skip the email",
+        "body": "<p>Most of what we have been asked — about the blend, about catering, about where the tea comes from — got asked standing at the stall with a cup in hand.</p><p>Saturday mornings at Cedar Mills, from nine. No appointment, no form.</p>",
+        "image": "shopify://shop_images/DSC03486.jpg",
+        "image_alt": "A customer holding a cup of chai in both hands at the market",
+        "caption": "Four dollars and a conversation.",
+        "media_side": "end",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "section",
-    "contact_details"
+    "hero",
+    "contact_details",
+    "turn_up",
+    "close"
   ]
 }

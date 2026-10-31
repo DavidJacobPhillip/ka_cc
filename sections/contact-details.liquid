@@ -39,21 +39,39 @@
       {%- endif -%}
     {%- endfor -%}
   </ul>
+  {%- if section.settings.image != blank -%}
+    <figure class="contact-details__figure force-full-width" data-kcc-rise>
+      {{
+        section.settings.image
+        | image_url: width: 2200
+        | image_tag:
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2200',
+          alt: section.settings.image_alt,
+          class: 'contact-details__image'
+      }}
+      {%- if section.settings.caption != blank -%}
+        <figcaption class="contact-details__caption">{{ section.settings.caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- endif -%}
 </div>
 
 {% stylesheet %}
   .contact-details__heading {
     font-family: var(--font-heading--family);
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
-    line-height: 1.2;
-    margin: 0 0 0.75rem;
+    font-size: var(--kcc-h2);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0 0 1rem;
   }
 
   .contact-details__intro {
-    margin: 0 0 2.25rem;
-    max-width: 52ch;
-    line-height: 1.7;
-    opacity: 0.8;
+    margin: 0 0 clamp(2.5rem, 5vw, 3.5rem);
+    max-width: 48ch;
+    font-size: var(--kcc-body);
+    line-height: 1.65;
   }
 
   .contact-details__list {
@@ -67,33 +85,58 @@
 
   @media screen and (min-width: 750px) {
     .contact-details__list {
-      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-      gap: 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+      gap: clamp(2.5rem, 4vw, 3.5rem);
     }
   }
 
+  /* The label, in the display face at reading size and in sentence case.
+     It was 12px tracked capitals over a hairline - two of the tells this
+     pass is removing, in one element. */
   .contact-details__label {
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-primary, currentColor);
-    margin: 0 0 0.6rem;
-    padding-block-end: 0.6rem;
-    border-block-end: 1px solid var(--color-border, currentColor);
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-h3);
+    line-height: 1.1;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--color-foreground);
+    margin: 0 0 0.5rem;
+    padding-block-end: 0;
+    border-block-end: 0;
   }
 
   .contact-details__detail {
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: var(--kcc-body);
     line-height: 1.6;
-    opacity: 0.78;
+    opacity: 0.85;
+  }
+
+  .contact-details__figure {
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  }
+
+  .contact-details__image {
+    width: 100%;
+    height: clamp(13rem, 30vw, 24rem);
+    object-fit: cover;
+    display: block;
+  }
+
+  .contact-details__caption {
+    margin: 0.875rem 0 0;
+    padding-inline: var(--page-margin, 1.25rem);
+    font-size: var(--kcc-small);
+    line-height: 1.5;
+    opacity: 0.75;
   }
 
   .contact-details__link {
     display: inline-block;
-    margin-block-start: 0.6rem;
-    font-size: 0.9375rem;
-    color: var(--color-primary, currentColor);
+    margin-block-start: 0.625rem;
+    font-size: var(--kcc-body);
+    font-weight: 700;
+    color: var(--color-primary-hover, #a45032);
     text-underline-offset: 0.3em;
   }
 {% endstylesheet %}
@@ -104,6 +147,9 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Other ways to reach us" },
     { "type": "textarea", "id": "body", "label": "Body" },
+    { "type": "image_picker", "id": "image", "label": "Photograph under the list" },
+    { "type": "text", "id": "image_alt", "label": "Photograph description" },
+    { "type": "text", "id": "caption", "label": "Caption" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
     {
       "type": "select",
