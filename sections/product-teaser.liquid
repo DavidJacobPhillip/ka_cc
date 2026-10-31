@@ -16,7 +16,24 @@
      change needed.
 {% endcomment %}
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- comment -%}
+  The spice field rides on the theme's own section-background element rather
+  than on a pseudo-element of the content div: that element is already exactly
+  viewport-wide and absolutely positioned, so the artwork gets its full bleed
+  for free, where a 100vw pseudo-element adds 9px of horizontal overflow on
+  mobile (100vw counts the scrollbar).
+
+  The art is Santosh's "KCC All" drawing - one scattered composition, not a
+  tile - so it is sized to cover rather than repeated. The URL has to be handed
+  to the CSS from here: {% stylesheet %} is static and never sees Liquid, so
+  asset_url cannot be written inside it.
+{%- endcomment -%}
+<div
+  class="section-background color-{{ section.settings.color_scheme }}{% if section.settings.show_backdrop %} product-teaser__bg{% endif %}"
+  {%- if section.settings.show_backdrop %}
+    style="--pt-scatter: url('{{ 'ingredient-scatter.svg' | asset_url }}'); --pt-scatter-opacity: {{ section.settings.backdrop_opacity | divided_by: 100.0 }};"
+  {%- endif %}
+></div>
 <div
   class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} product-teaser spacing-style"
   style="{%- render 'spacing-style', settings: section.settings %}"
@@ -133,6 +150,46 @@
     --pt-accent-deep: var(--color-primary-hover, #a45032);
     --pt-ink: #754B2A;
     --pt-radius: 1.5rem;
+  }
+
+  /* The spice field behind the cards.
+
+     The section is a cream band between two white ones, so the field's top and
+     bottom edges land on colour edges that are already there - no fade and no
+     bleed needed. (The ingredient section below learned the other way round:
+     fading an edge out hollowed the section, so it bleeds past instead.)
+
+     Kept to a watermark. The cards are solid white and punch straight through
+     it; what the field is for is the empty ground either side of them, which
+     at this width is more than half the band. */
+  .product-teaser__bg {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-teaser__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--pt-scatter);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: var(--pt-scatter-opacity, 0.1);
+    pointer-events: none;
+  }
+
+  /* On a phone the cards stack, so the band is tall and narrow and `cover`
+     scales the drawing by its height - one ginger root ends up filling the
+     strip beside a card. Sized and tiled instead, so the ink stays about the
+     size it is on a laptop and the narrow gaps read as a field rather than as
+     a fragment. The drawing isn't a seamless tile, but at this strength, in
+     strips this narrow, the joins don't show - checked on the page. */
+  @media screen and (max-width: 749px) {
+    .product-teaser__bg::after {
+      background-size: 760px auto;
+      background-repeat: repeat;
+    }
   }
 
   .product-teaser__head {
@@ -362,6 +419,15 @@
     },
     { "type": "range", "id": "max_width", "label": "Row width", "min": 36, "max": 80, "step": 2, "unit": "rem", "default": 54 },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    { "type": "header", "content": "Spice field" },
+    {
+      "type": "checkbox",
+      "id": "show_backdrop",
+      "label": "Spice-field backdrop",
+      "info": "The scattered line-art drawing behind the cards.",
+      "default": true
+    },
+    { "type": "range", "id": "backdrop_opacity", "label": "Backdrop strength", "min": 4, "max": 30, "step": 1, "unit": "%", "default": 13 },
     {
       "type": "select",
       "id": "section_width",
