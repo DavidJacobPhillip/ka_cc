@@ -67,9 +67,30 @@
     role="list"
     style="--pt-max: {{ section.settings.max_width }}rem;"
   >
+    {%- comment -%}
+      Which side each card comes in from. The ones drawn on the left half of
+      the row arrive from the left and the right half from the right, so a
+      pair converges on its own layout instead of queueing in from one edge.
+      The entrance itself is the theme's shared one (assets/kcc-reveal.js);
+      this only names the direction.
+    {%- endcomment -%}
+    {%- assign halfway = section.blocks.size | divided_by: 2.0 -%}
     {%- for block in section.blocks -%}
       {%- if block.type == 'product' -%}
-        <li class="product-teaser__card" {{ block.shopify_attributes }}>
+        {%- if forloop.index0 < halfway -%}
+          {%- assign side = 'left' -%}
+        {%- else -%}
+          {%- assign side = 'right' -%}
+        {%- endif -%}
+        {%- comment -%}
+          The slot and the card are two elements on purpose. The reveal's
+          transition is set at a higher specificity than the card's own and
+          stays applied afterwards, so with both on one element the 0.15s
+          hover lift would inherit the entrance's 0.65s and crawl. The slot
+          carries the entrance; the card keeps its own hover.
+        {%- endcomment -%}
+        <li class="product-teaser__slot" data-kcc-rise="{{ side }}" {{ block.shopify_attributes }}>
+         <div class="product-teaser__card">
           <div class="product-teaser__inner">
             {%- if block.settings.title != blank -%}
               <h3 class="product-teaser__title">{{ block.settings.title | escape }}</h3>
@@ -138,6 +159,7 @@
               </a>
             {%- endif -%}
           {%- endif -%}
+         </div>
         </li>
       {%- endif -%}
     {%- endfor -%}
@@ -148,29 +170,31 @@
 <script>
   (() => {
     /*
-      The spice field never sits quite still.
+      The spice field, which moves on its own and parts around the pointer.
 
-      Every icon in the backdrop art is its own <g class="kcc-scatter__item">,
-      tagged by the build with the centre and radius of its own ink, so the
-      field can be taken apart and each piece given its own slow wander. The
-      section below this one drives the same artwork from the pointer; this
-      one is on its own clock, so it moves whether or not anybody is pointing
-      at it, which is the point - it is the ground, not a control.
+      Two systems share the artwork, on two layers, because they want very
+      different things from the browser:
 
-      It is not a simulation. Each item gets one CSS animation with its own
-      amplitude, period and phase written in as custom properties, and the
-      compositor runs the rest. Nothing is recalculated per frame and there is
-      no requestAnimationFrame loop at all.
+        .kcc-scatter__item    the pointer physics, written as a `transform`
+                              attribute from a rAF loop that only runs while
+                              something is still moving
+        .kcc-scatter__wander  a long CSS wander, 7-15s
+        .kcc-scatter__shiver  a short CSS shiver, 2.4-5s
 
-      Three things keep it from reading as a wobble:
-        - amplitude is scaled to each icon's own ink, so a carom seed travels
-          a seed's worth and a cinnamon stick a stick's worth, in the
-          artwork's units rather than the screen's;
-        - every period and phase is different, so the field never pulses
-          together - the giveaway that something is animated rather than
-          alive;
-        - it is slow enough (7-15s a cycle) to be caught out of the corner of
-          the eye rather than watched.
+      Nesting them is what lets the ambient motion keep running on the
+      compositor while the physics sleeps, instead of the loop having to drive
+      everything every frame forever. The field is therefore never still, and
+      costs nothing per frame unless a pointer is actually in it.
+
+      The physics is the engine from sections/ingredient-spotlight.liquid,
+      which drives the same artwork from the same data attributes. The one
+      substantive difference: there, the field is at rest between strokes and
+      an icon's drawn centre is exactly where it is. Here the ambient motion
+      has already carried it up to ~17 units away by the time the cursor
+      arrives, and the physics still measures from the drawn centre. At a
+      reach of 200 units that is an 8% error in which icons get pushed, which
+      is not visible, and pricing it properly would mean reading 135 live
+      matrices every frame.
 
       Progressive enhancement: the CSS background-image is what renders on
       load and is what stays if the fetch fails, if there is no JS, or if the
@@ -180,7 +204,8 @@
 
       Desktop only, deliberately. On a phone the field is tiled rather than
       covered (an inlined SVG cannot tile), the stacked cards leave almost
-      none of it showing, and a 566KB fetch is not worth that sliver.
+      none of it showing, there is no cursor to part it with, and a 566KB
+      fetch is not worth that sliver.
     */
     const bg = document.getElementById('product-teaser-bg-{{ section.id }}');
     if (!bg || bg.dataset.kccReady) return;
@@ -188,25 +213,28 @@
     const src = bg.getAttribute('data-scatter-src');
     if (!src) return;
 
-    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const wide = window.matchMedia('(min-width: 750px)');
     const net = navigator.connection;
     if (net && (net.saveData || /(^|-)2g$/.test(net.effectiveType || ''))) return;
 
-    /*
-      Two motions at once, on two clocks: a long wander that carries an icon
-      somewhere and back, and a short shiver on top of it. One alone is not
-      enough - the wander by itself is too slow to read as movement at this
-      strength, and the shiver by itself is a twitch in place.
+    const SVG_NS = 'http://www.w3.org/2000/svg';
 
-      Each icon therefore gets a second <g> slipped inside it, so the two can
-      animate the `transform` shorthand on two separate elements. The obvious
-      alternative is one element with two animations on the newer `translate`
-      and `rotate` properties, which compose without any extra DOM - and it
-      works, and it is four times slower. Measured on this page, 135 icons at
-      1440px wide: `transform` holds a 16.7ms median frame, the separate
-      properties give 80ms. Chrome accelerates transform on an SVG group and
-      does not accelerate those. Don't "simplify" this back.
+    /*
+      ---- the ambient half ----
+
+      Two motions on two clocks: a long wander that carries an icon somewhere
+      and back, and a short shiver on top of it. One alone is not enough - the
+      wander by itself is too slow to read as movement at this strength, and
+      the shiver by itself is a twitch in place.
+
+      They go on separate nested groups so each can animate the `transform`
+      shorthand. The obvious alternative is one element with two animations on
+      the newer `translate` and `rotate` properties, which compose without any
+      extra DOM - and it works, and it is four times slower. Measured on this
+      page, 135 icons at 1440px wide: `transform` holds a 16.7ms median frame,
+      the separate properties give 80ms. Chrome accelerates transform on an
+      SVG group and does not accelerate those. Don't "simplify" this back.
 
       Distances are in the artwork's own user units - the viewBox is 2560x1440
       - so an icon travels the same distance relative to its neighbours at
@@ -222,44 +250,402 @@
     const SHIVER_MIN = 2.4;    // seconds
     const SHIVER_MAX = 5;
 
+    /*
+      ---- the pointer half ----
+
+      All of this is in the artwork's own user units too, so the motion scales
+      with the drawing instead of with the viewport.
+    */
+    const STEP = 1 / 60;
+    /*
+      Spring and damping make a lightly underdamped oscillator: a pushed icon
+      swings out, comes back, overshoots a little and settles. SPRING sets how
+      far a given push carries, DAMP how fast it dies out. Measured settle is
+      about 2.5s, with one small overshoot.
+    */
+    const SPRING = 0.004;
+    const DAMP = 0.943;
+    const RESTITUTION = 0.92;
+    const MAX_SPIN = 4.5;      // degrees
+    const SPIN_SPRING = 0.012;
+    const SPIN_DAMP = 0.95;
+    const SLEEP_V = 0.004;
+    const SLEEP_D = 0.3;
+    // Leash, scaled to the icon's own size: a carom seed travelling as far as
+    // a cinnamon stick would be moving further than its own width and read as
+    // flying rather than nudged.
+    const LEASH_MIN = 12;
+    const LEASH_MAX = 34;
+    /*
+      REACH is how far from the cursor an icon has to be before it ignores it;
+      200 units is about 110px across this band. The push is deliberately
+      small: at full speed, directly under the cursor, a mid-sized icon swings
+      about 20 units, which is ~11px on screen. Anything more and the backdrop
+      stops being a backdrop.
+    */
+    const REACH = 200;
+    const SPEED_REF = 60;      // units/frame that counts as a brisk flick
+    const PUSH_MIN = 0.26;     // a slow drag still parts the field
+    const PUSH_SPEED = 1;      // ...and a fast one parts it properly
+    const SWEEP = 0.45;        // share of the push that follows the stroke
+    const SWEEP_SPIN = 0.05;
+
     const between = (a, b) => a + Math.random() * (b - a);
 
-    const SVG_NS = 'http://www.w3.org/2000/svg';
+    let items = [];
+    let pairs = [];
+    let raf = 0;
+    let last = 0;
+    let carry = 0;
+    let loaded = false;
+    let visible = false;
+    let svgEl = null;
 
-    const dress = (svg) => {
-      const items = svg.querySelectorAll('.kcc-scatter__item');
-      if (!items.length) return false;
-      items.forEach((el) => {
-        const r = parseFloat(el.dataset.r);
-        // Scaled to the icon's own ink: a carom seed travels a seed's worth
-        // and a cinnamon stick a stick's worth. A flat amplitude makes the
-        // small ink look like it is flying and the big ink look stuck.
-        const amp = Math.min(AMP_MAX, Math.max(AMP_MIN, (r || 80) * AMP_OF_INK));
+    /*
+      Pointer position in the artwork's own coordinates. getScreenCTM is what
+      does the mapping, because it already accounts for the slice crop and the
+      page's scroll offset. It's cached and dropped on scroll/resize rather
+      than read per event, since reading it forces layout.
+    */
+    const pointer = { x: 0, y: 0, prevX: 0, prevY: 0, fresh: false, seen: false };
+    let ctm = null;
+    const dropCTM = () => { ctm = null; };
+
+    const toArt = (clientX, clientY) => {
+      if (!svgEl) return null;
+      if (!ctm) {
+        const m = svgEl.getScreenCTM();
+        if (!m) return null;
+        ctm = m.inverse();
+      }
+      return new DOMPoint(clientX, clientY).matrixTransform(ctm);
+    };
+
+    /*
+      Push everything near the segment the pointer covered since the last
+      frame. Distance is to the segment, not to its end point: at 2000px/s the
+      cursor can clear an icon's whole reach between two frames, and measuring
+      against the end point alone would let it slip through untouched.
+    */
+    const sweep = () => {
+      const ax = pointer.prevX;
+      const ay = pointer.prevY;
+      const dx = pointer.x - ax;
+      const dy = pointer.y - ay;
+      const seg = Math.hypot(dx, dy);
+      // A jump this big is a scroll or a tab switch, not a stroke.
+      if (seg > 700) return;
+      const speed = Math.min(seg / SPEED_REF, 1);
+
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        const px = it.cx + it.ox;
+        const py = it.cy + it.oy;
+
+        let t = 0;
+        if (seg > 1e-3) {
+          t = ((px - ax) * dx + (py - ay) * dy) / (seg * seg);
+          t = t < 0 ? 0 : t > 1 ? 1 : t;
+        }
+        let nx = px - (ax + dx * t);
+        let ny = py - (ay + dy * t);
+        let d = Math.hypot(nx, ny);
+        if (d > REACH) continue;
+        if (d < 1e-3) {
+          // Dead centre: pick a direction rather than dividing by zero.
+          const a = Math.random() * Math.PI * 2;
+          nx = Math.cos(a);
+          ny = Math.sin(a);
+          d = 1;
+        }
+
+        const falloff = 1 - d / REACH;
+        const f = falloff * falloff * (PUSH_MIN + PUSH_SPEED * speed) * (it.leash / 24);
+        it.vx += (nx / d) * f;
+        it.vy += (ny / d) * f;
+
+        if (seg > 1e-3) {
+          // A fraction of the push goes along the direction of travel rather
+          // than straight away from the cursor, so the field parts and trails
+          // behind the stroke instead of bulging out of a point.
+          it.vx += (dx / seg) * f * SWEEP;
+          it.vy += (dy / seg) * f * SWEEP;
+          // Which side of the stroke it sits on decides which way it turns.
+          it.va += ((nx * dy - ny * dx) / (d * seg)) * f * SWEEP_SPIN;
+        }
+        it.asleep = false;
+      }
+    };
+
+    /*
+      Give every icon its two ambient clocks and its two nested groups, and
+      read out what the physics needs. One pass, once, at inline time.
+    */
+    const build = (svg) => {
+      svgEl = svg;
+      const nodes = svg.querySelectorAll('.kcc-scatter__item');
+      if (!nodes.length) return false;
+
+      items = Array.from(nodes).map((el) => {
+        const r = parseFloat(el.getAttribute('data-r')) || 40;
+
+        const wanderG = document.createElementNS(SVG_NS, 'g');
+        wanderG.setAttribute('class', 'kcc-scatter__wander');
+        const shiverG = document.createElementNS(SVG_NS, 'g');
+        shiverG.setAttribute('class', 'kcc-scatter__shiver');
+        while (el.firstChild) shiverG.appendChild(el.firstChild);
+        wanderG.appendChild(shiverG);
+        el.appendChild(wanderG);
+
+        // Amplitude scaled to the icon's own ink: a carom seed travels a
+        // seed's worth and a cinnamon stick a stick's worth. A flat amplitude
+        // makes small ink look like it is flying and big ink look stuck.
+        const amp = Math.min(AMP_MAX, Math.max(AMP_MIN, r * AMP_OF_INK));
         const angle = Math.random() * Math.PI * 2;
         const wander = between(WANDER_MIN, WANDER_MAX);
         const shiver = between(SHIVER_MIN, SHIVER_MAX);
         const spin = between(SPIN_MIN, SPIN_MAX) * (Math.random() < 0.5 ? -1 : 1);
 
-        const inner = document.createElementNS(SVG_NS, 'g');
-        inner.setAttribute('class', 'kcc-scatter__shiver');
-        while (el.firstChild) inner.appendChild(el.firstChild);
-        el.appendChild(inner);
-
-        el.style.setProperty('--jx', (Math.cos(angle) * amp).toFixed(2) + 'px');
-        el.style.setProperty('--jy', (Math.sin(angle) * amp).toFixed(2) + 'px');
-        el.style.animationDuration = wander.toFixed(2) + 's';
+        wanderG.style.setProperty('--jx', (Math.cos(angle) * amp).toFixed(2) + 'px');
+        wanderG.style.setProperty('--jy', (Math.sin(angle) * amp).toFixed(2) + 'px');
+        wanderG.style.animationDuration = wander.toFixed(2) + 's';
         // Negative, so every icon starts mid-cycle. Without it the whole
         // field sets off from rest together on the first frame.
-        el.style.animationDelay = (-Math.random() * wander).toFixed(2) + 's';
+        wanderG.style.animationDelay = (-Math.random() * wander).toFixed(2) + 's';
 
-        inner.style.setProperty('--jr', spin.toFixed(2) + 'deg');
-        inner.style.animationDuration = shiver.toFixed(2) + 's';
-        inner.style.animationDelay = (-Math.random() * shiver).toFixed(2) + 's';
+        shiverG.style.setProperty('--jr', spin.toFixed(2) + 'deg');
+        shiverG.style.animationDuration = shiver.toFixed(2) + 's';
+        shiverG.style.animationDelay = (-Math.random() * shiver).toFixed(2) + 's';
+
+        /*
+          Mass from the ink's footprint, so a cinnamon stick shrugs off a
+          carom seed instead of the two trading equal momentum. Clamped at
+          both ends: raw r spans 17 to 554 here (the big ginger root's bbox
+          swallows half a quadrant), and a literal r^2 would make that root
+          immovable, which reads as a bug rather than as weight.
+        */
+        const m = Math.pow(Math.min(Math.max(r, 24), 200), 1.5);
+        return {
+          el,
+          cx: parseFloat(el.getAttribute('data-cx')) || 0,
+          cy: parseFloat(el.getAttribute('data-cy')) || 0,
+          r,
+          inv: 1 / m,
+          leash: Math.min(Math.max(r * 0.5, LEASH_MIN), LEASH_MAX),
+          ox: 0, oy: 0, vx: 0, vy: 0,
+          ang: 0, va: 0,
+          asleep: true,
+          dirty: false,
+        };
       });
+
+      pairs = [];
+      for (let i = 0; i < items.length; i++) {
+        for (let j = i + 1; j < items.length; j++) {
+          const a = items[i];
+          const b = items[j];
+          const d0 = Math.hypot(a.cx - b.cx, a.cy - b.cy);
+          const contact = a.r + b.r;
+          /*
+            Clusters in the drawing deliberately overlap - the pile of coffee
+            beans, the ginger root sitting over its neighbours. If the resting
+            distance were just a.r + b.r those pairs would start inside each
+            other and the solver would blow Santosh's composition apart on the
+            first frame. So a pair's rest distance is capped at how far apart
+            it was actually drawn: it only pushes back once the two are closer
+            than the artist put them.
+          */
+          const rest = Math.min(contact, d0 * 0.9);
+          // Only pairs that could ever touch, given how far each can drift.
+          if (d0 < contact + a.leash + b.leash + 4) pairs.push({ a, b, rest });
+        }
+      }
+
+      // Starts at rest. Nothing is simulated until a pointer crosses the
+      // field; the ambient motion is the CSS underneath and needs no loop.
       return true;
     };
 
-    let loaded = false;
+    const collide = () => {
+      for (let k = 0; k < pairs.length; k++) {
+        const { a, b, rest } = pairs[k];
+        if (a.asleep && b.asleep) continue;
+        const dx = (b.cx + b.ox) - (a.cx + a.ox);
+        const dy = (b.cy + b.oy) - (a.cy + a.oy);
+        const d = Math.hypot(dx, dy);
+        if (d >= rest || d < 1e-4) continue;
+
+        const nx = dx / d;
+        const ny = dy / d;
+        const invSum = a.inv + b.inv;
+
+        // Ease them apart instead of snapping - a hard positional correction
+        // on overlapping art pops visibly at this scale.
+        const push = (rest - d) * 0.12;
+        a.ox -= nx * push * (a.inv / invSum);
+        a.oy -= ny * push * (a.inv / invSum);
+        b.ox += nx * push * (b.inv / invSum);
+        b.oy += ny * push * (b.inv / invSum);
+
+        const rvx = b.vx - a.vx;
+        const rvy = b.vy - a.vy;
+        const vn = rvx * nx + rvy * ny;
+        if (vn < 0) {
+          const imp = (-(1 + RESTITUTION) * vn) / invSum;
+          a.vx -= nx * imp * a.inv;
+          a.vy -= ny * imp * a.inv;
+          b.vx += nx * imp * b.inv;
+          b.vy += ny * imp * b.inv;
+          // Glancing hits spin things; head-on ones don't.
+          const vt = rvx * -ny + rvy * nx;
+          a.va -= vt * 0.5 * a.inv * 220;
+          b.va += vt * 0.5 * b.inv * 220;
+        }
+        a.asleep = false;
+        b.asleep = false;
+      }
+    };
+
+    const integrate = () => {
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (it.asleep) continue;
+
+        it.vx = (it.vx - it.ox * SPRING) * DAMP;
+        it.vy = (it.vy - it.oy * SPRING) * DAMP;
+        it.ox += it.vx;
+        it.oy += it.vy;
+
+        const d = Math.hypot(it.ox, it.oy);
+        if (d > it.leash) {
+          // Bounce off its own leash, so a run of shoves in one direction
+          // can't walk an icon out of the composition.
+          const s = it.leash / d;
+          it.ox *= s;
+          it.oy *= s;
+          const nx = it.ox / it.leash;
+          const ny = it.oy / it.leash;
+          const vn = it.vx * nx + it.vy * ny;
+          if (vn > 0) {
+            it.vx -= 1.6 * vn * nx;
+            it.vy -= 1.6 * vn * ny;
+          }
+        }
+
+        it.va = (it.va - it.ang * SPIN_SPRING) * SPIN_DAMP;
+        it.ang += it.va;
+        if (it.ang > MAX_SPIN) { it.ang = MAX_SPIN; it.va = 0; }
+        if (it.ang < -MAX_SPIN) { it.ang = -MAX_SPIN; it.va = 0; }
+
+        it.dirty = true;
+        if (
+          Math.abs(it.vx) < SLEEP_V && Math.abs(it.vy) < SLEEP_V &&
+          Math.abs(it.va) < SLEEP_V && d < SLEEP_D && Math.abs(it.ang) < 0.08
+        ) {
+          // Settle exactly back onto the drawn position. The ambient layers
+          // underneath carry on from wherever their own clocks are, so the
+          // hand-off is invisible.
+          it.ox = it.oy = it.vx = it.vy = it.ang = it.va = 0;
+          it.asleep = true;
+        }
+      }
+    };
+
+    const draw = () => {
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (!it.dirty) continue;
+        it.dirty = false;
+        if (it.asleep) {
+          it.el.removeAttribute('transform');
+        } else {
+          it.el.setAttribute(
+            'transform',
+            'translate(' + it.ox.toFixed(2) + ',' + it.oy.toFixed(2) + ') rotate(' +
+              it.ang.toFixed(2) + ',' + it.cx + ',' + it.cy + ')'
+          );
+        }
+      }
+    };
+
+    const tick = (now) => {
+      // A tab that was backgrounded comes back with a huge gap; don't
+      // simulate it, just carry on from here.
+      const dt = last ? Math.min((now - last) / 1000, 0.1) : STEP;
+      last = now;
+
+      if (pointer.fresh) {
+        sweep();
+        pointer.fresh = false;
+        pointer.prevX = pointer.x;
+        pointer.prevY = pointer.y;
+      }
+
+      carry = Math.min(carry + dt, 0.25);
+      while (carry >= STEP) {
+        collide();
+        integrate();
+        carry -= STEP;
+      }
+      draw();
+
+      // Stop dead once the field has settled. The next pointer move starts it
+      // again; until then the pointer half costs nothing per frame.
+      let awake = 0;
+      for (let i = 0; i < items.length; i++) {
+        if (!items[i].asleep) awake++;
+      }
+      if (awake) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        raf = 0;
+        last = 0;
+        carry = 0;
+      }
+    };
+
+    const wake = () => {
+      if (raf || !visible || !items.length) return;
+      last = 0;
+      carry = 0;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const onPointerMove = (e) => {
+      if (!visible || !items.length) return;
+      const p = toArt(e.clientX, e.clientY);
+      if (!p) return;
+      pointer.x = p.x;
+      pointer.y = p.y;
+      // The first sample after arriving has no stroke behind it, so treat it
+      // as a standing start rather than a sweep from wherever it was last.
+      if (!pointer.seen) {
+        pointer.prevX = p.x;
+        pointer.prevY = p.y;
+        pointer.seen = true;
+      }
+      pointer.fresh = true;
+      wake();
+    };
+
+    const play = () => {
+      visible = true;
+      dropCTM();
+      bg.classList.add('is-live');
+      wake();
+    };
+
+    const pause = () => {
+      visible = false;
+      pointer.seen = false;
+      // Parks the CSS animations too (animation-play-state), so a visitor
+      // three sections further down is not paying for any of this.
+      bg.classList.remove('is-live');
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
     const load = async () => {
       if (loaded) return;
       loaded = true;
@@ -274,7 +660,7 @@
       const holder = document.createElement('div');
       holder.innerHTML = markup;
       const svg = holder.querySelector('svg');
-      if (!svg || !dress(svg)) return;
+      if (!svg || !build(svg)) return;
       svg.setAttribute('class', 'product-teaser__scatter');
       svg.setAttribute('aria-hidden', 'true');
       svg.setAttribute('focusable', 'false');
@@ -282,36 +668,44 @@
       bg.classList.add('is-scattered');
     };
 
-    // Nothing is fetched until the band is near the viewport, and the
-    // animations are parked (animation-play-state) the moment it leaves, so a
-    // visitor three sections further down is not paying for this.
+    // Nothing is fetched until the band is near the viewport.
     const io = new IntersectionObserver(
       (entries) => {
         const onScreen = entries.some((e) => e.isIntersecting);
-        if (onScreen && motion.matches && wide.matches) {
-          load().then(() => bg.classList.add('is-live'));
+        if (onScreen && !reduceMotion.matches && wide.matches) {
+          load().then(() => { if (items.length) play(); });
         } else {
-          bg.classList.remove('is-live');
+          pause();
         }
       },
       { rootMargin: '200px 0px' }
     );
     io.observe(bg);
 
-    // A window dragged wider, or a visitor who turns motion off mid-visit, is
-    // a new answer to the same question.
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    // Both move the artwork under the cursor without a pointer event firing,
+    // which would leave the cached mapping pointing at the wrong place.
+    window.addEventListener('scroll', dropCTM, { passive: true });
+    window.addEventListener('resize', dropCTM, { passive: true });
+
+    // A window dragged narrow, or a visitor who turns motion off mid-visit,
+    // is a new answer to the same question.
     const recheck = () => {
-      if (motion.matches && wide.matches) return;
-      bg.classList.remove('is-live');
+      if (!reduceMotion.matches && wide.matches) return;
+      pause();
+      items.forEach((it) => {
+        it.ox = it.oy = it.vx = it.vy = it.ang = it.va = 0;
+        it.asleep = true;
+        it.el.removeAttribute('transform');
+      });
     };
-    motion.addEventListener?.('change', recheck);
+    reduceMotion.addEventListener?.('change', recheck);
     wide.addEventListener?.('change', recheck);
 
     bg.dataset.kccReady = 'true';
   })();
 </script>
 {%- endif -%}
-
 {% stylesheet %}
   .product-teaser {
     /* The card frame, the title and the bar are all one terracotta. Pulled
@@ -366,9 +760,18 @@
     display: none;
   }
 
-  /* fill-box so each icon turns about its own centre rather than about the
-     corner of a 2560x1440 viewBox, which would swing it across the band. */
-  .product-teaser__scatter .kcc-scatter__item,
+  /*
+     .kcc-scatter__item is left alone on purpose. The pointer engine writes a
+     `transform` attribute on it, with its own rotation centre baked into the
+     rotate(), and setting transform-box/transform-origin here would apply a
+     second origin shift on top of that and throw every push sideways. The
+     ambient motion therefore lives on the two groups nested inside it.
+
+     fill-box on those, so each icon turns about its own centre rather than
+     about the corner of a 2560x1440 viewBox, which would swing it clean
+     across the band.
+  */
+  .product-teaser__scatter .kcc-scatter__wander,
   .product-teaser__scatter .kcc-scatter__shiver {
     transform-box: fill-box;
     transform-origin: 50% 50%;
@@ -377,7 +780,7 @@
     animation-play-state: paused;
   }
 
-  .product-teaser__scatter .kcc-scatter__item {
+  .product-teaser__scatter .kcc-scatter__wander {
     animation-name: kcc-pt-wander;
   }
 
@@ -385,7 +788,7 @@
     animation-name: kcc-pt-shiver;
   }
 
-  .product-teaser__bg.is-live .kcc-scatter__item,
+  .product-teaser__bg.is-live .kcc-scatter__wander,
   .product-teaser__bg.is-live .kcc-scatter__shiver {
     animation-play-state: running;
   }
@@ -426,7 +829,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .product-teaser__scatter .kcc-scatter__item,
+    .product-teaser__scatter .kcc-scatter__wander,
     .product-teaser__scatter .kcc-scatter__shiver {
       animation: none;
     }
@@ -487,6 +890,12 @@
     .product-teaser__grid {
       grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     }
+  }
+
+  /* The grid cell. Grid rather than block so the card stretches to the row's
+     height without being told to. */
+  .product-teaser__slot {
+    display: grid;
   }
 
   /* Outlined rather than shadowed at rest: the frame is the look. `overflow`

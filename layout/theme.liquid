@@ -169,6 +169,24 @@
         transform: none;
         will-change: auto;
       }
+
+      /* Sideways entrances, for things that belong together: each arrives
+         from its own side of the page and they meet in the middle, rather
+         than queueing in from one edge. `.is-in` above wins over these on
+         specificity, so it is still the one that puts them back.
+
+         Phone width keeps the plain rise: there the cards these are for are
+         nearly full-bleed, so a horizontal start would hang off the screen
+         and give the page a scrollbar for the length of the transition. */
+      @media screen and (min-width: 750px) {
+        .kcc-reveal [data-kcc-rise='left'] {
+          transform: translateX(-2.5rem);
+        }
+
+        .kcc-reveal [data-kcc-rise='right'] {
+          transform: translateX(2.5rem);
+        }
+      }
     }
   </style>
   <style>
