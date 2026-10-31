@@ -8,183 +8,106 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "header": {
-      "type": "page-header",
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "eyebrow": "Catering",
         "heading": "Chai for a room full of people",
-        "body": "<p>Weddings, offices, markets, birthdays. We bring the kettle, the spices and enough cups — you bring the people.</p>",
-        "link_label": "Ask for a quote",
-        "link_url": "/pages/contact",
-        "alignment": "center",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 88,
-        "padding-block-end": 56
+        "lede": "<p>Weddings, offices, markets, birthdays. We bring the kettle, the spices and enough cups — you bring the people.</p>",
+        "image": "shopify://shop_images/DSC03276.jpg",
+        "image_alt": "Chai poured into a long row of cups at an event",
+        "caption": "Two hundred and fifty cups in a session is a normal day.",
+        "link_label": "Start an enquiry",
+        "link": "#quote",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
+        "padding-block-end": 88
       }
     },
-    "offer": {
-      "type": "value-props",
-      "blocks": {
-        "a": {
-          "type": "prop",
-          "settings": {
-            "title": "We pour on site",
-            "body": "Brewed fresh in front of your guests, not carafes made three hours earlier. [Draft — confirm what equipment you can bring and what you need from the venue.]"
-          }
-        },
-        "b": {
-          "type": "prop",
-          "settings": {
-            "title": "Chai and filter coffee",
-            "body": "Both, or just one. Dairy and non-dairy as standard — tell us roughly how the split usually goes for your crowd."
-          }
-        },
-        "c": {
-          "type": "prop",
-          "settings": {
-            "title": "Any size, within reason",
-            "body": "[Draft — confirm your real minimum and maximum headcount, and how much notice you need.]"
-          }
-        }
-      },
-      "block_order": [
-        "a",
-        "b",
-        "c"
-      ],
+    "room": {
+      "type": "story-chapter",
       "settings": {
-        "heading": "How it works",
+        "heading": "We bring the kettle, you bring the room",
+        "body": "<p>Two hundred and fifty cups in a single session is a normal day for us. We pour on site, so the chai reaches people the way it should — hot, fresh, and handed over by someone.</p><p>Brewed in front of your guests, not decanted from carafes made three hours earlier. Chai and South Indian filter coffee, both or just one, with dairy and non-dairy as standard.</p>",
+        "image": "shopify://shop_images/DSC03110.jpg",
+        "image_alt": "Guests gathered with cups at a Ka Chai stall",
+        "caption": "A market crowd, which is the same job as a wedding with worse parking.",
+        "media_side": "end",
         "color_scheme": "scheme-1",
-        "section_width": "page-width",
-        "padding-block-start": 64,
-        "padding-block-end": 64
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     },
-    "enquire": {
-      "type": "contact-details",
+    "quote": {
+      "type": "quote-builder",
+      "settings": {
+        "heading": "Tell us the size of the room",
+        "lede": "<p>Pick a rough headcount and we will do the first bit of the arithmetic. The button opens an email with your numbers already in it — add the date and the venue and send it.</p>",
+        "sizes": "25, 50, 100, 250",
+        "default_guests": "50",
+        "cups_per_head": "1.5",
+        "email": "yum@ka-cc.com",
+        "link_label": "Start the enquiry",
+        "panel_note": "<p>We will come back with what we can bring, what we would need from the venue, and a price. If your date is close, say so in the first line — we will tell you straight away whether it is possible.</p>",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 96,
+        "padding-block-end": 96
+      }
+    },
+    "before": {
+      "type": "pair-notes",
       "blocks": {
-        "e1": {
-          "type": "route",
+        "taste": {
+          "type": "note",
           "settings": {
-            "label": "Get a quote",
-            "detail": "Send the date, rough headcount and the venue. We'll come back with options and a price.",
-            "link_label": "Contact form",
-            "link_url": "/pages/contact"
+            "name": "Taste it first",
+            "text": "<p>Come find us at a market before you book. It is the easiest way to know whether this is right for your event, and it costs you a Saturday morning and four dollars.</p>"
           }
         },
-        "e2": {
-          "type": "route",
+        "tell": {
+          "type": "note",
           "settings": {
-            "label": "Try it first",
-            "detail": "Come find us at the market before you book — easiest way to know if it's right for your event.",
-            "link_label": "Market schedule",
-            "link_url": "/pages/visit-us"
-          }
-        },
-        "e3": {
-          "type": "route",
-          "settings": {
-            "label": "Lead time",
-            "detail": "[Draft — confirm how far ahead you need booking.]",
-            "link_label": "",
-            "link_url": ""
+            "name": "Tell us early",
+            "text": "<p>The blend is ground in small batches, so a date with a few weeks on it is easier than one next week. Ask anyway — we would rather say yes.</p>"
           }
         }
       },
       "block_order": [
-        "e1",
-        "e2",
-        "e3"
+        "taste",
+        "tell"
       ],
       "settings": {
-        "heading": "Booking",
-        "body": "",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 64,
-        "padding-block-end": 72
+        "heading": "Before you book",
+        "lede": "<p>Two things that make the whole thing go better.</p>",
+        "image": "shopify://shop_images/DSC03034.jpg",
+        "image_alt": "Chai poured from a steel jug at the market stall",
+        "caption": "The same pour, whether it is a Saturday morning or a wedding.",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     },
-    "in_the_room": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/DSC03110.jpg"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Catering</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>We bring the kettle, you bring the room</h2>",
-                "type_preset": "h2"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>Two hundred and fifty cups in a single session is a normal day for us. We pour on site, so the chai reaches people the way it should - hot, fresh, and handed over.</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body"
-          ]
-        }
-      },
-      "block_order": [
-        "media",
-        "content"
-      ],
-      "name": "Photo",
+    "close": {
+      "type": "closing-note",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "60svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "Or just come and find us",
+        "body": "<p>The markets are where most catering starts: someone drinks a cup, asks whether we do events, and we talk about it with the kettle still going.</p>",
+        "link_label": "Where to find us",
+        "link": "/pages/visit-us",
+        "image": "shopify://shop_images/DSC03202.jpg",
+        "image_alt": "A cup of chai handed from one person to another",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "header",
-    "in_the_room",
-    "offer",
-    "enquire"
+    "hero",
+    "room",
+    "quote",
+    "before",
+    "close"
   ]
 }

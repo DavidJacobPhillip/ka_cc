@@ -1,0 +1,317 @@
+{% comment %}
+  The catering enquiry, built on the page instead of behind a contact form.
+
+  Pick a headcount and the page works out roughly how much chai that is, then
+  hands you an email with the numbers already written into it. Nothing here is
+  invented: the only assumption is cups per head, which is a setting and is
+  stated on the page in words rather than hidden in the arithmetic.
+
+  No prices. We do not have a price list to quote from, so the page asks for
+  the three things a quote needs - date, headcount, venue - and says so.
+
+  Without JavaScript the section is still a working enquiry: the button is a
+  plain mailto link and the default headcount's numbers are in the markup.
+{% endcomment %}
+
+{%- liquid
+  assign default_guests = section.settings.default_guests | default: 50
+  assign per_head = section.settings.cups_per_head | default: 1.5
+  assign default_cups = default_guests | times: per_head | round
+-%}
+
+{%- comment -%}
+  A stable anchor, so links elsewhere on the page can say #quote without
+  knowing the section's generated id (which the script needs for scoping).
+{%- endcomment -%}
+<span class="quote__anchor" id="quote"></span>
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} quote spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+  id="quote-{{ section.id }}"
+  data-kcc-per-head="{{ per_head }}"
+  data-kcc-email="{{ section.settings.email }}"
+>
+  <div class="quote__head">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="quote__heading" data-kcc-rise>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.lede != blank -%}
+      <div class="quote__lede rte" data-kcc-rise>{{ section.settings.lede }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="quote__panel" data-kcc-rise>
+    <fieldset class="quote__field">
+      <legend class="quote__legend">How many people are you pouring for?</legend>
+      <div class="quote__choices">
+        {%- assign sizes = section.settings.sizes | split: ',' -%}
+        {%- for size in sizes -%}
+          {%- assign clean = size | strip -%}
+          <label class="quote__choice">
+            <input
+              type="radio"
+              name="quote-size-{{ section.id }}"
+              value="{{ clean }}"
+              {% if clean == default_guests %}checked{% endif %}
+              data-kcc-guests
+            >
+            <span>{{ clean }}</span>
+          </label>
+        {%- endfor -%}
+      </div>
+    </fieldset>
+
+    <div class="quote__result">
+      <p class="quote__result-figure" data-kcc-cups>{{ default_cups }}</p>
+      <p class="quote__result-text">
+        cups of chai, give or take. We plan on about {{ per_head }} a head, and bring dairy and
+        non-dairy as standard.
+      </p>
+
+      <a class="quote__action" href="{{ section.settings.email | prepend: 'mailto:' }}" data-kcc-mail>
+        {{ section.settings.link_label | default: 'Start the enquiry' }}
+      </a>
+
+      {%- if section.settings.panel_note != blank -%}
+        <div class="quote__note rte">{{ section.settings.panel_note }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const root = document.getElementById('quote-{{ section.id }}');
+    if (!root || root.dataset.kccReady) return;
+    root.dataset.kccReady = 'true';
+
+    const perHead = parseFloat(root.dataset.kccPerHead) || 1.5;
+    const email = root.dataset.kccEmail;
+    const cups = root.querySelector('[data-kcc-cups]');
+    const mail = root.querySelector('[data-kcc-mail]');
+
+    const render = (guests) => {
+      const total = Math.round(guests * perHead);
+      if (cups) cups.textContent = total;
+      if (!mail || !email) return;
+
+      const subject = 'Catering enquiry — about ' + guests + ' people';
+      const body = [
+        'Hello,',
+        '',
+        'I am looking at chai for about ' + guests + ' people (roughly ' + total + ' cups).',
+        '',
+        'Date: ',
+        'Venue and address: ',
+        'Indoors or outdoors: ',
+        'Chai, filter coffee, or both: ',
+        '',
+        'Thank you,',
+      ].join('\n');
+
+      mail.href =
+        'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    };
+
+    root.querySelectorAll('[data-kcc-guests]').forEach((input) => {
+      input.addEventListener('change', () => render(parseInt(input.value, 10) || 0));
+    });
+
+    const checked = root.querySelector('[data-kcc-guests]:checked');
+    render(checked ? parseInt(checked.value, 10) : {{ default_guests }});
+  })();
+</script>
+
+{% stylesheet %}
+  .quote__anchor {
+    display: block;
+    scroll-margin-block-start: 6rem;
+  }
+
+  .quote__head {
+    max-width: 42rem;
+  }
+
+  .quote__heading {
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-h2);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .quote__lede p {
+    margin: 1rem 0 0;
+    font-size: var(--kcc-body);
+    line-height: 1.6;
+  }
+
+  /* Two columns on a wide screen - the question on the left, the answer and
+     the button on the right - so the panel uses the width the page sets up
+     instead of leaving half the screen empty beside it. */
+  .quote__panel {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    margin-block-start: clamp(2rem, 4vw, 3rem);
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    background: color-mix(in srgb, var(--color-foreground) 6%, transparent);
+  }
+
+  .quote__field {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-inline-size: 0;
+  }
+
+  /* Set in the body face at reading size: it is the label on a control, and
+     at display size it reads as a section heading with the choices as a
+     caption under it. */
+  .quote__legend {
+    font-size: var(--kcc-body);
+    font-weight: 700;
+    line-height: 1.4;
+    padding: 0;
+    margin-block-end: 1rem;
+  }
+
+  .quote__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .quote__choice input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .quote__choice span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4rem;
+    min-height: 2.75rem;
+    padding: 0 1.125rem;
+    background: var(--color-background);
+    font-size: var(--kcc-body);
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  }
+
+  .quote__choice:hover span {
+    background: color-mix(in srgb, var(--color-primary, #cd643f) 16%, var(--color-background));
+  }
+
+  .quote__choice input:checked + span {
+    background: var(--color-primary-hover, #a45032);
+    color: #fff;
+  }
+
+  .quote__choice input:focus-visible + span {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  .quote__choice:active span {
+    transform: translateY(1px);
+  }
+
+  /* The answer, as a sentence with one big number in it rather than a stat
+     card: the figure is the only thing that changes, so it is the only thing
+     that needs to be large. */
+  /* On a phone the answer comes first and the choices sit under it: stacked
+     the other way round, the last choice chip reads as a label sitting above
+     the number, which is the eyebrow shape this site is trying to be rid of. */
+  .quote__result {
+    align-self: center;
+    order: -1;
+  }
+
+  @media screen and (min-width: 750px) {
+    .quote__result {
+      order: 0;
+    }
+  }
+
+  .quote__result-figure {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-display);
+    line-height: 0.9;
+    color: var(--color-primary-hover, #a45032);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .quote__result-text {
+    margin: 0.5rem 0 0;
+    font-size: var(--kcc-body);
+    line-height: 1.5;
+    max-width: 24rem;
+  }
+
+  .quote__action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-block-start: clamp(1.5rem, 3vw, 2rem);
+    padding: 0.75rem 1.5rem;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font-size: var(--kcc-body);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .quote__action:hover {
+    opacity: 0.88;
+  }
+
+  .quote__action:active {
+    transform: translateY(1px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .quote__panel {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  .quote__note p {
+    margin: 1.25rem 0 0;
+    font-size: var(--kcc-small);
+    line-height: 1.6;
+    opacity: 0.85;
+    max-width: 32rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Quote builder",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Tell us the size of the room" },
+    { "type": "richtext", "id": "lede", "label": "Opening sentence" },
+    { "type": "text", "id": "sizes", "label": "Headcounts offered", "default": "25, 50, 100, 250" },
+    { "type": "text", "id": "default_guests", "label": "Default headcount", "default": "50" },
+    { "type": "text", "id": "cups_per_head", "label": "Cups per head", "default": "1.5" },
+    { "type": "text", "id": "email", "label": "Enquiries email" },
+    { "type": "text", "id": "link_label", "label": "Button label", "default": "Start the enquiry" },
+    { "type": "richtext", "id": "panel_note", "label": "Note under the button" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-9" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "presets": [{ "name": "Quote builder" }]
+}
+{% endschema %}
