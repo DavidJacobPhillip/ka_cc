@@ -1,0 +1,156 @@
+{% comment %}
+  Two things set against each other - two growing regions, two halves of an
+  order, two ways of doing something - under one heading, with a single
+  photograph running the full width beneath them.
+
+  Deliberately not a row of cards: no boxes, no icons, no rules. The pair is
+  two columns of plain text with the names set large in the display face, and
+  the one picture is shared rather than repeated per column, so the section
+  cannot fall into the three-identical-boxes shape.
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} pair-notes spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+>
+  <div class="pair-notes__head">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pair-notes__heading" data-kcc-rise>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.lede != blank -%}
+      <div class="pair-notes__lede rte" data-kcc-rise>{{ section.settings.lede }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="pair-notes__items">
+    {%- for block in section.blocks -%}
+      <div class="pair-notes__item" data-kcc-rise {{ block.shopify_attributes }}>
+        {%- if block.settings.name != blank -%}
+          <h3 class="pair-notes__name">{{ block.settings.name }}</h3>
+        {%- endif -%}
+        {%- if block.settings.text != blank -%}
+          <div class="pair-notes__text rte">{{ block.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.image != blank -%}
+    <figure class="pair-notes__figure force-full-width" data-kcc-rise>
+      {{
+        section.settings.image
+        | image_url: width: 2200
+        | image_tag:
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2200',
+          alt: section.settings.image_alt,
+          class: 'pair-notes__image'
+      }}
+      {%- if section.settings.caption != blank -%}
+        <figcaption class="pair-notes__caption">{{ section.settings.caption }}</figcaption>
+      {%- endif -%}
+    </figure>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .pair-notes__head {
+    max-width: 42rem;
+  }
+
+  .pair-notes__heading {
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-h2);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .pair-notes__lede p {
+    margin: 1rem 0 0;
+    font-size: var(--kcc-body);
+    line-height: 1.6;
+  }
+
+  .pair-notes__items {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-block-start: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .pair-notes__name {
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-h3);
+    line-height: 1.05;
+    margin: 0 0 0.75rem;
+    color: var(--color-primary, #cd643f);
+  }
+
+  .pair-notes__text p {
+    margin: 0 0 0.75rem;
+    font-size: var(--kcc-body);
+    line-height: 1.6;
+    max-width: 30rem;
+  }
+
+  .pair-notes__text p:last-child {
+    margin-block-end: 0;
+  }
+
+  .pair-notes__figure {
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  }
+
+  .pair-notes__image {
+    width: 100%;
+    height: clamp(13rem, 30vw, 24rem);
+    object-fit: cover;
+    display: block;
+  }
+
+  .pair-notes__caption {
+    margin: 0.875rem 0 0;
+    padding-inline: var(--page-margin, 1.25rem);
+    font-size: var(--kcc-small);
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  @media screen and (min-width: 750px) {
+    .pair-notes__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pair of notes",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "lede", "label": "Opening sentence" },
+    { "type": "image_picker", "id": "image", "label": "Photograph beneath" },
+    { "type": "text", "id": "image_alt", "label": "Photograph description" },
+    { "type": "text", "id": "caption", "label": "Caption" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-9" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    {
+      "type": "note",
+      "name": "Note",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [{ "name": "Pair of notes" }]
+}
+{% endschema %}

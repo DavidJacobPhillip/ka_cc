@@ -1,0 +1,101 @@
+{% comment %}
+  A whole field of colour holding one thing someone said.
+
+  The page's rest, and the only one: a section that is a single statement on a
+  flat ground, with nothing else competing. It stays a paragraph rather than
+  becoming a heading - about 25 words and no larger than 36px on desktop -
+  because a sentence set at headline size over four lines reads as a headline
+  that has got out of hand.
+{% endcomment %}
+
+{%- comment -%}
+  The field is painted on this element rather than on the theme's absolutely
+  positioned .section-background sibling, so the colour is actually in the
+  text's own background chain - a contrast meter reading the sibling sees
+  white behind white, and so would a browser's own high-contrast handling.
+{%- endcomment -%}
+<div
+  class="color-{{ section.settings.color_scheme }} field-statement spacing-style"
+  style="background: {{ section.settings.band_color }}; {%- render 'spacing-style', settings: section.settings %}"
+>
+  <div class="field-statement__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="field-statement__heading" data-kcc-rise>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.statement != blank -%}
+      <blockquote class="field-statement__quote" data-kcc-rise>
+        {{ section.settings.statement }}
+      </blockquote>
+    {%- endif -%}
+
+    {%- if section.settings.attribution != blank -%}
+      <p class="field-statement__attribution" data-kcc-rise>{{ section.settings.attribution }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .field-statement {
+    padding-inline: clamp(1.25rem, 5vw, 5rem);
+  }
+
+  .field-statement__inner {
+    max-width: 44rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  /* Present so the section has a name of its own in the page outline, and
+     visually quiet so the statement stays the thing you read. */
+  .field-statement__heading {
+    font-family: var(--font-heading--family);
+    font-size: var(--kcc-body);
+    line-height: 1.2;
+    margin: 0 0 1.5rem;
+    opacity: 0.75;
+  }
+
+  .field-statement__quote {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    /* A statement, not a headline: capped at the house limit of 36px on
+       desktop and 24px on a phone, which is what keeps it readable as a
+       sentence rather than as a heading that has got out of hand. */
+    font-size: var(--kcc-h3);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .field-statement__quote p {
+    margin: 0 0 0.75rem;
+  }
+
+  .field-statement__quote p:last-child {
+    margin-block-end: 0;
+  }
+
+  .field-statement__attribution {
+    margin: 1.75rem 0 0;
+    font-size: var(--kcc-small);
+    opacity: 0.85;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Field statement",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Section name" },
+    { "type": "richtext", "id": "statement", "label": "Statement" },
+    { "type": "text", "id": "attribution", "label": "Attribution" },
+    { "type": "color", "id": "band_color", "label": "Field colour", "default": "#2e6417" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-4" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 240, "step": 4, "unit": "px", "default": 112 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 240, "step": 4, "unit": "px", "default": 112 }
+  ],
+  "presets": [{ "name": "Field statement" }]
+}
+{% endschema %}

@@ -8,321 +8,92 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "opening": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/DSC03202.jpg"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Our story</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h1>I didn't grow up drinking chai</h1>",
-                "type_preset": "h2"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>My parents are from Tamil Nadu, the southernmost state in India. We drink filter coffee. Where I grew up, chai was spoken about as a North Indian thing — someone else's drink.</p><p>What I did grow up with was the complaint. Everyone around me agreed that the chai in American coffee shops was nothing like the real thing. I knew it. It just never occurred to me that it was mine to fix.</p>",
-                "type_preset": "rte",
-                "max_width": "normal"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body"
-          ]
-        }
-      },
-      "block_order": [
-        "media",
-        "content"
-      ],
-      "name": "Opening",
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "70svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "heading": "I didn't grow up drinking chai",
+        "lede": "<p>My parents are from Tamil Nadu, the southernmost state in India. We drink filter coffee. Where I grew up, chai was spoken about as a North Indian thing — someone else's drink.</p>",
+        "image": "shopify://shop_images/DSC03202.jpg",
+        "image_alt": "A small sample cup of chai passed from one hand to another",
+        "caption": "A sample, handed over at the market stall.",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
+        "padding-block-end": 88,
+        "link_label": "Shop the chai",
+        "link": "/collections/all"
       }
     },
-    "provenance_story": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/DSC03601.jpg"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Why These Two Regions</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>Assam for depth. Kericho for backbone.</h2>",
-                "type_preset": "h3"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>We chose Assam, India and Kericho, Kenya deliberately — one gives the malty depth chai needs, the other gives it the structure to stand up to milk and spice. The masala blend is whole-spice, hand-mixed here in Portland, batch by batch. No shortcuts, no fillers, no dilution for scale.</p>",
-                "type_preset": "rte",
-                "max_width": "narrow"
-              },
-              "blocks": {}
-            },
-            "button": {
-              "type": "button",
-              "name": "Button",
-              "settings": {
-                "label": "Shop the blends",
-                "link": "shopify://collections/all",
-                "style_class": "link"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body",
-            "button"
-          ]
-        }
-      },
-      "block_order": [
-        "media",
-        "content"
-      ],
-      "name": "Provenance story",
+    "complaint": {
+      "type": "story-chapter",
       "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "70svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-3",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
-    "spark": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/DSC03034.jpg"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>The spark</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>Then a friend said the thing that stuck</h2>",
-                "type_preset": "h2"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>He'd grown up in Mumbai and was doing his master's here. One afternoon he said: <em>“Man, I'm craving chai, and there's nowhere I can get it.”</em></p><p>That was the call to action. What I still didn't have was the reason. I loved that chai was ours — but that on its own isn't a reason to build a company.</p>",
-                "type_preset": "rte",
-                "max_width": "normal"
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body"
-          ]
-        }
-      },
-      "block_order": [
-        "media",
-        "content"
-      ],
-      "name": "The spark",
-      "settings": {
-        "media_position": "right",
-        "media_width": "medium",
-        "media_height": "70svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "heading": "Then a friend said the thing that stuck",
+        "body": "<p>What I did grow up with was the complaint. Everyone around me agreed that the chai in American coffee shops was nothing like the real thing. I knew it. It just never occurred to me that it was mine to fix.</p><p>Then a friend who'd grown up in Mumbai, here for his master's, said it plainly one afternoon: <em>“Man, I'm craving chai, and there's nowhere I can get it.”</em></p><p>That was the call to action. What I still didn't have was the reason.</p>",
+        "image": "shopify://shop_images/DSC03034.jpg",
+        "image_alt": "Chai poured from a steel jug into a cup at the market stall",
+        "caption": "Pouring at Cedar Mills, where the answer to that friend now gets served.",
+        "media_side": "end",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     },
     "india": {
-      "type": "media-with-content",
+      "type": "story-chapter",
+      "settings": {
+        "heading": "The chai was never the point",
+        "body": "<p>After graduating I spent several months in India, and the way people drink chai there was impossible to miss. Not sit-down cafés — roadside stalls, gallons of it on the boil all day, for anyone walking past.</p><p>The chaiwalas were holding something together. They knew their regulars by name. None of it was transactional.</p><p>American coffee culture doesn't ask anything of the person serving you, or of the person being served. I think that's part of why this country is as lonely as it is.</p>",
+        "image": "shopify://shop_images/DSC03473.jpg",
+        "image_alt": "Steam rising off a tall pot of chai on the boil",
+        "caption": "Gallons on the boil, Portland version.",
+        "media_side": "start",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 96,
+        "padding-block-end": 96
+      }
+    },
+    "point": {
+      "type": "field-statement",
+      "settings": {
+        "heading": "What we're actually for",
+        "statement": "<p>So the chai isn't the end goal — it's the reason to stand still for a minute and talk to someone.</p>",
+        "attribution": "Santosh Ramesh, founder",
+        "color_scheme": "scheme-4",
+        "padding-block-start": 120,
+        "padding-block-end": 120,
+        "band_color": "#2e6417"
+      }
+    },
+    "regions": {
+      "type": "pair-notes",
       "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
+        "assam": {
+          "type": "note",
           "settings": {
-            "media_type": "image",
-            "image_position": "cover",
-            "image": "shopify://shop_images/DSC03473.jpg"
-          },
-          "blocks": {}
+            "name": "Assam, India",
+            "text": "<p>The malty depth chai needs. Grown in the valley the plant itself is native to, and strong enough that milk doesn't flatten it.</p>"
+          }
         },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
+        "kericho": {
+          "type": "note",
           "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "caption": {
-              "type": "text",
-              "name": "Caption",
-              "settings": {
-                "text": "<p>Portland · Tamil Nadu</p>",
-                "type_preset": "h6"
-              },
-              "blocks": {}
-            },
-            "heading": {
-              "type": "text",
-              "name": "Heading",
-              "settings": {
-                "text": "<h2>The chai was never the point</h2>",
-                "type_preset": "h2"
-              },
-              "blocks": {}
-            },
-            "body": {
-              "type": "text",
-              "name": "Body",
-              "settings": {
-                "text": "<p>After graduating I spent several months in India, and the way people drink chai there was impossible to miss. Not sit-down cafés — roadside stalls, gallons of it on the boil all day, for anyone walking past.</p><p>The chaiwalas were holding something together. They knew their regulars by name. None of it was transactional.</p><p>American coffee culture doesn't ask anything of the person serving you, or of the person being served. I think that's part of why this country is as lonely as it is. So the chai isn't the end goal — it's the reason to stand still for a minute and talk to someone.</p>",
-                "type_preset": "rte",
-                "max_width": "normal"
-              },
-              "blocks": {}
-            },
-            "signature": {
-              "type": "text",
-              "name": "Signature",
-              "settings": {
-                "text": "<p>— Santosh Ramesh, founder</p>",
-                "type_preset": "rte",
-                "max_width": "normal"
-              }
-            }
-          },
-          "block_order": [
-            "caption",
-            "heading",
-            "body",
-            "signature"
-          ]
+            "name": "Kericho, Kenya",
+            "text": "<p>The backbone. High ground, cool nights, and a brisk edge that gives the blend its structure against the spice.</p>"
+          }
         }
       },
       "block_order": [
-        "media",
-        "content"
+        "assam",
+        "kericho"
       ],
-      "name": "What I found in India",
       "settings": {
-        "media_position": "left",
-        "media_width": "medium",
-        "media_height": "70svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "heading": "Two leaves, not one",
+        "lede": "<p>We chose both regions deliberately. The masala is whole-spice, hand-mixed here in Portland, batch by batch — no fillers, no dilution for scale.</p>",
+        "image": "shopify://shop_images/DSC03601.jpg",
+        "image_alt": "Jars of whole spices laid out on the market table",
+        "caption": "The whole spices, before they are ground: the blend is mixed in Portland, batch by batch.",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     },
     "why_ka": {
@@ -333,18 +104,39 @@
         "glyph_alt": "The letter ka, written in thirteen Indian scripts",
         "caption": "“Ka”, in thirteen Indian scripts. The same sound, and almost nothing in common.",
         "closing": "An Indian company, built for America. All of it.",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-8",
         "section_width": "page-width",
         "padding-block-start": 80,
-        "padding-block-end": 80
+        "padding-block-end": 80,
+        "show_pattern": true,
+        "pattern_opacity": 45,
+        "pattern_color": "#f7ebe7"
+      }
+    },
+    "close": {
+      "type": "closing-note",
+      "settings": {
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "Come stand still for a minute",
+        "body": "<p>We pour at the Cedar Mills farmers market every Saturday morning, and the kettle is on from nine. Bring someone to talk to.</p>",
+        "link_label": "Where to find us",
+        "link": "/pages/visit-us",
+        "image": "shopify://shop_images/DSC03494.jpg",
+        "image_alt": "Three friends holding cups of chai at the farmers market",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "opening",
-    "spark",
+    "hero",
+    "complaint",
     "india",
+    "point",
+    "regions",
     "why_ka",
-    "provenance_story"
+    "close"
   ]
 }

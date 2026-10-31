@@ -75,6 +75,19 @@
   {%- endcomment -%}
   <script>document.documentElement.classList.add('kcc-reveal');</script>
   <style>
+    /* The scale for the pages rebuilt in this pass. Five sizes do all the
+       visible work - display, heading, sub-heading, body, small - and every
+       section references these rather than inventing a clamp of its own,
+       which is how the pages ended up with sixteen sizes between them. */
+    :root {
+      --kcc-display: clamp(2.75rem, 6.4vw, 5.75rem);
+      --kcc-h2: clamp(1.875rem, 3.6vw, 3.25rem);
+      --kcc-h3: clamp(1.375rem, 2.4vw, 2.25rem);
+      --kcc-body: clamp(1.0625rem, 1.35vw, 1.1875rem);
+      --kcc-small: 0.9375rem;
+    }
+  </style>
+  <style>
     @media (prefers-reduced-motion: no-preference) {
       .kcc-reveal [data-kcc-rise] {
         opacity: 0;
