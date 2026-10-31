@@ -16,14 +16,14 @@
   style="{%- render 'spacing-style', settings: section.settings %}"
 >
   {%- if section.settings.heading != blank -%}
-    <h2 class="timeline__heading">{{ section.settings.heading }}</h2>
+    <h2 class="timeline__heading" data-kcc-rise>{{ section.settings.heading }}</h2>
   {%- endif -%}
 
   {%- assign entries = section.blocks | where: 'type', 'entry' -%}
   {%- if entries.size > 0 -%}
     <ol class="timeline__list" role="list">
       {%- for block in entries -%}
-        <li class="timeline__entry" {{ block.shopify_attributes }}>
+        <li class="timeline__entry" data-kcc-rise {{ block.shopify_attributes }}>
           <span class="timeline__marker">{{ block.settings.marker }}</span>
           <div class="timeline__content">
             <div class="timeline__text">
@@ -91,8 +91,10 @@
 {% stylesheet %}
   .timeline__heading {
     font-family: var(--font-heading--family);
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-    margin: 0 0 2.5rem;
+    font-size: var(--kcc-h2);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0 0 clamp(2rem, 4vw, 3rem);
   }
 
   .timeline__list {
@@ -102,65 +104,45 @@
     position: relative;
     /* Wide enough for a text column and a photo column side by side. The
        text itself is still held to a readable measure below. */
-    max-width: 58rem;
+    max-width: 64rem;
   }
 
-  /* The rail. Drawn on the list and inset by half a marker so it runs through
-     the centre of the dots, and stops at the final one rather than trailing. */
-  .timeline__list::before {
-    content: '';
-    position: absolute;
-    inset-block: 0.6rem auto;
-    height: calc(100% - 1.2rem);
-    inset-inline-start: 0.35rem;
-    width: 1px;
-    background: var(--color-border, currentColor);
-    opacity: 0.6;
-  }
+  /* No rail. It was a 1px line down the page holding a column of small grey
+     entries together; the dates themselves, set large and in order, are the
+     rail. Space does the rest. */
 
   .timeline__entry {
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.35rem;
-    padding-inline-start: 2.25rem;
-    padding-block-end: 2.25rem;
+    gap: 0.5rem;
+    padding-block-end: clamp(2.5rem, 5vw, 4rem);
   }
 
   .timeline__entry:last-child {
     padding-block-end: 0;
   }
 
-  .timeline__entry::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-start: 0.45rem;
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background: var(--color-primary, currentColor);
-  }
-
+  /* The date, in the display face at reading size rather than as a tracked
+     capital label. It is the thing that puts the entry in order, so it is
+     set like a date on a letter, not like a tag. */
   .timeline__marker {
     font-family: var(--font-heading--family);
-    font-size: 0.8125rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-primary, currentColor);
+    font-size: var(--kcc-body);
+    color: var(--color-primary-hover, #a45032);
   }
 
   .timeline__title {
     font-family: var(--font-heading--family);
-    font-size: 1.25rem;
-    line-height: 1.3;
-    margin: 0.15rem 0 0.35rem;
+    font-size: var(--kcc-h3);
+    line-height: 1.1;
+    margin: 0.15rem 0 0.5rem;
   }
 
   .timeline__body {
     margin: 0;
-    line-height: 1.7;
-    opacity: 0.8;
+    font-size: var(--kcc-body);
+    line-height: 1.65;
     max-width: 46ch;
   }
 
@@ -174,15 +156,15 @@
     margin-block-start: 1rem;
   }
 
+  /* Square corners, no shadow, and big enough to be looked at: twenty
+     rounded thumbnails with a drop shadow each was the most templated thing
+     on the site. */
   .timeline__photo {
-    height: 8.5rem;
+    height: clamp(11rem, 26vw, 15rem);
     width: auto;
     max-width: 100%;
-    border-radius: 0.5rem;
     object-fit: cover;
-    /* Phone photos straight off a camera roll; a hairline keeps the pale
-       ones from bleeding into the page background. */
-    box-shadow: 0 0 0 1px rgb(43 22 8 / 0.06), 0 0.5rem 1.25rem rgb(43 22 8 / 0.1);
+    display: block;
   }
 
   /* Once there's room, photos move out of the text's way and sit in their
@@ -205,7 +187,7 @@
     }
 
     .timeline__photo {
-      height: 9.5rem;
+      height: clamp(13rem, 17vw, 17rem);
     }
 
     /* Entries with no photo get the full width back. */
@@ -214,22 +196,24 @@
     }
   }
 
+  /* The thanks sit on a step in tone rather than under a rule. */
   .timeline__thanks {
-    margin-block-start: 3.5rem;
-    padding-block-start: 2.5rem;
-    border-block-start: 1px solid var(--color-border, currentColor);
+    margin-block-start: clamp(3rem, 6vw, 4.5rem);
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+    background: color-mix(in srgb, var(--color-foreground) 6%, transparent);
     max-width: 44rem;
   }
 
   .timeline__thanks-title {
     font-family: var(--font-heading--family);
-    font-size: 1.375rem;
+    font-size: var(--kcc-h3);
+    line-height: 1.1;
     margin: 0 0 1rem;
   }
 
   .timeline__thanks-body {
-    line-height: 1.8;
-    opacity: 0.85;
+    font-size: var(--kcc-body);
+    line-height: 1.75;
   }
 
   .timeline__thanks-body p {

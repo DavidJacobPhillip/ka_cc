@@ -8,17 +8,19 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "header": {
-      "type": "page-header",
+    "hero": {
+      "type": "page-hero",
       "settings": {
-        "eyebrow": "Milestones + thanks",
         "heading": "How we got here",
-        "body": "<p>A friend mentioned that nobody at OSU could find good chai. Three years later there is a stall, a shelf, a concentrate and a wholesale order. Every first, in order, and the people behind them.</p>",
-        "alignment": "center",
-        "color_scheme": "scheme-2",
-        "section_width": "page-width",
-        "padding-block-start": 88,
-        "padding-block-end": 56
+        "lede": "<p>A friend mentioned that nobody at OSU could find good chai. Three years later there is a stall, a shelf and a wholesale order. Every first, in order, and the people behind them.</p>",
+        "image": "shopify://shop_images/timeline-2024-06-01-first-sale.jpg",
+        "image_alt": "The first sale at a market stall",
+        "caption": "The first sale, June 2024.",
+        "link_label": "Shop the chai",
+        "link": "/collections/all",
+        "color_scheme": "scheme-9",
+        "padding-block-start": 72,
+        "padding-block-end": 88
       }
     },
     "story": {
@@ -129,9 +131,8 @@
           "type": "entry",
           "settings": {
             "marker": "Jan 29, 2026",
-            "title": "Testing out a chai concentrate",
-            "body": "Heman gave us the green light to start figuring out ODA approval on the concentrate.",
-            "image": "shopify://shop_images/timeline-2026-01-29-concentrate-test.jpg"
+            "title": "Started the state approval paperwork",
+            "body": "Heman gave us the green light to start figuring out ODA approval."
           }
         },
         "m13": {
@@ -174,9 +175,8 @@
           "type": "entry",
           "settings": {
             "marker": "Jul 6, 2026",
-            "title": "First wholesale concentrate order",
-            "body": "Courtesy of Heman Bojwani at Earthly Gourmet for supporting this.",
-            "image": "shopify://shop_images/timeline-2026-07-06-wholesale.jpg"
+            "title": "First wholesale order",
+            "body": "Courtesy of Heman Bojwani at Earthly Gourmet for supporting this."
           }
         },
         "ty": {
@@ -211,13 +211,30 @@
         "heading": "Milestones",
         "color_scheme": "scheme-1",
         "section_width": "page-width",
-        "padding-block-start": 48,
-        "padding-block-end": 88
+        "padding-block-start": 96,
+        "padding-block-end": 96
+      }
+    },
+    "close": {
+      "type": "closing-note",
+      "settings": {
+        "show_wave": true,
+        "band_color": "#754B2A",
+        "heading": "The next first",
+        "body": "<p>A room of our own is the one still missing. Until then the kettle is at the market on Saturdays, and every first on this page started with someone standing at it.</p>",
+        "link_label": "Where to find us",
+        "link": "/pages/visit-us",
+        "image": "shopify://shop_images/DSC03486.jpg",
+        "image_alt": "A customer holding a cup of chai in both hands",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 96
       }
     }
   },
   "order": [
-    "header",
-    "story"
+    "hero",
+    "story",
+    "close"
   ]
 }
