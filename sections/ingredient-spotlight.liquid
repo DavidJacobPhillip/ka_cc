@@ -989,6 +989,10 @@
 
     margin: 0;
     text-align: center;
+    /* It is one line on a desktop and two on a phone; balance is what keeps
+       the break from leaving one word stranded under a full line at the
+       widths in between. */
+    text-wrap: balance;
   }
 
   .ingredient-spotlight__panels {
@@ -1362,6 +1366,124 @@
 
   .ingredient-spotlight__disclaimer p:last-child {
     margin-block-end: 0;
+  }
+
+  /* Two paragraphs doing two jobs. The first is the FDA sentence - required,
+     and nobody reads it. The second is the grandma line, which is brand voice
+     and is the reason anyone looks down here at all. Set at one size they
+     competed, and the pair measured 267px on a phone - taller than the
+     illustration above them, and the heaviest thing in the section.
+
+     The legal line drops to the footnote size this section already uses for
+     .ingredient-spotlight__note, which is what lets the joke land at reading
+     size instead of alongside it. Opacity is deliberately left alone: the
+     block already carries 0.9, which puts #754B2A at 5.8:1 on white, and a
+     second multiplier would take 15px text under AA.
+
+     :not(:last-child) so a disclaimer written as a single paragraph keeps the
+     full size rather than silently shrinking. */
+  .ingredient-spotlight__disclaimer p:first-child:not(:last-child) {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  /* ---- Phone ------------------------------------------------------------
+
+     The picker goes above the panel it controls.
+
+     Stacked, the nine buttons sat underneath text that is a different length
+     for every spice - ginger's benefits wrap to a fourth line, tea and coffee
+     each carry a note - so every tap resized the panel above the row and shoved
+     the row down, out from under the thumb that had just pressed it. Measured
+     at 390px with the row held where a thumb holds it: ginger 36px, black tea
+     85px, coffee 108px, against a 52px button. You would reach for the
+     neighbour and press whatever had slid into its place.
+
+     The same three taps at 1440 move the row 5px, because there the text sits
+     in a fixed 23rem column beside the drawing and the drawing sets the
+     height. So it is the stacking that breaks it, not the content, and the
+     repair belongs at this width alone. Above the panel, nothing that resizes
+     is below the hand - the panel grows downwards, away from it.
+
+     Done with order rather than by moving the markup: the panels hold nothing
+     focusable, so the only tab stops in the section are the nine buttons and
+     their order is untouched, and the reading order stays the one the desktop
+     shows.
+
+     Spacing, and what it groups. One flat 1.5rem gap ran between all four
+     children, so the section title, the picker, the panel and the legal note
+     were each exactly as far from the next as from anything else and nothing
+     read as belonging to anything. The gap goes to zero and every join is
+     spaced for what it joins: picker and panel close, as one question and its
+     answer; the title set above the pair; the fine print pushed well clear of
+     both and put under a rule, so the section ends there rather than running
+     on into a fifth block of copy. */
+  @media screen and (max-width: 749px) {
+    .ingredient-spotlight__inner {
+      gap: 0;
+    }
+
+    /* Close under the title, because that is what it belongs to: the two of
+       them are the section's header, and the picker is the heading's control.
+       Spaced evenly between the title and the panel it floated between the
+       two and read as a third, unattached thing. */
+    .ingredient-spotlight__buttons {
+      margin-block-start: 1.25rem;
+    }
+
+    /* Then a clear step down to the answer, so the name, its benefits and its
+       drawing hold together as one block rather than as three more entries in
+       an even column. */
+    .ingredient-spotlight__panels {
+      order: 1;
+      margin-block-start: 2.5rem;
+    }
+
+    /* Separated by space and by size, and deliberately not by a rule. A rule
+       above fine print is a promotion - it is the device that says a new
+       section starts here and you should look - and the whole point of this
+       join is to send the required sentence down the page, not up it. The
+       drop from 17px to 15px and a gap twice anything else in the section
+       say it without drawing the eye. */
+    .ingredient-spotlight__disclaimer {
+      order: 2;
+      margin-block-start: 3.5rem;
+    }
+
+    /* The note's rule is a footnote mark here, not a divider.
+
+       On a desktop it sits inside the 23rem text column beside the drawing, so
+       its full width is obviously the width of that column. Stacked, the text
+       block is the whole page and the same rule ran edge to edge between the
+       benefits and the drawing - it read as the end of the panel, and left the
+       drawing looking like it belonged to the note rather than to the name.
+       A short rule on the centre line says the same thing without cutting
+       anything in half, and it sits on the axis everything else here is on. */
+    .ingredient-spotlight__note {
+      position: relative;
+      border-block-start: 0;
+      padding-block-start: 1.1rem;
+    }
+
+    .ingredient-spotlight__note::before {
+      content: '';
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: 50%;
+      translate: -50% 0;
+      width: 4rem;
+      height: 1px;
+      background: color-mix(in srgb, var(--kcc-ingredient-ink) 28%, transparent);
+    }
+
+    /* The heading is the one thing in here that wraps. It leads at 1.0, which
+       is right for the single line it is on a desktop and collides the moment
+       it breaks in two - the descenders of "Simple, aromatic" sat in the
+       ascenders of "ingredients". The specificity has to match the rule that
+       sets the size; the note there says why. */
+    .ingredient-spotlight .ingredient-spotlight__heading.h2 {
+      line-height: 1.1;
+    }
   }
 {% endstylesheet %}
 
