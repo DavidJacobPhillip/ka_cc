@@ -174,7 +174,7 @@
         "card_1": {
           "type": "product",
           "settings": {
-            "image": "shopify://shop_images/kcc-chai-masala-jar.jpg",
+            "image": "shopify://shop_images/kcc-chai-tea-spices.jpg",
             "title": "Chai Masala + Tea",
             "body": "Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.",
             "link_label": "add to cart",
@@ -186,7 +186,7 @@
           "settings": {
             "image": "shopify://shop_images/kcc-filter-coffee-pouch.jpg",
             "title": "Indian Filter Coffee",
-            "body": "Carefully roasted arabica & robusta beans blended with chicory root. Coffee like no other.",
+            "body": "Traditionally roasted arabica & robusta beans ground with chicory root. Rich coffee, like it should be.",
             "link_label": "add to cart",
             "link_url": "shopify://collections/all"
           }
@@ -380,92 +380,79 @@
       }
     },
     "review_quote": {
-      "type": "section",
+      "type": "review-quote",
       "blocks": {
-        "quote": {
-          "type": "text",
-          "name": "Quote",
+        "review_1": {
+          "type": "review",
           "settings": {
-            "text": "<p>“Tastes just like chai from chennai”</p>",
-            "width": "100%",
-            "max_width": "narrow",
-            "alignment": "center",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "quote": "“Tastes just like chai from chennai”",
+            "name": "Random customer",
+            "place": "PSU Farmers Market"
+          }
         },
-        "attribution": {
-          "type": "text",
-          "name": "Attribution",
+        "review_2": {
+          "type": "review",
           "settings": {
-            "text": "<p>— Random customer<br>@ PSU Farmers Market</p>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "paragraph",
-            "font": "var(--font-body--family)",
-            "font_size": "0.875rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "quote": "“Tastes nothing like chai from chennai”",
+            "name": "Another random customer",
+            "place": "PSU Farmers Market"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "quote": "“This is so much better than Starbucks, wow”",
+            "name": "A friend",
+            "place": "Cedar Mills Farmers Market"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "quote": "“Not bad, but I like Starbucks more”",
+            "name": "A hater",
+            "place": "Cedar Mills Farmers Market"
+          }
+        },
+        "review_5": {
+          "type": "review",
+          "settings": {
+            "quote": "“Literally the best chai in the whole world”",
+            "name": "ChatGPT",
+            "place": "online"
+          }
+        },
+        "review_6": {
+          "type": "review",
+          "settings": {
+            "quote": "“HmmMmmm *slurping noises* Oh yummmmm *another gulp*”",
+            "name": "Customer",
+            "place": "Pearl Farmers Market"
+          }
+        },
+        "review_7": {
+          "type": "review",
+          "settings": {
+            "quote": "“Great work starting a chai company, when are you planning on getting a real job soon?”",
+            "name": "Concerned relative",
+            "place": "phone call"
+          }
         }
       },
       "block_order": [
-        "quote",
-        "attribution"
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5",
+        "review_6",
+        "review_7"
       ],
-      "name": "Review quote",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 16,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
+        "button_label": "another one",
         "color_scheme": "scheme-5",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 40,
-        "padding-block-end": 48
+        "padding-block-start": 24,
+        "padding-block-end": 24
       }
     },
     "gallery": {
@@ -647,12 +634,12 @@
     "why_ka": {
       "type": "why-ka",
       "settings": {
-        "heading": "Every Indian language begins with the same letter",
-        "body": "<p>India's languages aren't dialects of one another — many come from entirely different families. Naming a chai company after any one of them would have meant leaving everyone else out.</p><p>But all of them teach the alphabet the same way. The vowels come first, then the consonants — <em>ka, kha, ga, gha</em> — and every script starts that list with the same sound.</p><p>So we named the company after the one letter they share. It is the ring around the cup in our logo, and the letters running down the side of this page.</p>",
+        "heading": "Many languages. One first sound.",
+        "body": "<p>South Asia's languages aren't dialects of one another. Many come from entirely different families, with their own scripts and their own histories.</p><p>But nearly every one of them teaches the alphabet the same way. The vowels come first, then the consonants: <em>ka, kha, ga, gha</em>. For most of us, <em>ka</em> was the first letter we ever learned.</p><p>So we named the company after the sound we all started with. It's the ring around the cup in our logo, and the letters running down the side of this page.</p>",
         "show_glyphs": false,
-        "glyph_alt": "The letter ka, written in thirteen Indian scripts",
-        "caption": "“Ka”, in thirteen Indian scripts. The same sound, and almost nothing in common.",
-        "closing": "An Indian company, built for America. All of it.",
+        "glyph_alt": "The letter ka, written in thirteen South Asian scripts",
+        "caption": "\"Ka\", in thirteen South Asian scripts. The same sound, and almost nothing in common.",
+        "closing": "A South Asian company, built for everyone. All of us.",
         "color_scheme": "scheme-8",
         "section_width": "page-width",
         "padding-block-start": 80,

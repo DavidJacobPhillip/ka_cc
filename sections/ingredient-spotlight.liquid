@@ -226,14 +226,26 @@
     const SKETCH_DIRECT_MAX = 40;
     const SKETCH_GROUPS = 16;
     /*
-      Paths above this percentile of area never cycle. In the scatter drawings
-      a path is usually one whole seed or bean and a field that twinkles reads
-      beautifully, but cinnamon is eight sticks and ginger four roots, where a
-      path can be a structural outline. Letting one of those blink out leaves a
-      hole; this keeps the heavy linework always present and shimmers only the
-      detail.
+      Which paths cycle, and that has to be both kinds of line.
+
+      This used to drop everything above the 70th percentile of area, so the
+      heavy linework never moved. On a scatter drawing that was invisible - a
+      path there is one whole seed, and the pool was still whole seeds - but
+      cinnamon is eight sticks and ginger four roots, where the big paths are
+      the outlines. On those two the effect came out as detail shimmering
+      inside shapes that never changed.
+
+      So the sample is stratified instead: the paths are sorted by area, cut
+      into bands of equal count, and the same share taken from each. Every
+      drawing now animates its outlines and its detail, whatever the mix of
+      the two happens to be.
+
+      What the old cut-off was protecting against is real, though - an outline
+      fading to nothing leaves a hole where the shape was. The top band keeps
+      its full opacity throughout and is retraced away instead (see
+      kcc-sketch-line), so a heavy line always leaves the way it arrived.
     */
-    const SKETCH_KEEP_BELOW = 0.7;
+    const SKETCH_BANDS = 4;
     // One cycle: wipe in, hold, fade out, gone. Randomised per target so they
     // never fall into step with each other.
     const CYCLE_MIN = 7000;
@@ -251,22 +263,23 @@
       return list;
     };
 
-    const startSketch = (svg, paths) => {
-      const measured = paths.map((el) => {
-        const box = el.getBBox();
-        return { el, area: Math.max(box.width, 1) * Math.max(box.height, 1) };
-      });
-      const areas = measured.map((m) => m.area).sort((a, b) => a - b);
-      const limit = areas[Math.floor(areas.length * SKETCH_KEEP_BELOW)];
-      const pool = shuffle(measured.filter((m) => m.area <= limit))
-        .slice(0, Math.max(1, Math.round(paths.length * SKETCH_SHARE)));
+    /*
+      Arm one set of paths. `line` marks the heavy band, which gets the
+      retracing cycle and starts mid-hold rather than waiting its turn.
+
+      The grouping trick is applied per set rather than once over everything,
+      so a group never mixes a structural line in with the detail - the two
+      carry different animations and a group can only carry one.
+    */
+    const armSketch = (svg, pool, line, groupCount) => {
+      if (!pool.length) return;
 
       let targets;
       if (pool.length <= SKETCH_DIRECT_MAX) {
         targets = pool.map((m) => m.el);
       } else {
         const groups = [];
-        for (let i = 0; i < SKETCH_GROUPS; i++) {
+        for (let i = 0; i < groupCount; i++) {
           const g = document.createElementNS(SVG_NS, 'g');
           svg.appendChild(g);
           groups.push(g);
@@ -275,22 +288,66 @@
         // random scatter over the whole drawing. Moving a path into a group
         // changes its paint order, which is free here - every path in these
         // files carries the same fill, so nothing can be hidden by it.
-        pool.forEach((m, i) => groups[i % SKETCH_GROUPS].appendChild(m.el));
+        pool.forEach((m, i) => groups[i % groupCount].appendChild(m.el));
         targets = groups;
       }
 
       targets.forEach((el) => {
         const box = el.getBBox();
-        el.setAttribute('data-kcc-sketch', '');
-        // Wipe along the long axis: left to right for a wide target, top down
-        // for a tall one.
+        const wide = box.width >= box.height;
+        el.setAttribute('data-kcc-sketch', line ? 'line' : '');
+        // Wipe along the long axis: left to right for a wide target, bottom up
+        // for a tall one. The erase continues in the same direction rather
+        // than reversing, so the pen reads as travelling, not rubbing out.
+        el.style.setProperty('--kcc-draw-from', wide ? 'inset(0 100% 0 0)' : 'inset(100% 0 0 0)');
+        el.style.setProperty('--kcc-draw-to', wide ? 'inset(0 0 0 100%)' : 'inset(0 0 100% 0)');
+        const dur = Math.round(rand(CYCLE_MIN, CYCLE_MAX));
+        el.style.setProperty('--kcc-sketch-dur', dur + 'ms');
+        /*
+          Detail waits its turn from a clipped start, which is what LEAD_IN is
+          for. A structural line cannot: `both` holds the 0% frame through the
+          delay, so an outline would simply be missing for up to five seconds
+          after load. A negative delay lands it somewhere in the held stretch
+          instead, so every heavy line is present on the first frame and they
+          begin retracing at staggered times.
+        */
         el.style.setProperty(
-          '--kcc-draw-from',
-          box.width >= box.height ? 'inset(0 100% 0 0)' : 'inset(100% 0 0 0)'
+          '--kcc-sketch-delay',
+          line ? '-' + Math.round(rand(0.15, 0.85) * dur) + 'ms' : Math.round(rand(0, LEAD_IN)) + 'ms'
         );
-        el.style.setProperty('--kcc-sketch-dur', Math.round(rand(CYCLE_MIN, CYCLE_MAX)) + 'ms');
-        el.style.setProperty('--kcc-sketch-delay', Math.round(rand(0, LEAD_IN)) + 'ms');
       });
+    };
+
+    const startSketch = (svg, paths) => {
+      const measured = paths.map((el) => {
+        const box = el.getBBox();
+        return { el, area: Math.max(box.width, 1) * Math.max(box.height, 1) };
+      });
+      measured.sort((a, b) => a.area - b.area);
+
+      // Equal-count bands by area, the same share out of each. The top band is
+      // the heavy linework on a drawing that has any; on a scatter it is just
+      // the larger seeds, where the retracing cycle is no worse than the fade.
+      const band = Math.ceil(measured.length / SKETCH_BANDS);
+      const detail = [];
+      const structural = [];
+      for (let i = 0; i < SKETCH_BANDS; i++) {
+        const slice = shuffle(measured.slice(i * band, (i + 1) * band));
+        const take = slice.slice(0, Math.max(1, Math.round(slice.length * SKETCH_SHARE)));
+        (i === SKETCH_BANDS - 1 ? structural : detail).push(...take);
+      }
+
+      /*
+        SKETCH_GROUPS is a budget, not a per-set count. Animating a group costs
+        the group, not the paths inside it, so what the frame rate tracks is how
+        many elements are mid-wipe - and arming two sets at sixteen each would
+        have doubled that for the same number of moving paths. The budget splits
+        by how many bands each set carries: three quarters to the detail, one
+        quarter to the heavy band.
+      */
+      const lineGroups = Math.max(2, Math.round(SKETCH_GROUPS / SKETCH_BANDS));
+      armSketch(svg, shuffle(detail), false, SKETCH_GROUPS - lineGroups);
+      armSketch(svg, structural, true, lineGroups);
     };
 
     const drawPanel = async (panel) => {
@@ -1295,6 +1352,36 @@
     }
   }
 
+  /* The heavy band. Same wipe in, a longer hold, and then it is retraced away
+     along the same axis instead of fading - an outline that drops its opacity
+     ghosts, and one that simply vanishes leaves a hole where the shape was.
+     The end frame is the start frame seen from the other side, so the loop
+     closes without a jump.
+
+     No opacity anywhere in here: these lines are either arriving, present, or
+     leaving, and never half-there. */
+  .ingredient-spotlight__drawing [data-kcc-sketch='line'] {
+    animation-name: kcc-sketch-line;
+  }
+
+  @keyframes kcc-sketch-line {
+    0% {
+      clip-path: var(--kcc-draw-from, inset(0 100% 0 0));
+    }
+
+    12% {
+      clip-path: inset(0 0 0 0);
+    }
+
+    88% {
+      clip-path: inset(0 0 0 0);
+    }
+
+    100% {
+      clip-path: var(--kcc-draw-to, inset(0 0 0 100%));
+    }
+  }
+
   /* Parked while the section is off screen - a clip-path loop nobody can see
      is pure battery. */
   .ingredient-spotlight.is-paused .ingredient-spotlight__drawing [data-kcc-sketch] {
@@ -1468,8 +1555,18 @@
       margin-block-start: 1.5rem;
     }
 
+    /* Centred here, left-aligned on a desktop. There the block sits under a
+       row whose text column has a left edge of its own to answer to; stacked,
+       everything above it is on the centre line and a left-aligned block was
+       the only thing in the section off that axis.
+
+       pretty rather than balance: balance gives up past a handful of lines,
+       and the FDA sentence runs to five. What is wanted is only that no line
+       is left stranded short at the bottom of a centred block. */
     .ingredient-spotlight__disclaimer {
       margin-block-start: 3rem;
+      text-align: center;
+      text-wrap: pretty;
     }
 
     /* The drawing belongs to the name above it, and at 1.5rem it did not read

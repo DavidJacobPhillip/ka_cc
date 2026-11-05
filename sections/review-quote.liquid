@@ -1,0 +1,338 @@
+{% comment %}
+  The review in the brown band, and the rest of them behind it.
+
+  This was two text blocks in a generic section, which held one quote and
+  could not hold seven. The styling for it lived in
+  snippets/reviews-block-styles.liquid, reaching across from the wave above
+  with ":has(.wave-divider--reviews) + .shopify-section" - a selector that
+  silently stopped applying if anything was ever inserted between the two.
+  That half is gone; only the rule standing the wave's own background down
+  is still over there, because it belongs to the wave.
+
+  How it behaves: every review is in the markup, stacked in one grid cell,
+  and the band is a fixed height. Nothing below it moves when you change the
+  quote, and nothing moves while you are reading - the whole point of a band
+  that swaps its contents under a click.
+
+  Fixed height means the longest review cannot set the type size, so the type
+  is fitted to the box instead: each quote is set as large as it will go and
+  then scaled down until it fits. Short ones stay at full display size, the
+  one about getting a real job comes down a step or two. Same measure-rather-
+  than-guess approach as assets/hero-heading-fit.js, and the same reason -
+  character-width estimates were wrong there too.
+
+  Clicking anywhere in the band shows another one. That is a convenience, not
+  the control: the control is the real <button> underneath, which is what
+  carries the label, the focus ring and the keyboard. A <button> cannot
+  legally wrap a <blockquote>, and an invisible one stretched over the band
+  would have eaten text selection, so the band listens for a click of its own
+  and ignores anything that was a drag.
+{% endcomment %}
+
+{%- liquid
+  assign reviews = section.blocks | where: 'type', 'review'
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--page-width color-{{ section.settings.color_scheme }} review-quote spacing-style"
+  style="{%- render 'spacing-style', settings: section.settings %}"
+  id="review-quote-{{ section.id }}"
+>
+  {%- comment -%}
+    The flex column lives here, not on .section. That element carries
+    .section--page-width, which the theme lays out as a grid with the page
+    margin as its outer columns - overriding its display put the quote hard
+    against the box edge, which at phone width is the ka rail.
+  {%- endcomment -%}
+  <div class="review-quote__inner">
+    <div class="review-quote__stage" data-rq-stage>
+      {%- for block in reviews -%}
+        <figure
+        class="review-quote__item{% if forloop.first %} is-active{% endif %}"
+        data-rq-item
+        {% unless forloop.first %}aria-hidden="true"{% endunless %}
+        {{ block.shopify_attributes }}
+      >
+        <blockquote class="review-quote__text" data-rq-quote>
+          {{- block.settings.quote -}}
+        </blockquote>
+        {%- if block.settings.name != blank or block.settings.place != blank -%}
+          <figcaption class="review-quote__who">
+            {%- if block.settings.name != blank -%}
+              <span class="review-quote__name">{{ block.settings.name }}</span>
+            {%- endif -%}
+            {%- if block.settings.place != blank -%}
+              <span class="review-quote__place">@{{ block.settings.place }}</span>
+            {%- endif -%}
+          </figcaption>
+        {%- endif -%}
+      </figure>
+      {%- endfor -%}
+    </div>
+
+    {%- if reviews.size > 1 -%}
+      <button class="review-quote__again" type="button" data-rq-next>
+        {{ section.settings.button_label | default: 'another one' }}
+      </button>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- if reviews.size > 0 -%}
+  <script>
+    (() => {
+      const root = document.getElementById('review-quote-{{ section.id }}');
+      if (!root || root.dataset.rqReady) return;
+      root.dataset.rqReady = 'true';
+
+      const stage = root.querySelector('[data-rq-stage]');
+      const items = Array.from(root.querySelectorAll('[data-rq-item]'));
+      const next = root.querySelector('[data-rq-next]');
+      if (!stage || !items.length) return;
+
+      /*
+        Fit each quote to the fixed box.
+
+        Reset to the CSS size first, so a fit computed at some other width is
+        never what the next measurement is taken against - the hero's fit
+        script learned the same lesson. Then shrink while the text overflows
+        its box, in small steps rather than by a computed ratio: a quote wraps,
+        so its height is a staircase in the font size, not a straight line, and
+        a single ratio overshoots.
+      */
+      const MIN_SCALE = 0.52;
+      const STEP = 0.94;
+
+      const fitOne = (quote) => {
+        quote.style.fontSize = '';
+        const base = parseFloat(getComputedStyle(quote).fontSize);
+        if (!base) return;
+        const box = quote.clientHeight;
+        if (!box) return;
+        let scale = 1;
+        while (quote.scrollHeight > box + 1 && scale > MIN_SCALE) {
+          scale *= STEP;
+          quote.style.fontSize = (base * scale).toFixed(2) + 'px';
+        }
+      };
+
+      /*
+        Everything is measured, including the ones not on show, so a quote is
+        already the right size the moment it appears. visibility: hidden still
+        lays out, which is what makes that possible.
+      */
+      const fitAll = () => items.forEach((item) => fitOne(item.querySelector('[data-rq-quote]')));
+
+      let frame = 0;
+      const refit = () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(fitAll);
+      };
+
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
+      refit();
+      window.addEventListener('resize', refit);
+
+      /*
+        The order is shuffled once per page load and then walked through, so
+        you never get the same one twice in a row and you do see all of them
+        before any repeats - which a random pick each time would not give you.
+        The first one stays first: it is the one the band is showing already.
+      */
+      const order = items.map((_, i) => i);
+      for (let i = order.length - 1; i > 1; i--) {
+        const j = 1 + Math.floor(Math.random() * i);
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+
+      let at = 0;
+      const show = (step) => {
+        items[order[at]].classList.remove('is-active');
+        items[order[at]].setAttribute('aria-hidden', 'true');
+        at = (at + step + order.length) % order.length;
+        const item = items[order[at]];
+        item.classList.add('is-active');
+        item.removeAttribute('aria-hidden');
+      };
+
+      if (next) next.addEventListener('click', () => show(1));
+
+      /*
+        The band itself is clickable too. A click that began as a drag is
+        someone selecting the quote, not asking for the next one, so the
+        pointer has to have stayed roughly still between down and up. The
+        button inside gets to handle its own click without it counting twice.
+      */
+      let from = null;
+      stage.addEventListener('pointerdown', (e) => {
+        from = { x: e.clientX, y: e.clientY };
+      });
+      stage.addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        if (!from) return;
+        const moved = Math.hypot(e.clientX - from.x, e.clientY - from.y);
+        from = null;
+        if (moved > 10) return;
+        show(1);
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .review-quote__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  /* One cell, every review in it, a height that does not depend on which one
+     is showing. --rq-quote is the box the type is fitted into; the caption
+     sits under it at its own height, and because the caption is always a name
+     and a place it is always two lines. */
+  .review-quote__stage {
+    --rq-quote: 5.75rem;
+
+    display: grid;
+    grid-template-areas: 'review';
+    width: 100%;
+    max-width: 44rem;
+    cursor: pointer;
+  }
+
+  @media screen and (min-width: 750px) {
+    .review-quote__stage {
+      --rq-quote: 6.5rem;
+    }
+  }
+
+  .review-quote__item {
+    grid-area: review;
+    margin: 0;
+    text-align: center;
+  }
+
+  .review-quote__item:not(.is-active) {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* Centred in its box rather than sitting at the top of it, so a one-line
+     review and a four-line one are both balanced against the caption under
+     them instead of hanging from the same ceiling. */
+  .review-quote__text {
+    display: grid;
+    align-content: center;
+    block-size: var(--rq-quote);
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: 2.25rem;
+    line-height: 1.25;
+    text-wrap: balance;
+    color: var(--color-foreground);
+  }
+
+  @media screen and (min-width: 750px) {
+    .review-quote__text {
+      font-size: 3rem;
+    }
+  }
+
+  .review-quote__text p {
+    margin: 0;
+  }
+
+  /* The name and the place on their own lines, in the body face at reading
+     size and at full strength. It used to be 14px at 62% under a hairline,
+     which made the people saying these things read as a legal footnote to
+     them. There is no rule any more either: the change of face, of size and
+     of line is the separation. */
+  .review-quote__who {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-block-start: 1rem;
+    font-family: var(--font-body--family);
+    font-size: var(--kcc-body);
+    line-height: 1.45;
+    color: var(--color-foreground);
+  }
+
+  .review-quote__place {
+    opacity: 0.72;
+  }
+
+  /* The affordance, and the real control. Set quietly - it is the footnote
+     here, not the review - but it is a button, it takes focus, and it is what
+     a keyboard or a screen reader uses. */
+  .review-quote__again {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    font-family: var(--font-body--family);
+    font-size: var(--kcc-small);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    position: relative;
+  }
+
+  /* A thumb needs 44px; the label does not want to be 44px tall. The hit area
+     is grown with a pseudo-element instead of with padding, so the control
+     reaches the touch floor without adding its difference to the band's
+     height - which is tuned, and which this would otherwise push out of
+     range. */
+  .review-quote__again::before {
+    content: '';
+    position: absolute;
+    inset: -0.45rem -0.5rem;
+  }
+
+  .review-quote__again::after {
+    content: ' \2192';
+  }
+
+  .review-quote__again:hover,
+  .review-quote__inner:hover .review-quote__again {
+    opacity: 1;
+  }
+
+  .review-quote__again:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+    opacity: 1;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Review quote",
+  "settings": [
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "another one" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 24 }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Review" },
+        { "type": "text", "id": "name", "label": "Who said it" },
+        { "type": "text", "id": "place", "label": "Where", "info": "The @ is added for you." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Review quote" }]
+}
+{% endschema %}
