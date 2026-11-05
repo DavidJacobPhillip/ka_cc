@@ -71,27 +71,20 @@
       {%- endfor -%}
     </div>
 
+    {%- comment -%}
+      No visible control. The wave above the band carries the invitation now,
+      set along the inside of the curve, so a button under the quote would be
+      saying the same thing a second time.
+
+      One still has to exist. A click handler on a div is not reachable by
+      keyboard and is not announced, and the band is the only way to reach six
+      of the seven reviews. This one sits off screen and comes back on focus -
+      the same treatment as a skip link - so tabbing to it brings up a real,
+      outlined control that says what it does.
+    {%- endcomment -%}
     {%- if reviews.size > 1 -%}
-      <button
-        class="review-quote__again"
-        type="button"
-        data-rq-next
-        aria-label="{{ section.settings.button_label | default: 'Show another review' | escape }}"
-      >
-        {%- comment -%}
-          A drawn mark rather than a word, and a circular arrow rather than a
-          chevron: a chevron means next-in-a-list, which is the reading this
-          deliberately is not. Round-trip arrows mean give me another.
-        {%- endcomment -%}
-        <svg class="review-quote__spin" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-          <path
-            d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-          />
-          <path d="M18.4 2.6v3.9h-3.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
+      <button class="review-quote__again" type="button" data-rq-next>
+        {{ section.settings.button_label | default: 'Show another review' }}
       </button>
     {%- endif -%}
   </div>
@@ -107,8 +100,6 @@
       const stage = root.querySelector('[data-rq-stage]');
       const items = Array.from(root.querySelectorAll('[data-rq-item]'));
       const next = root.querySelector('[data-rq-next]');
-      const spin = root.querySelector('.review-quote__spin');
-      let turns = 0;
       if (!stage || !items.length) return;
 
       /*
@@ -166,10 +157,6 @@
         at = (at + step + items.length) % items.length;
         items[at].classList.add('is-active');
         items[at].removeAttribute('aria-hidden');
-        if (spin) {
-          turns += 1;
-          spin.style.transform = 'rotate(' + turns * 360 + 'deg)';
-        }
       };
 
       if (next) next.addEventListener('click', () => show(1));
@@ -285,53 +272,34 @@
     opacity: 0.72;
   }
 
-  /* The affordance, and the real control. Set quietly - it is the footnote
-     here, not the review - but it is a button, it takes focus, and it is what
-     a keyboard or a screen reader uses. */
+  /* Off screen until it is focused. Not display:none and not
+     visibility:hidden - both would take it out of the tab order, which is the
+     one thing it exists for. */
   .review-quote__again {
-    appearance: none;
-    border: 0;
-    background: none;
-    padding: 0.5rem 0.75rem;
-    margin: 0;
-    font-family: var(--font-body--family);
-    display: grid;
-    place-items: center;
-    color: var(--color-foreground);
-    opacity: 0.55;
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-    position: relative;
-  }
-
-  /* A thumb needs 44px; the label does not want to be 44px tall. The hit area
-     is grown with a pseudo-element instead of with padding, so the control
-     reaches the touch floor without adding its difference to the band's
-     height - which is tuned, and which this would otherwise push out of
-     range. */
-  .review-quote__again::before {
-    content: '';
     position: absolute;
-    inset: -0.45rem -0.5rem;
-  }
-
-  .review-quote__again:hover,
-  .review-quote__inner:hover .review-quote__again {
-    opacity: 1;
-  }
-
-  .review-quote__spin {
-    width: 1.5rem;
-    height: 1.5rem;
-    /* Each press turns it another full revolution, so the mark performs the
-       thing it names. */
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .review-quote__again:focus-visible {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+    appearance: none;
+    border: 1px solid currentColor;
+    background: none;
+    padding: 0.55rem 1rem;
+    font-family: var(--font-body--family);
+    font-size: var(--kcc-small);
+    color: var(--color-foreground);
+    cursor: pointer;
     outline: 2px solid var(--color-foreground);
     outline-offset: 3px;
-    opacity: 1;
   }
 {% endstylesheet %}
 
