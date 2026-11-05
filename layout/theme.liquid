@@ -988,6 +988,41 @@
             }
           }
 
+          /* Narrower, sparser and slower on a phone, where 58px of footprint
+             (12px inset + 46px rail) was 15% of a 390px screen and the
+             content column it left behind was 302px.
+
+             34px + an 8px inset is 42px, which hands 16px back to every
+             section on the page via the clearance rule further down. 34 is
+             the floor, not a taste call: the widest glyph box in
+             ka-rail-icon.liquid is Malayalam's 32.44px, and the rail clips
+             what overruns it.
+
+             The glyphs shrink by transform rather than by their own
+             width/height, and that is deliberate. Their boxes are sized to a
+             shared 566px^2 area so no script reads larger than another, and
+             the scroll loop below travels an exact measured distance through
+             one 13-glyph cycle; resizing the boxes would break both at once
+             and the distance would have to be re-measured in a browser.
+             A transform leaves every layout box exactly where it was, so the
+             loop distance stays correct by construction and the rotation
+             stays fair across the scripts. The gap between boxes is untouched,
+             so the ink thins out while the rhythm holds - which is most of
+             what makes it stop pulling at the corner of the eye.
+
+             And slower: 678.516px over 18s is 37.7px/s against the desktop's
+             68.6. Only the duration changes, never the distance. */
+          @media screen and (max-width: 749px) {
+            #ka-rail {
+              width: 34px;
+              inset-inline-start: 0.5rem;
+            }
+
+            #ka-rail .ka-rail__icon {
+              transform: scale(0.8);
+            }
+          }
+
           /* Replaces the previous repeated "ka" text - a column of small
              letterform icons running down the center of the rail
              instead (see snippets/ka-rail-icon.liquid: 13 individual
@@ -1073,6 +1108,22 @@
             }
           }
 
+          /* Slower on a phone: 678.516px over 18s is 37.7px/s against the
+             desktop's 68.6. The distance is untouched - only the rate is -
+             so the seamless loop still lands on a full 13-glyph cycle.
+
+             It has to sit after the shorthand above, not with the rest of the
+             phone rail rules higher up. Both selectors weigh the same, so the
+             shorthand's own duration wins on source order from anywhere
+             earlier, and the override silently did nothing there. Reduced
+             motion still wins regardless: that rule drops animation-name to
+             none, which no duration can bring back. */
+          @media screen and (max-width: 749px) {
+            #ka-rail .ka-rail__icons {
+              animation-duration: 18s;
+            }
+          }
+
           /* width/height no longer set here - each glyph carries its own
              (area-matched, see .ka-rail__icons above) size directly on
              its <svg> in snippets/ka-rail-icon.liquid instead of sharing
@@ -1109,6 +1160,17 @@
              re-screenshot this build to confirm the new gap directly. */
           #MainContent > div.shopify-section {
             padding-inline-start: 3.5rem;
+          }
+
+          /* The phone rail is 42px wide now (see its rule above), not 58, so
+             the clearance comes down with it. 2.5rem puts the section box at
+             40px and its own page margin puts text at 56 - still 14px clear
+             of the rail, the same visible gap as before, with the 16px the
+             rail gave up going to the content column. */
+          @media screen and (max-width: 749px) {
+            #MainContent > div.shopify-section {
+              padding-inline-start: 2.5rem;
+            }
           }
 
           /* "Connections" section (templates/index.json's "intro" key,

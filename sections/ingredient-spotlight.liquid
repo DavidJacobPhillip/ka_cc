@@ -995,8 +995,45 @@
     text-wrap: balance;
   }
 
+  /* All nine panels share one grid cell, so the box is always as tall as the
+     tallest spice and the button row underneath it never moves.
+
+     It used to: stacked on a phone the panel sits above the picker, and the
+     nine are not the same length - ginger's benefits wrap to a fourth line,
+     tea and coffee each carry a note. Every tap resized the panel and shoved
+     the row down, out from under the thumb that had just pressed it. Measured
+     at 390px with the row where a thumb holds it: ginger 36px, black tea 85px,
+     coffee 108px, against a 52px button. You would reach for the neighbour and
+     press whatever had slid into its place.
+
+     Reserving the maximum rather than a hand-measured min-height means the
+     copy can change without the number going stale. The inactive eight are
+     laid out but not painted; hidden stays on them, so visibility: hidden is
+     what the attribute now resolves to instead of display: none, and they
+     leave the accessibility tree exactly as before. The cost is dead space
+     under the shorter spices' drawings, which falls at the quietest join in
+     the section - between the drawing and the row - and never moves anything.
+
+     Start, not centre: with the free space at the end, the name stays put
+     directly under the heading. Centring it would have split the slack above
+     and below, which keeps the row still but makes the name itself bob. */
   .ingredient-spotlight__panels {
     width: 100%;
+    display: grid;
+    grid-template-areas: 'spice';
+    align-content: start;
+  }
+
+  /* Left to stretch into the shared cell on purpose. The slack a short spice
+     leaves has to go somewhere, and the default - split between the text row
+     and the drawing's row - is the best of the three places it can land.
+     Pinning the drawing to the bottom of the cell instead holds it perfectly
+     still but opens a 117px hole under the cardamom's three benefit lines;
+     letting the rows size to their content drops the drawing by the full
+     height of a note, about 100px, between coffee and cardamom. Stretching
+     splits the difference and moves it 39. Measured at 390px, all nine. */
+  .ingredient-spotlight__panel {
+    grid-area: spice;
   }
 
   /* Name and benefits on the left, illustration on the right. The columns are
@@ -1023,7 +1060,35 @@
     }
   }
 
+  /* Overriding [hidden]'s display is the point - see the note on __panels.
+     visibility: hidden keeps it out of the accessibility tree and out of the
+     tab order the same way display: none did, while still letting it claim
+     its height in the shared cell. */
   .ingredient-spotlight__panel[hidden] {
+    display: grid;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* The eight that aren't showing keep their height and give up their picture.
+
+     Laying them out is what reserves the row, but visibility: hidden is not
+     enough to stop a lazy <img> fetching: the browser still counts it as near
+     the viewport, so all nine illustrations downloaded instead of one. On a
+     phone that measured +8 requests and +2.1MB, which is a third of the page.
+
+     display: none on the picture itself does stop the fetch, and the height
+     comes back from the wrapper instead. 1603x1106 is not a new number to
+     keep in step - it is the shared box build-ingredient-art.py pads all nine
+     drawings to, already hardcoded on the <img> in
+     snippets/ingredient-illustration.liquid, which is the whole reason the
+     panel can be sized without the file. > * so it catches the inlined <svg>
+     the draw-on script leaves behind on a panel that has been shown once. */
+  .ingredient-spotlight__panel[hidden] .ingredient-spotlight__image {
+    aspect-ratio: 1603 / 1106;
+  }
+
+  .ingredient-spotlight__panel[hidden] .ingredient-spotlight__image > * {
     display: none;
   }
 
@@ -1045,7 +1110,15 @@
        the nine, measures 500px at a 100px font, and the text block is 23rem.
        Any larger and two of the nine wrap to a second line while the other
        seven don't, which moves the name every time you click. */
-    font-size: clamp(2.25rem, 5.6vw, 4.5rem);
+    /* The floor was 2.25rem, which put the name at 36px on a phone against a
+       35px section heading two intervals above it on the same centre line.
+       Blurred down, the two read as sibling titles and nothing said which was
+       the frame and which was the content - and here the content is the whole
+       point: you came to look at the spice, not to read the heading. 2.75rem
+       is the ceiling that keeps the ceiling: "Black pepper", the longest of
+       the nine, measures 500px at a 100px font, so it takes 220px of the
+       302px column and still does not wrap. */
+    font-size: clamp(2.75rem, 5.6vw, 4.5rem);
     line-height: 1.02;
   }
 
@@ -1368,86 +1441,50 @@
     margin-block-end: 0;
   }
 
-  /* Two paragraphs doing two jobs. The first is the FDA sentence - required,
-     and nobody reads it. The second is the grandma line, which is brand voice
-     and is the reason anyone looks down here at all. Set at one size they
-     competed, and the pair measured 267px on a phone - taller than the
-     illustration above them, and the heaviest thing in the section.
-
-     The legal line drops to the footnote size this section already uses for
-     .ingredient-spotlight__note, which is what lets the joke land at reading
-     size instead of alongside it. Opacity is deliberately left alone: the
-     block already carries 0.9, which puts #754B2A at 5.8:1 on white, and a
-     second multiplier would take 15px text under AA.
-
-     :not(:last-child) so a disclaimer written as a single paragraph keeps the
-     full size rather than silently shrinking. */
-  .ingredient-spotlight__disclaimer p:first-child:not(:last-child) {
-    font-size: 0.9375rem;
-    line-height: 1.55;
-  }
-
   /* ---- Phone ------------------------------------------------------------
 
-     The picker goes above the panel it controls.
-
-     Stacked, the nine buttons sat underneath text that is a different length
-     for every spice - ginger's benefits wrap to a fourth line, tea and coffee
-     each carry a note - so every tap resized the panel above the row and shoved
-     the row down, out from under the thumb that had just pressed it. Measured
-     at 390px with the row held where a thumb holds it: ginger 36px, black tea
-     85px, coffee 108px, against a 52px button. You would reach for the
-     neighbour and press whatever had slid into its place.
-
-     The same three taps at 1440 move the row 5px, because there the text sits
-     in a fixed 23rem column beside the drawing and the drawing sets the
-     height. So it is the stacking that breaks it, not the content, and the
-     repair belongs at this width alone. Above the panel, nothing that resizes
-     is below the hand - the panel grows downwards, away from it.
-
-     Done with order rather than by moving the markup: the panels hold nothing
-     focusable, so the only tab stops in the section are the nine buttons and
-     their order is untouched, and the reading order stays the one the desktop
-     shows.
-
      Spacing, and what it groups. One flat 1.5rem gap ran between all four
-     children, so the section title, the picker, the panel and the legal note
+     children, so the section title, the panel, the picker and the legal note
      were each exactly as far from the next as from anything else and nothing
      read as belonging to anything. The gap goes to zero and every join is
-     spaced for what it joins: picker and panel close, as one question and its
-     answer; the title set above the pair; the fine print pushed well clear of
-     both and put under a rule, so the section ends there rather than running
-     on into a fifth block of copy. */
+     spaced for what it joins: the picker close under the panel it changes,
+     because the two are one control and its answer; the title set above the
+     pair; the fine print pushed well clear of both.
+
+     The fine print is separated by space alone, deliberately not by a rule. A
+     rule above fine print is a promotion - it is the device that says a new
+     section starts here and you should look - and the whole point of this
+     join is to send the required sentence down the page, not up it. */
   @media screen and (max-width: 749px) {
     .ingredient-spotlight__inner {
       gap: 0;
     }
 
-    /* Close under the title, because that is what it belongs to: the two of
-       them are the section's header, and the picker is the heading's control.
-       Spaced evenly between the title and the panel it floated between the
-       two and read as a third, unattached thing. */
-    .ingredient-spotlight__buttons {
-      margin-block-start: 1.25rem;
-    }
-
-    /* Then a clear step down to the answer, so the name, its benefits and its
-       drawing hold together as one block rather than as three more entries in
-       an even column. */
     .ingredient-spotlight__panels {
-      order: 1;
-      margin-block-start: 2.5rem;
+      margin-block-start: 2rem;
     }
 
-    /* Separated by space and by size, and deliberately not by a rule. A rule
-       above fine print is a promotion - it is the device that says a new
-       section starts here and you should look - and the whole point of this
-       join is to send the required sentence down the page, not up it. The
-       drop from 17px to 15px and a gap twice anything else in the section
-       say it without drawing the eye. */
+    .ingredient-spotlight__buttons {
+      margin-block-start: 1.5rem;
+    }
+
     .ingredient-spotlight__disclaimer {
-      order: 2;
-      margin-block-start: 3.5rem;
+      margin-block-start: 3rem;
+    }
+
+    /* The drawing belongs to the name above it, and at 1.5rem it did not read
+       that way. The gap measures 24px but it does not look like 24px: all nine
+       drawings share one viewBox so the panel never jumps as you click, and
+       the price of that is dead space inside the box - 18px above and below
+       the cardamom, 6px around the coffee. The benefits sat 42 optical pixels
+       off their own illustration, against the 32 that separates the heading
+       from the whole panel, so the drawing read as a fourth group rather than
+       as the answer to the name.
+
+       12px nominal lands between 18 and 30 optical across the nine, which
+       holds it inside the panel at every spice. */
+    .ingredient-spotlight__panel {
+      gap: 0.75rem;
     }
 
     /* The note's rule is a footnote mark here, not a divider.
