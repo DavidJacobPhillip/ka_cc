@@ -102,9 +102,13 @@
                 Every other option pins both cards to the same ratio so their
                 captions sit on a shared baseline.
               {%- endcomment -%}
+              {%- liquid
+                assign zoom = block.settings.image_zoom | default: 109
+                assign zoom_ratio = zoom | divided_by: 100.0
+              -%}
               <div
                 class="product-teaser__media"
-                {% if ratio %}style="--pt-ratio: {{ ratio }};"{% endif %}
+                style="--pt-zoom: {{ zoom_ratio }};{% if ratio %} --pt-ratio: {{ ratio }};{% endif %}"
               >
                 <img
                   class="product-teaser__image"
@@ -979,8 +983,6 @@
      the two rectangles read as one drawn object rather than as a picture that
      happens to sit inside a box. */
   .product-teaser__media {
-    --pt-zoom: 1.09;
-
     aspect-ratio: var(--pt-ratio, auto);
     border: 2px solid var(--pt-accent);
     border-radius: 0.75rem;
@@ -1143,6 +1145,17 @@
       "name": "Product",
       "settings": [
         { "type": "image_picker", "id": "image", "label": "Photo" },
+        {
+          "type": "range",
+          "id": "image_zoom",
+          "label": "Crop in",
+          "info": "How far past the frame the photograph is scaled before it is cut. Per photograph, because how much room there is around the subject is a fact about the shot and not about the card.",
+          "min": 100,
+          "max": 140,
+          "step": 1,
+          "unit": "%",
+          "default": 109
+        },
         { "type": "text", "id": "title", "label": "Title" },
         { "type": "textarea", "id": "body", "label": "Description" },
         { "type": "text", "id": "link_label", "label": "Button label", "default": "add to cart" },
@@ -1167,3 +1180,4 @@
   ]
 }
 {% endschema %}
+

@@ -178,7 +178,8 @@
             "title": "Chai Masala + Tea",
             "body": "Freshly ground whole spices paired with a dual tea blend from Assam + Kericho. Prepare for comfort.",
             "link_label": "add to cart",
-            "link_url": "shopify://collections/all"
+            "link_url": "shopify://collections/all",
+            "image_zoom": 126
           }
         },
         "card_2": {
@@ -188,7 +189,8 @@
             "title": "Indian Filter Coffee",
             "body": "Traditionally roasted arabica & robusta beans ground with chicory root. Rich coffee, like it should be.",
             "link_label": "add to cart",
-            "link_url": "shopify://collections/all"
+            "link_url": "shopify://collections/all",
+            "image_zoom": 109
           }
         }
       },
@@ -228,9 +230,9 @@
           "name": "Cinnamon",
           "settings": {
             "name": "Cinnamon",
-            "benefit_1": "balances blood sugar",
-            "benefit_2": "anti-inflammatory",
-            "benefit_3": "adds natural sweetness",
+            "benefit_1": "sweet without sugar",
+            "benefit_2": "warming by tradition",
+            "benefit_3": "the backbone of the blend",
             "icon_fallback": "fire"
           }
         },
@@ -241,7 +243,7 @@
             "name": "Cloves",
             "benefit_1": "natural antiseptic",
             "benefit_2": "eases nausea",
-            "benefit_3": "boosts immunity",
+            "benefit_3": "a little goes a long way",
             "icon_fallback": "star"
           }
         },
@@ -263,7 +265,7 @@
             "name": "Carom seeds",
             "benefit_1": "soothes the stomach",
             "benefit_2": "freshens breath",
-            "benefit_3": "rich in fiber",
+            "benefit_3": "the sharp note in the blend",
             "icon_fallback": "plant"
           }
         },
@@ -285,7 +287,7 @@
             "name": "Ginger",
             "benefit_1": "aids digestion",
             "benefit_2": "reduces inflammation",
-            "benefit_3": "used in Ayurvedic medicine for 5,000+ years",
+            "benefit_3": "used in Ayurveda for over 2,000 years",
             "icon_fallback": "carrot"
           }
         },
@@ -342,7 +344,7 @@
           "type": "custom-liquid",
           "name": "Wave divider",
           "settings": {
-            "custom_liquid": "{% render 'wave-divider', fill: '#754B2A', text: 'Reviews ·', text_color: '#f9ebe6', repeat: 16, name: 'reviews' %}{% render 'reviews-block-styles' %}"
+            "custom_liquid": "{% render 'wave-divider', fill: '#754B2A', text: 'Reviews · tap this section for another review · Reviews · want to see more reviews? · Reviews · click anywhere for more reviews · Reviews · go on, one more review · Reviews · we have plenty more reviews · Reviews · keep tapping, the reviews keep coming', text_color: '#f9ebe6', repeat: 3, name: 'reviews' %}{% render 'reviews-block-styles' %}"
           },
           "blocks": {}
         }
@@ -583,6 +585,7 @@
         "photo_2",
         "photo_3",
         "photo_4",
+        "photo_12",
         "photo_5",
         "photo_6",
         "photo_7",
@@ -590,7 +593,6 @@
         "photo_9",
         "photo_10",
         "photo_11",
-        "photo_12",
         "photo_13",
         "photo_14",
         "photo_15",

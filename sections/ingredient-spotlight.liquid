@@ -252,7 +252,6 @@
     // never fall into step with each other.
     const CYCLE_MIN = 7000;
     const CYCLE_MAX = 15000;
-    const LEAD_IN = 5200; // the longest a target can wait before its first draw
 
     const SVG_NS = 'http://www.w3.org/2000/svg';
     const rand = (lo, hi) => lo + Math.random() * (hi - lo);
@@ -266,8 +265,8 @@
     };
 
     /*
-      Arm one set of paths. `line` marks the heavy band, which starts mid-hold
-      rather than waiting its turn.
+      Arm one set of paths. `line` only picks the animation's grouping budget
+      now; both sets start the same way, mid-hold.
 
       The grouping trick is applied per set rather than once over everything,
       so a group never mixes a structural line in with the detail - the two
@@ -305,17 +304,25 @@
         const dur = Math.round(rand(CYCLE_MIN, CYCLE_MAX));
         el.style.setProperty('--kcc-sketch-dur', dur + 'ms');
         /*
-          Detail waits its turn from a clipped start, which is what LEAD_IN is
-          for. A structural line cannot: `both` holds the 0% frame through the
-          delay, so an outline would simply be missing for up to five seconds
-          after load. A negative delay lands it somewhere in the held stretch
-          instead, so every heavy line is present on the first frame and they
-          begin fading at staggered times.
+          Every target starts mid-hold, on a negative delay.
+
+          The swap is supposed to be invisible: the <img> is replaced by an
+          inlined copy of the same drawing at the same size, and nothing should
+          change at the moment it happens. A positive delay broke that. `both`
+          holds the 0% frame - fully clipped - through the wait, so the instant
+          the SVG went in, every path still waiting for its turn vanished, and
+          about a third of the drawing dropped out at once before anything
+          moved. Clicking a spice showed you the whole thing and then tore a
+          hole in it.
+
+          A negative delay lands each one somewhere in the held stretch
+          instead, which is the fully drawn, fully opaque frame - pixel for
+          pixel what the <img> was showing. Nothing changes on the swap; the
+          drawing simply starts breathing a moment later, as paths reach their
+          own fades at their own times. The draw-in is still seen on every
+          cycle after the first.
         */
-        el.style.setProperty(
-          '--kcc-sketch-delay',
-          line ? '-' + Math.round(rand(0.15, 0.85) * dur) + 'ms' : Math.round(rand(0, LEAD_IN)) + 'ms'
-        );
+        el.style.setProperty('--kcc-sketch-delay', '-' + Math.round(rand(0.14, 0.52) * dur) + 'ms');
       });
     };
 
@@ -1092,6 +1099,9 @@
      splits the difference and moves it 39. Measured at 390px, all nine. */
   .ingredient-spotlight__panel {
     grid-area: spice;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.16s ease;
   }
 
   /* Name and benefits on the left, illustration on the right. The columns are
@@ -1122,10 +1132,28 @@
      visibility: hidden keeps it out of the accessibility tree and out of the
      tab order the same way display: none did, while still letting it claim
      its height in the shared cell. */
+  /* The two cross-fade, because they are in the same cell: the one going out
+     and the one coming in run the same 0.16s in opposite directions and the
+     swap reads as one picture becoming another rather than as a cut.
+
+     visibility is what actually takes the old panel out of the accessibility
+     tree and the tab order, and it cannot be interpolated - so it is held at
+     visible for the length of the fade and flips at the end. Without that
+     delay the outgoing panel disappears on the first frame and there is
+     nothing to fade. */
   .ingredient-spotlight__panel[hidden] {
     display: grid;
     visibility: hidden;
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 0.16s ease, visibility 0s linear 0.16s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ingredient-spotlight__panel,
+    .ingredient-spotlight__panel[hidden] {
+      transition: none;
+    }
   }
 
   /* The eight that aren't showing keep their height and give up their picture.
