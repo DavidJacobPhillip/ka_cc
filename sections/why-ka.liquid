@@ -36,8 +36,16 @@
   backdrop is a flat colour of its own, and reaching it by fading the text
   colour down gives a grey of that hue, never the blush this wants.
 
-  The URL has to be handed to the CSS from here: {% stylesheet %} is static
-  and never sees Liquid, so asset_url can't be written inside it.
+  The URL has to be handed to the CSS from here: the stylesheet block below
+  is static and never sees Liquid, so asset_url can't be written inside it.
+
+  Do not write that block's opening tag in a comment, here or anywhere else
+  in a section. Shopify pulls the CSS out by scanning the raw file for the
+  tag, and a comment is still raw text to that scan - so the first one it
+  finds wins and everything after it, markup and script included, is
+  compiled into styles.css as if it were CSS. The browser then throws the
+  whole run away and the section renders unstyled, while the file looks
+  perfectly correct.
 {%- endcomment -%}
 <div
   class="section-background color-{{ section.settings.color_scheme }} why-ka__bg{% if section.settings.show_pattern %} why-ka__bg--pattern{% endif %}"
@@ -80,10 +88,183 @@
     {%- endif -%}
   {%- endif -%}
 
+  {%- comment -%}
+    The atlas: the twelve languages on the left, and on the right the one you
+    picked, written large in its own script, over the states where it is the
+    language people actually speak.
+
+    The table below is reference data, not copy, which is why it is here rather
+    than in the schema. Each row is: the glyph's index in
+    snippets/ka-rail-icon.liquid (labelled there), the regions to light in
+    assets/south-asia-map.svg, and what to say about the places the map cannot
+    show.
+
+    That last column is the whole reason this is honest. The map has Indian
+    states as separate shapes and everything beyond India as a single outline,
+    so there is no way to fill Pakistan for Urdu or Bangladesh for Bengali -
+    and filling a whole country for a language would be a claim none of these
+    deserve anyway. Those are said in words instead, under the map, and no
+    national border is drawn anywhere on it.
+
+    The map predates Telangana, so Andhra Pradesh is undivided here. For Telugu
+    that is right either way; for Urdu it is why Andhra Pradesh is in its list.
+  {%- endcomment -%}
+  {%- assign atlas = 'Hindi|3|uttar_pradesh,madhya_pradesh,bihar,rajasthan,haryana,jharkhand,chhattisgarh,uttaranchal,himachal_pradesh,delhi_ncr|Nepali, its close cousin, is the national language of Nepal.
+Tamil|8|tamil_nadu,pudducherry_pondicherry,karikal_pondicherry|Also official in Sri Lanka and Singapore.
+Telugu|2|andhra_pradesh,yanam_pondicherry|
+Kannada|9|karnataka|
+Malayalam|5|kerala,mahe_pondicherry|
+Bengali-Assamese|0|west_bengal,assam,tripura|Bengali is the national language of Bangladesh.
+Gujarati|4|gujarat,dadra_and_nagar_haveli,diu|
+Odia|6|orissa|
+Punjabi|7|punjab,chandigarh,haryana|Punjabi is spoken across the border in Pakistan too, written in a different script.
+Urdu|10|jammu_and_kashmir,uttar_pradesh,bihar,delhi_ncr,andhra_pradesh|The national language of Pakistan.
+Meitei|11|manipur|
+Santali|12|jharkhand,orissa,west_bengal,assam,bihar|' | newline_to_br | split: '<br />' -%}
+
+  <div class="why-ka__atlas" id="why-ka-atlas-{{ section.id }}" data-map="{{ 'south-asia-map.svg' | asset_url }}">
+    <ul class="why-ka__languages" role="tablist" aria-label="Languages">
+      {%- for row in atlas -%}
+        {%- assign cell = row | strip | split: '|' -%}
+        {%- if cell[0] != blank -%}
+          <li>
+            <button
+              type="button"
+              class="why-ka__language{% if forloop.first %} is-on{% endif %}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              data-lang="{{ forloop.index0 }}"
+              data-regions="{{ cell[2] | strip }}"
+              data-where="{{ cell[3] | strip | escape }}"
+            >
+              {{- cell[0] | strip -}}
+            </button>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+    <div class="why-ka__plate">
+      <div class="why-ka__letters">
+        {%- for row in atlas -%}
+          {%- assign cell = row | strip | split: '|' -%}
+          {%- if cell[0] != blank -%}
+            <span
+              class="why-ka__letter{% if forloop.first %} is-on{% endif %}"
+              data-letter="{{ forloop.index0 }}"
+              aria-hidden="true"
+            >
+              {%- render 'ka-rail-icon', index: cell[1] -%}
+            </span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="why-ka__map" data-map-slot></div>
+    </div>
+
+    <p class="why-ka__where" data-where-out aria-live="polite">
+      {%- assign first = atlas[0] | strip | split: '|' -%}
+      {{- first[3] | strip -}}
+    </p>
+  </div>
+
   {%- if section.settings.closing != blank -%}
     <p class="why-ka__closing">{{ section.settings.closing }}</p>
   {%- endif -%}
 </div>
+
+<script>
+  (() => {
+    const root = document.getElementById('why-ka-atlas-{{ section.id }}');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = 'true';
+
+    const buttons = Array.from(root.querySelectorAll('[data-lang]'));
+    const letters = Array.from(root.querySelectorAll('[data-letter]'));
+    const slot = root.querySelector('[data-map-slot]');
+    const where = root.querySelector('[data-where-out]');
+    if (!buttons.length || !slot) return;
+
+    /*
+      The map is fetched rather than inlined into the page.
+
+      It is 60KB of path data for one section most visitors will scroll past,
+      so it waits until the section is near the viewport and then arrives once
+      and stays cached. asset_url is same-origin, so there is no CORS in it.
+
+      Inlined rather than used as <img> because the whole point is to fill
+      individual states, and CSS cannot reach inside an <img>.
+    */
+    let loaded = false;
+    const load = async () => {
+      if (loaded) return;
+      loaded = true;
+      try {
+        const res = await fetch(root.dataset.map);
+        if (!res.ok) return;
+        slot.innerHTML = await res.text();
+        const svg = slot.querySelector('svg');
+        if (svg) svg.setAttribute('aria-hidden', 'true');
+        paint(buttons.find((b) => b.classList.contains('is-on')) || buttons[0]);
+      } catch {
+        /* the letters and the list still work; the map is the enhancement */
+      }
+    };
+
+    const paint = (button) => {
+      if (!button) return;
+      slot.querySelectorAll('.is-lit').forEach((el) => el.classList.remove('is-lit'));
+      (button.dataset.regions || '')
+        .split(',')
+        .map((r) => r.trim())
+        .filter(Boolean)
+        .forEach((r) => {
+          const el = slot.querySelector('#kcc-map-' + r);
+          if (el) el.classList.add('is-lit');
+        });
+    };
+
+    const show = (button) => {
+      buttons.forEach((b) => {
+        const on = b === button;
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      const i = button.dataset.lang;
+      letters.forEach((l) => l.classList.toggle('is-on', l.dataset.letter === i));
+      if (where) where.textContent = button.dataset.where || '';
+      paint(button);
+    };
+
+    buttons.forEach((b) => b.addEventListener('click', () => show(b)));
+
+    /*
+      Left and right walk the list the way a tablist is expected to, so the
+      twelve are not twelve separate tab stops between the copy and the rest
+      of the page.
+    */
+    root.querySelector('[role="tablist"]').addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      e.preventDefault();
+      const at = buttons.indexOf(document.activeElement);
+      const next = buttons[(at + step + buttons.length) % buttons.length];
+      next.focus();
+      show(next);
+    });
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((en) => { if (en.isIntersecting) { io.disconnect(); load(); } }),
+        { rootMargin: '400px 0px' }
+      );
+      io.observe(root);
+    } else {
+      load();
+    }
+  })();
+</script>
 
 {% stylesheet %}
   .why-ka__bg {
@@ -212,6 +393,168 @@
     margin: clamp(2.5rem, 5vw, 3.5rem) auto 0;
     max-width: 30rem;
   }
+  /* ---- The atlas ------------------------------------------------------- */
+
+  .why-ka__atlas {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin-block-start: clamp(2.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  @media screen and (min-width: 750px) {
+    .why-ka__atlas {
+      grid-template-columns: minmax(0, 0.38fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 4.5rem);
+    }
+  }
+
+  .why-ka__languages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .why-ka__languages {
+      display: grid;
+      gap: 0.1rem;
+    }
+  }
+
+  /* Set in the heading face, because this list is the specimen as much as the
+     letter beside it is: twelve names, one per script. */
+  .why-ka__language {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 0.45rem 0.65rem;
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: clamp(1.0625rem, 2.2vw, 1.5rem);
+    line-height: 1.15;
+    color: var(--color-foreground);
+    opacity: 0.45;
+    cursor: pointer;
+    text-align: start;
+    transition: opacity 0.15s ease, color 0.15s ease;
+  }
+
+  @media screen and (min-width: 750px) {
+    .why-ka__language {
+      padding-inline: 0;
+    }
+  }
+
+  .why-ka__language:hover {
+    opacity: 0.8;
+  }
+
+  .why-ka__language.is-on {
+    opacity: 1;
+    color: var(--kcc-ingredient-selected, #2e6417);
+  }
+
+  .why-ka__language:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  /* The letter and the map share a cell, the letter behind the map at a size
+     that makes it the ground rather than an ornament on it. */
+  /* The letter and the map share one square cell: the drawing of the letter
+     is the ground the map is printed on, which is the whole idea - the shape
+     and the place are the same fact told twice. Capped, because at full column
+     width the map swamps the list beside it. */
+  .why-ka__plate {
+    display: grid;
+    grid-template-areas: 'plate';
+    align-items: center;
+    justify-items: center;
+    inline-size: 100%;
+    max-inline-size: 32rem;
+    margin-inline: auto;
+  }
+
+  .why-ka__letters,
+  .why-ka__map {
+    grid-area: plate;
+    inline-size: 100%;
+  }
+
+  .why-ka__letters {
+    display: grid;
+    place-items: center;
+    block-size: 100%;
+  }
+
+  /* The box has to be given a size, not left to its content: the glyph below
+     is sized as a percentage of it, and a percentage of an auto height
+     resolves to auto - which is why the letter was not there at all. */
+  .why-ka__letter {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    inline-size: 100%;
+    block-size: 100%;
+    color: var(--kcc-ingredient-selected, #2e6417);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+  }
+
+  .why-ka__letter.is-on {
+    opacity: 0.3;
+  }
+
+  .why-ka__letter svg {
+    inline-size: auto;
+    block-size: 78%;
+    max-inline-size: 86%;
+  }
+
+  .why-ka__map svg {
+    inline-size: 100%;
+    block-size: auto;
+    display: block;
+  }
+
+  /* Every region outlined, none filled, until one is. A hairline that does not
+     thicken as the map scales, so the whole subcontinent keeps one pen. */
+  .why-ka__map .kcc-map__region {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.3;
+    transition: fill 0.25s ease, opacity 0.25s ease;
+  }
+
+  .why-ka__map .kcc-map__region.is-lit {
+    fill: currentColor;
+    opacity: 0.85;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .why-ka__letter,
+    .why-ka__map .kcc-map__region {
+      transition: none;
+    }
+  }
+
+  .why-ka__where {
+    margin: 0.75rem auto 0;
+    text-align: center;
+    min-block-size: 2.8em;
+    max-inline-size: 26rem;
+    font-size: var(--kcc-small);
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
 {% endstylesheet %}
 
 {% schema %}
@@ -266,3 +609,6 @@
   "presets": [{ "name": "Why Ka" }]
 }
 {% endschema %}
+
+
+
