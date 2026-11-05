@@ -240,10 +240,12 @@
       drawing now animates its outlines and its detail, whatever the mix of
       the two happens to be.
 
-      What the old cut-off was protecting against is real, though - an outline
-      fading to nothing leaves a hole where the shape was. The top band keeps
-      its full opacity throughout and is retraced away instead (see
-      kcc-sketch-line), so a heavy line always leaves the way it arrived.
+      Everything leaves the same way, by fading, and the fade takes three to
+      four times as long as the draw - see the kcc-sketch keyframes. A heavy
+      line on its way out does briefly thin the shape it belongs to, which is
+      what the old cut-off was avoiding; over that long it reads as ink fading
+      rather than as a line switching off, and the top band still starts
+      mid-hold so none of them is missing on load.
     */
     const SKETCH_BANDS = 4;
     // One cycle: wipe in, hold, fade out, gone. Randomised per target so they
@@ -264,12 +266,12 @@
     };
 
     /*
-      Arm one set of paths. `line` marks the heavy band, which gets the
-      retracing cycle and starts mid-hold rather than waiting its turn.
+      Arm one set of paths. `line` marks the heavy band, which starts mid-hold
+      rather than waiting its turn.
 
       The grouping trick is applied per set rather than once over everything,
       so a group never mixes a structural line in with the detail - the two
-      carry different animations and a group can only carry one.
+      start on different clocks and a group can only carry one.
     */
     const armSketch = (svg, pool, line, groupCount) => {
       if (!pool.length) return;
@@ -297,10 +299,9 @@
         const wide = box.width >= box.height;
         el.setAttribute('data-kcc-sketch', line ? 'line' : '');
         // Wipe along the long axis: left to right for a wide target, bottom up
-        // for a tall one. The erase continues in the same direction rather
-        // than reversing, so the pen reads as travelling, not rubbing out.
+        // for a tall one. Only the arrival is directional - everything leaves
+        // by fading, so there is no matching axis on the way out.
         el.style.setProperty('--kcc-draw-from', wide ? 'inset(0 100% 0 0)' : 'inset(100% 0 0 0)');
-        el.style.setProperty('--kcc-draw-to', wide ? 'inset(0 0 0 100%)' : 'inset(0 0 100% 0)');
         const dur = Math.round(rand(CYCLE_MIN, CYCLE_MAX));
         el.style.setProperty('--kcc-sketch-dur', dur + 'ms');
         /*
@@ -309,7 +310,7 @@
           delay, so an outline would simply be missing for up to five seconds
           after load. A negative delay lands it somewhere in the held stretch
           instead, so every heavy line is present on the first frame and they
-          begin retracing at staggered times.
+          begin fading at staggered times.
         */
         el.style.setProperty(
           '--kcc-sketch-delay',
@@ -327,7 +328,7 @@
 
       // Equal-count bands by area, the same share out of each. The top band is
       // the heavy linework on a drawing that has any; on a scatter it is just
-      // the larger seeds, where the retracing cycle is no worse than the fade.
+      // the larger seeds, where the band only decides the starting phase.
       const band = Math.ceil(measured.length / SKETCH_BANDS);
       const detail = [];
       const structural = [];
@@ -1349,36 +1350,6 @@
     100% {
       clip-path: inset(0 0 0 0);
       opacity: 0;
-    }
-  }
-
-  /* The heavy band. Same wipe in, a longer hold, and then it is retraced away
-     along the same axis instead of fading - an outline that drops its opacity
-     ghosts, and one that simply vanishes leaves a hole where the shape was.
-     The end frame is the start frame seen from the other side, so the loop
-     closes without a jump.
-
-     No opacity anywhere in here: these lines are either arriving, present, or
-     leaving, and never half-there. */
-  .ingredient-spotlight__drawing [data-kcc-sketch='line'] {
-    animation-name: kcc-sketch-line;
-  }
-
-  @keyframes kcc-sketch-line {
-    0% {
-      clip-path: var(--kcc-draw-from, inset(0 100% 0 0));
-    }
-
-    12% {
-      clip-path: inset(0 0 0 0);
-    }
-
-    88% {
-      clip-path: inset(0 0 0 0);
-    }
-
-    100% {
-      clip-path: var(--kcc-draw-to, inset(0 0 0 100%));
     }
   }
 

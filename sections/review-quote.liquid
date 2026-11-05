@@ -72,8 +72,26 @@
     </div>
 
     {%- if reviews.size > 1 -%}
-      <button class="review-quote__again" type="button" data-rq-next>
-        {{ section.settings.button_label | default: 'another one' }}
+      <button
+        class="review-quote__again"
+        type="button"
+        data-rq-next
+        aria-label="{{ section.settings.button_label | default: 'Show another review' | escape }}"
+      >
+        {%- comment -%}
+          A drawn mark rather than a word, and a circular arrow rather than a
+          chevron: a chevron means next-in-a-list, which is the reading this
+          deliberately is not. Round-trip arrows mean give me another.
+        {%- endcomment -%}
+        <svg class="review-quote__spin" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path
+            d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <path d="M18.4 2.6v3.9h-3.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
       </button>
     {%- endif -%}
   </div>
@@ -89,6 +107,8 @@
       const stage = root.querySelector('[data-rq-stage]');
       const items = Array.from(root.querySelectorAll('[data-rq-item]'));
       const next = root.querySelector('[data-rq-next]');
+      const spin = root.querySelector('.review-quote__spin');
+      let turns = 0;
       if (!stage || !items.length) return;
 
       /*
@@ -135,25 +155,21 @@
       window.addEventListener('resize', refit);
 
       /*
-        The order is shuffled once per page load and then walked through, so
-        you never get the same one twice in a row and you do see all of them
-        before any repeats - which a random pick each time would not give you.
-        The first one stays first: it is the one the band is showing already.
+        Straight through, in the order they are written. These are a bit, and
+        a bit has an order - the second one answers the first, and the one
+        about a real job is the punchline. Shuffling threw that away.
       */
-      const order = items.map((_, i) => i);
-      for (let i = order.length - 1; i > 1; i--) {
-        const j = 1 + Math.floor(Math.random() * i);
-        [order[i], order[j]] = [order[j], order[i]];
-      }
-
       let at = 0;
       const show = (step) => {
-        items[order[at]].classList.remove('is-active');
-        items[order[at]].setAttribute('aria-hidden', 'true');
-        at = (at + step + order.length) % order.length;
-        const item = items[order[at]];
-        item.classList.add('is-active');
-        item.removeAttribute('aria-hidden');
+        items[at].classList.remove('is-active');
+        items[at].setAttribute('aria-hidden', 'true');
+        at = (at + step + items.length) % items.length;
+        items[at].classList.add('is-active');
+        items[at].removeAttribute('aria-hidden');
+        if (spin) {
+          turns += 1;
+          spin.style.transform = 'rotate(' + turns * 360 + 'deg)';
+        }
       };
 
       if (next) next.addEventListener('click', () => show(1));
@@ -205,7 +221,7 @@
 
   @media screen and (min-width: 750px) {
     .review-quote__stage {
-      --rq-quote: 6.5rem;
+      --rq-quote: 7rem;
     }
   }
 
@@ -250,10 +266,14 @@
      which made the people saying these things read as a legal footnote to
      them. There is no rule any more either: the change of face, of size and
      of line is the separation. */
+  /* One line, wrapping only if it has to. "A hater @Cedar Mills Farmers
+     Market" is one thought and was set as two. */
   .review-quote__who {
     display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.4em;
+    row-gap: 0.1rem;
     margin-block-start: 1rem;
     font-family: var(--font-body--family);
     font-size: var(--kcc-body);
@@ -275,11 +295,10 @@
     padding: 0.5rem 0.75rem;
     margin: 0;
     font-family: var(--font-body--family);
-    font-size: var(--kcc-small);
-    line-height: 1;
-    letter-spacing: 0.04em;
+    display: grid;
+    place-items: center;
     color: var(--color-foreground);
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: pointer;
     transition: opacity 0.15s ease;
     position: relative;
@@ -296,13 +315,17 @@
     inset: -0.45rem -0.5rem;
   }
 
-  .review-quote__again::after {
-    content: ' \2192';
-  }
-
   .review-quote__again:hover,
   .review-quote__inner:hover .review-quote__again {
     opacity: 1;
+  }
+
+  .review-quote__spin {
+    width: 1.5rem;
+    height: 1.5rem;
+    /* Each press turns it another full revolution, so the mark performs the
+       thing it names. */
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .review-quote__again:focus-visible {
@@ -316,7 +339,7 @@
 {
   "name": "Review quote",
   "settings": [
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "another one" },
+    { "type": "text", "id": "button_label", "label": "Button label (read aloud only)", "default": "Show another review" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" },
     { "type": "header", "content": "Padding" },
     { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 24 },

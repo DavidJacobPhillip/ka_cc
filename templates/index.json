@@ -449,7 +449,7 @@
         "review_7"
       ],
       "settings": {
-        "button_label": "another one",
+        "button_label": "Show another review",
         "color_scheme": "scheme-5",
         "padding-block-start": 24,
         "padding-block-end": 24
@@ -462,7 +462,7 @@
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03080.jpg",
-            "caption": "<p>deliciousness getting poured</p>"
+            "caption": "<p>deliciousness</p>"
           }
         },
         "photo_2": {
@@ -476,14 +476,14 @@
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03548.jpg",
-            "caption": "<p>when our biggest fan stops by</p>"
+            "caption": "<p>look at that smile</p>"
           }
         },
         "photo_4": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03486.jpg",
-            "caption": "<p>aesthetic photo of a sample cup</p>"
+            "caption": "<p>mmm warm chai</p>"
           }
         },
         "photo_5": {
@@ -504,28 +504,28 @@
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03170.jpg",
-            "caption": "<p>the ladle doing its thing</p>"
+            "caption": "<p>perfect color, cozy brown</p>"
           }
         },
         "photo_8": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03473.jpg",
-            "caption": "<p>90% steam, 10% chai</p>"
+            "caption": "<p>perfectly boiled, with intention</p>"
           }
         },
         "photo_9": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03276.jpg",
-            "caption": "<p>an assembly line of sorts</p>"
+            "caption": "<p>one chai, two chai, three chai, four…</p>"
           }
         },
         "photo_10": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03034.jpg",
-            "caption": "<p>chai doesn't make itself</p>"
+            "caption": "<p>chai doesn't serve itself</p>"
           }
         },
         "photo_11": {
@@ -546,7 +546,7 @@
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/DSC03352.jpg",
-            "caption": "<p>measured twice, poured once</p>"
+            "caption": "<p>the chaiwala pour</p>"
           }
         },
         "photo_14": {
@@ -560,21 +560,21 @@
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/IMG_8953.heic",
-            "caption": "<p>saturday morning at cedar mills</p>"
+            "caption": "<p>saturday mornings at PSU's farmers market</p>"
           }
         },
         "photo_16": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/IMG_6851.heic",
-            "caption": "<p>packing day</p>"
+            "caption": "<p>our spice kits! don't you want to buy one…</p>"
           }
         },
         "photo_17": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/IMG_4983.heic",
-            "caption": "<p>look for the canopy</p>"
+            "caption": "<p>under the tent</p>"
           }
         }
       },

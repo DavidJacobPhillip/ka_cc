@@ -109,8 +109,15 @@
                 <img
                   class="product-teaser__image"
                   src="{{ block.settings.image | image_url: width: 900 }}"
-                  srcset="{{ block.settings.image | image_url: width: 440 }} 440w, {{ block.settings.image | image_url: width: 660 }} 660w, {{ block.settings.image | image_url: width: 900 }} 900w"
-                  sizes="(min-width: 750px) 26rem, 90vw"
+                  srcset="{{ block.settings.image | image_url: width: 440 }} 440w, {{ block.settings.image | image_url: width: 660 }} 660w, {{ block.settings.image | image_url: width: 900 }} 900w, {{ block.settings.image | image_url: width: 1200 }} 1200w"
+                  {%- comment -%}
+                    These are the widths the image is actually painted at, not
+                    the widths of the frame around it: the crop below sizes the
+                    picture past its box and lets overflow cut it, so it is
+                    larger than the card by --pt-zoom and needs a candidate to
+                    match. 1200w is there for the 3x phones.
+                  {%- endcomment -%}
+                  sizes="(min-width: 750px) 25rem, 78vw"
                   alt="{{ block.settings.image.alt | escape }}"
                   width="{{ block.settings.image.width }}"
                   height="{{ block.settings.image.height }}"
@@ -968,16 +975,35 @@
     }
   }
 
+  /* The photograph carries the card's own frame, at the card's own weight, so
+     the two rectangles read as one drawn object rather than as a picture that
+     happens to sit inside a box. */
   .product-teaser__media {
+    --pt-zoom: 1.09;
+
     aspect-ratio: var(--pt-ratio, auto);
+    border: 2px solid var(--pt-accent);
     border-radius: 0.75rem;
     overflow: hidden;
   }
 
+  /* Cropped in a little further than `cover` would, which on these two shots
+     is the difference between a jar on a table and a jar.
+
+     Done by growing the box and letting overflow cut it, not with a transform:
+     a transform scales the bitmap the browser already rasterised at the old
+     size and softens the label text, where a larger box makes it pick a larger
+     candidate out of the srcset and stay sharp. The negative margins are half
+     the overshoot, so the crop takes the same bite off all four sides. */
   .product-teaser__image {
     display: block;
-    width: 100%;
-    height: 100%;
+    /* The theme caps every img at max-width: 100%, which silently swallowed
+       the horizontal half of the crop and left the picture stretched - 109%
+       tall in a 100%-wide box. */
+    max-width: none;
+    width: calc(100% * var(--pt-zoom, 1));
+    height: calc(100% * var(--pt-zoom, 1));
+    margin: calc((100% - 100% * var(--pt-zoom, 1)) / 2);
     object-fit: cover;
   }
 
